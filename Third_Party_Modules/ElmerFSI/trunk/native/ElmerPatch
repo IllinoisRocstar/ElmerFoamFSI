@@ -1,0 +1,60 @@
+--- Types.F90_orig	2015-04-02 19:27:15.679036037 -0500
++++ Types.F90	2015-04-02 19:02:43.528995196 -0500
+@@ -690,6 +690,13 @@ END INTERFACE
+     TYPE Model_t
+ !------------------------------------------------------------------------------
+ !
++!    Map from elmer's nodes to my nodes for UDF
++     INTEGER, POINTER :: ElmerToMyNodes(:)
++!    Loads at the nodes to pass to UDF
++     DOUBLE PRECISION, POINTER :: NodeLoadsPass(:,:)
++!    Two values used for testing in the UDF
++     LOGICAL :: GetTestLoads = .TRUE., UDFUsed = .FALSE.
++!
+ !     Coodrinate system dimension + type
+ !
+       INTEGER :: DIMENSION, CoordinateSystem
+--- SParIterComm.F90_orig	2015-04-01 14:02:03.916548054 -0500
++++ SParIterComm.F90	2015-04-01 14:08:58.460440947 -0500
+@@ -132,12 +132,12 @@ CONTAINS
+     ParEnv % ActiveComm = MPI_COMM_WORLD
+ 
+     ierr = 0
+-    CALL MPI_INIT( ierr )
++!    CALL MPI_INIT( ierr )
+     IF ( ierr /= 0 ) RETURN
+ 
+     CALL MPI_COMM_SIZE( MPI_COMM_WORLD, ParEnv % PEs, ierr )
+     IF ( ierr /= 0 ) THEN
+-       CALL MPI_Finalize( ierr )
++!       CALL MPI_Finalize( ierr )
+     ELSE
+        CALL MPI_COMM_RANK( MPI_COMM_WORLD, ParEnv % MyPE, ierr )
+        OutputPE = ParEnv % MyPe
+@@ -1998,7 +1998,7 @@ tstart = realtime()
+            !---------------------------------------------------
+            WRITE(*,'(A,I4,A,I6)') 'SParIterGlobalNumbering: PE:', ParEnv % MyPE+1, &
+                 ' Could not determine owner for node(loc)=', i
+-           CALL MPI_FINALIZE( ierr )
++!           CALL MPI_FINALIZE( ierr )
+         END IF
+         !
+         ! Finalize by sorting the parent table:
+@@ -2377,7 +2377,7 @@ tstart = realtime()
+      Iterate = Iterate+1
+      IF(Iterate > MaxIterates ) THEN
+         WRITE(*,'(A,I6,A)') 'SParIterGlobalNumbering: PE: ', ParEnv % MyPE+1,'Max iterations exceeded'
+-        CALL MPI_FINALIZE( MPI_COMM_WORLD, ierr )
++!        CALL MPI_FINALIZE( MPI_COMM_WORLD, ierr )
+      END IF
+      DO i = n, Mesh % NumberOfNodes
+         Mesh % ParallelInfo % GlobalDOFs(i) = 0
+@@ -4679,7 +4679,7 @@ SUBROUTINE ParEnvFinalize()
+ 
+   !*********************************************************************
+   CALL MPI_BARRIER( MPI_COMM_WORLD, ierr )
+-  CALL MPI_FINALIZE( ierr )
++!  CALL MPI_FINALIZE( ierr )
+ 
+   IF ( ierr /= 0 ) THEN
+      WRITE( Message, * ) 'MPI Finalization failed ! (ierr=', ierr, ')'

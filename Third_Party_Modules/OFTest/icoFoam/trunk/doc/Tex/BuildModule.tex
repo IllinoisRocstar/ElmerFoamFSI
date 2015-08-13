@@ -1,0 +1,25 @@
+\irsection{Building the module library and driver}{BuildModule}
+
+In order to build the \icofoam\, module library, simply repeat the build steps taken when building \openfoamex\, for the first time (see \irref{Section}{OpenFoam}). When the  building completes, ensure that the \icofoam\, library built. It should be located under the \irfilename{lib} directory of the \openfoamex\, source. There may be another subdirectory under the \irfilename{lib} directory like \irfilename{linux64GccDPOpt}. If this is the case, the library should be in this subdiretory. It should be titled \irfilename{libIcoFoamModule.so}. If the library is in a subdirectory or any location other than the \irfilename{lib} directory under the main source directory, then create a link to \irfilename{libIcoFoamModule.so} and the libraries located with it in the \irfilename{lib} directory. An example command for creating this link is shown below
+
+\commandline{ln -s /home/user/foam/foam-extend-3.1/lib/linux64GccDPOpt/* \newline /home/user/foam/foam-extend-3.1/lib/. }
+
+This link will help when building the module driver using \software{CMake}.
+
+If the library built successfully, the driver for the module may now be built and linked to both \impact\, and the module library. It is recommended that the driver source and build files be kept in separate directories from one another and from \openfoamex. The module driver is built using \software{CMake} so this must be installed on the system. \textbf{Remember} that the same \software{mpicc}, \software{mpicxx}, and/or \software{mpif90} must be used for building \openfoam, \impact, and the module driver. The build steps are as follows:
+
+\begin{itemize}
+\item Create a build directory for the driver. 
+\newline Example:
+\newline \commandline{mkdir /home/user/icoFoamModuleBuild}
+\item Change directories to the build directory. 
+\newline Example:
+\newline \commandline{cd /home/user/icoFoamModuleBuild}
+\item Run \software{CMake} on the module driver source directory with the \texttt{CMAKE\_PREFIX\_PATH} set to both the \IMPACT\, install location (or locations of the \impact\, \irfilename{bin} and \irfilename{lib} directories) and the \openfoamex\, source directory 
+\newline Example:
+\newline \commandline{cmake -DCMAKE\_PREFIX\_PATH=/home/user/IMPACT-install$\backslash$; \newline /home/user/foam/foam-extend-3.1 /home/user/icoFoamModule} 
+\newline (\textbf{Note} that there is no space between $\backslash$\texttt{;} and \texttt{/home/user/foam/foam-extend-3.1}. The new line shown above is used only for visual clarity.)
+\item Run \texttt{make} and, if desired, \texttt{make install}.
+\end{itemize}
+
+Once the build process has finished ensure that the module driver built by checking the \irfilename{bin} directory within the module driver build directory for \irfilename{IcoFoamModuleDriver.}

@@ -1,0 +1,14 @@
+\irsection{\elmer\!\!}{elmer}
+
+In order to build a module for \elmer it is necessary to download and build \elmer from the source. Information regarding accessing the source code can be found at \url{https://www.csc.fi/web/elmer/sources-and-compilation}. The module build uses the \software{CMake} capabilities provided with \elmer so when building \elmer be sure to use these instead of the auto-configure tools. It is recommended that you first build \elmer without the module and ensure that it works properly before attempting to build the basic module. Make sure that you run \texttt{make install} when building \elmer to have access to the necessary libraries built by \elmer\!\!.
+
+For those working from within Illinois Rocstar, after building \elmer with \software{CMake} you can test it using the documentation provided in Section 4.3 and 4.4 of \irfilename{Uniphysics Validation for Development of Multiphysics Coupling in MP-Infra} which can be found in svn under \irfilename{svn://irsvn/SourceRepository /MPInfra/data/documentation/validation\_uniphysics/Tex}. You can run the example using the \elmer that has been installed on \irfilename{/Projects} (following the directions from the guide) and compare that to the results from running your installation of \elmer\!\!. 
+
+\textbf{Note:} if you use the \elmer module mentioned in the guide be sure to reset your environment variables appropriately when running your installation of \elmer\!\!. Otherwise, you may simply be using the \elmer on \irfilename{$\backslash$Projects} again. 
+
+In order to run your installation of \elmer ensure that your environment variables \irfilename{PATH}, \irfilename{LD\_LIBRARY\_PATH}, \irfilename{ELMER\_HOME}, and \irfilename{ELMER\_LIB} are set to the locations of your \elmer executable (for \irfilename{PATH} and \irfilename{ELMER\_HOME}) and your \elmer libraries (for \irfilename{LD\_LIBRARY \_PATH} and \irfilename{ELMER\_LIB}). Note that \elmer may install some libraries in a directory titled \irfilename{share} and some in a directory title \irfilename{lib} so be sure all libraries are accessible. 
+
+\textbf{IMPORTANT:} also note that when using the \software{CMake} build of \elmer  you will likely be unable to use the GUI version of \elmer and may need to replace the command \texttt{ElmerSolver} (shown in the IR Uniphysics Validation document) with \texttt{ElmerSolver\_mpi}. 
+
+Examine your \elmer installation directory to see what is available. After ensuring that the test run works, the next steps toward building a module can be taken.
+

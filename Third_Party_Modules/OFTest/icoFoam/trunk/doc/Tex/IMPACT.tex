@@ -1,0 +1,5 @@
+\irsection{\software{IMPACT}}{IMPACT}
+
+The Illinois Rocstar software \IMPACT\, is required for integrating the \icofoam\, module. For an external user the \IMPACT\, software may be downloaded from \url{http://sourceforge.net/p/openmultiphys/wiki/Consortium\%20for\%20Open\%20Multiphysics/}. For an internal user, \impact\, is located in the repository under \irfilename{IMPACT/trunk}. Follow the build instructions from the User's Guide, keeping in mind that the same \software{mpicc}, \software{mpicxx}, and/or \software{mpif90} must be used when compiling \software{IMPACT}, \openfoam, and the module driver. Note that internal users may not need to build \impact\, but instead simply load the \impact\, module provided to their machine. 
+
+Ensure that the locations of the \impact\, \irfilename{include} and \irfilename{lib} directories are known since they will be needed in \irref{Section}{ModuleFiles}. If you use \texttt{make install} when installing \impact\, these directories should both be located under the install directory. Otherwise, they should be located in the main source directory and the main build directory for \impact\, respectively.

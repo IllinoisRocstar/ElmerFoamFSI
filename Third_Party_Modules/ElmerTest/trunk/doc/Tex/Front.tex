@@ -1,0 +1,127 @@
+\pagenumbering{roman}
+\clearpage 
+\begin{titlepage}
+\pagestyle{empty}
+	\begin{flushleft}
+		\includegraphics[width=0.15\textwidth]{../Figures/IR_Logo.png}~\\[0.5cm]
+		{\large \bf \rptname} \\
+		{\connum: \conname}
+		\hrule
+	\end{flushleft}
+	\begin{flushleft}
+		{Samantha Horvath \& Michael J. Anderson \\
+		 Michael T. Campbell, Rasheed Ibrahim, and Jessica E. Kress \\
+         John Busbee \& Kevin A. Arpin}
+	\end{flushleft}
+	\vspace{-10mm}
+	\begin{flushright}
+	\end{flushright}
+	
+	\noindent Illinois Rocstar LLC \\
+	1800 South Oak Street, Suite 208 \\
+	Champaign, Ill. 61820 \vspace{3mm}
+	
+	\noindent Reporting Period: June 20, 2014 through September 18, 2014 \\
+	
+	\vfill
+	{\flushleft \copyright \small Illinois Rocstar LLC}
+        \vspace{0.9mm}
+	\hrule \vspace{5mm}
+	
+	\noindent 
+	\doublebox{
+	\parbox{0.97\textwidth}{%
+	\footnotesize This work falls under the purview of the U.S. Munitions List (USML), as defined in the International Traffic in Arms Regulations (ITAR), 22 CFR 120-130, and is export controlled. It shall not be transferred to foreign nationals, in the U.S. or abroad, without specific approval from the Department of States Directorate of Defense Trade Controls and/or unless an export, license/license exemption is obtained/available from the United States Department of State. Violations of these regulations are punishable by fine, imprisonment, or both.\\ This work contains information within the purview of the Export Administration Regulations (EAR), 15 CFR 730-774, and is export controlled. It may not be transferred to foreign nationals in the U.S. or abroad without specific approval of a knowledgeable NASA export control official, and/or unless an export license/license exception is obtained/available from the Bureau of Industry and Security, United States Department of Commerce. Violations of these regulations are punishable by fine, imprisonment, or both.
+	}%
+	}
+	
+	\begin{center}
+		{\small NASA Ames Research Center} \\
+		{\small Mail Stop: 234-1} \\
+		{\small Moffett Field, Calif. 94035}
+	\end{center}
+        \thispagestyle{empty}
+         		
+\end{titlepage}
+	\newpage
+	\irheader{\connum}{}
+	\setcounter{page}{2}
+	\noindent 
+	
+	\begin{flushleft}
+		{\large {\bf \rptname}} \\
+		{\connum: \conname}
+		\hrule
+	\end{flushleft}
+	
+	\vspace*{5mm}
+	
+	\begin{center}
+		Samantha Horvath$^*$ \& Michael J. Anderson \\ Michael T. Campbell, Rasheed Ibrahim, Jessica E. Kress \\
+		Illinois Rocstar LLC    \\
+		1800 S. Oak Street, Suite 208  \\
+		Champaign, Ill. 61820     \\
+		\url{www.illinoisrocstar.com}\\
+		$^*$\url{shorvath@illinoisrocstar.com} \\
+	\end{center}
+	
+	\vspace{0.5mm}
+	
+	\begin{center}
+		John Busbee$^{**}$ \\
+		Kevin A. Arpin \\
+		Xerion Advanced Battery Corp \\
+		60 Hazelwood Drive \\
+		Champaign, Ill. 61820 \\
+		\url{www.xerionbattery.com}\\
+		$^{**}$\url{j.busbee@xerionbattery.com} \\		
+	\end{center}
+	
+	\vspace{0.5mm}
+	
+	\begin{center}
+               John W. Lawson \\
+               Technical Monitor \\
+               NASA Ames Research Center \\
+               Mail Stop: 234-1 \\
+               Moffett Field, Calif. 94035
+	\end{center}
+	
+	\newpage
+	\begin{center}
+		{\large \bf SBIR Rights Notice (Dec 2007)}
+	\end{center}
+	
+	\noindent 
+       These SBIR data are furnished with SBIR rights under Contract No. \cnum. For a period of 4 years, unless extended in accordance with FAR 27.409(h), after acceptance of all items to be delivered under this contract, the Government will use these data for Government purposes only, and they shall not be disclosed outside the Government (including disclosure for procurement purposes) during such period without permission of the Contractor, except that, subject to the
+       foregoing use and disclosure prohibitions, these data may be disclosed for use by support Contractors. After the protection period, the Government has a paid-up license to use, and to authorize others to use on its behalf, these data for Government purposes, but is relieved of all disclosure prohibitions and assumes no liability for unauthorized use of these data by third parties. This notice shall be affixed to any reproductions of these data, in whole or in part.
+               
+        \begin{center}
+        SBIR Data Rights Legend \\
+        Contract Number: \cnum \\
+        Contractor Name: Illinois Rocstar LLC \\
+        Contractor Address: P.O. Box 3001, Champaign, Ill. 61826-3001 \\
+        Location of SBIR Data Rights: Sections 1 -- 8 \\
+        Expiration of SBIR Data Rights: Expires four (4) years after completion of project work for this or any follow-on SBIR contract, whichever is later.
+        \end{center}
+        
+       
+
+	\newpage
+	
+    \renewcommand{\abstractname}{Project Summary}
+    \begin{abstract}
+    \noindent Due to the wide range of inherent phenomena, there are significant challenges to  advanced battery computational design and optimization. This highly varied need requires a multifidelity approach, wherein simplified models can be supplanted by more sophisticated, detailed capabilities when necessary. This joint theoretical-experimental program funded by NASA addresses this need through development of a multiphysics, multiscale, multifidelity simulation suite for advanced battery modeling. Illinois Rocstar's \software{Integrated Computational Environment for Electrochemical Device Design} (\ICED) will provide a modular architecture with both simple and advanced simulation capabilities that applies to a variety of battery systems.  Battery performance, safety, and optimization are the objectives of the system. \\ \hfill
+        
+   \noindent \ICED\ relies on the \software{Illinois Rocstar Multiphysics Application Coupling Toolkit} (\IMPACT) to construct the battery simulation system, and we will demonstrate \ICED's capabilities with simplified, one-dimensional (``pseudo 2D'') models. In the first phase of the project, these simple models in \ICED\ are validated against battery performance data produced by our experimental partner Xerion. Additionally, \ICED\ will be used to simulate Xerion's advanced nanostructure batteries to identify areas where the simple models are insufficient. During the Phase II portion of the project, we will incorporate advanced models into \ICED, such as detailed electrochemical kinetics and material transport, extension to two- and three-dimensions, and a device-scale simulation capability. The ultimate goal is to prepare fully three-dimensional, device-scale applications from first principles when required, with fast, exploratory modules available. \\ \hfill
+    
+   \noindent In the first reporting period, the computational program focused on solver development for the \ICED\ system, including derivation of the underlying governing equations and discretization techniques, outline of the \ICED\ solution strategy, and implementation of the physics modules and the shell \ICED\ infrastructure. We also began work deriving the methodology for calculating tortuosity of spherical packs. In the experimental program, voltage profiles were generated for typical commercial lithium ion batteries. Scanning electron microscopy was also performed to analyze the microstructure of these commercial electrodes from their micrographs. \\ \hfill
+     
+   \noindent Good progress has been made during the first half of this Phase I SBIR, but there are several items from the work plan still to complete. The physics module implementation is currently ongoing, and we anticipate that the remaining modules will be fully implemented soon. The final remaining task required to complete the fully functional electrochemical device solver is implementation of the nonlinear solution routines. This will use well-known open solver technologies from DOE. For tortuosity prediction, the currently completed software implementation can determine the mappings between spheres based on their respective coordinates and has been verified for various pack configurations. The next step will be to use this connectivity graph to calculate the variables that define a given path's tortuosity. The focus of the experimental program moving forward will be on measuring electrochemical and physical properties of Xerion's advanced battery electrode designs. Porometry and surface area analysis will be performed on Xerion's porous electrodes.  These data will be used to model the electrodes and understand tortuosity.
+    
+    %It is anticipated that the base system with simple models will be released cost-free to all government, industry, and academic users to generate interest. Licensable modules, based on advanced simulation techniques and target applications, will be produced during the second phase and licensed to industrial and academic users.  
+    \end{abstract}
+
+	\newpage
+	
+	

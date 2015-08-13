@@ -1,0 +1,23 @@
+\irsection{Building the module library and driver}{BuildModule}
+
+In order to build the \elmer module library, simply repeat the build steps taken when building \elmer for the first time (see \irref{Section}{elmer}). However, now \elmer will require the \software{IMPACT} libraries for the build since the new source files added for the module require them. If you installed \software{IMPACT} in a non-standard location you will need to specify the location of the \software{IMPACT} libraries for \software{CMake}. After the  building completes, ensure that the \elmer module library built; it is entitled \irfilename{libSolverModule.so}. It should be located under the \irfilename{lib} directory of the \elmer installation (be sure to run \texttt{make install}).
+
+If the library built successfully, the driver for the module may now be built and linked to both \impact\, and the module library. It is recommended that the driver source and build files be kept in separate directories from one another and from \elmer\!\!. The build steps are as follows:
+
+\begin{itemize}
+\item Create a build directory for the driver. 
+\newline Example:
+\newline \commandline{mkdir /home/user/ElmerModuleBuild}
+\item Change directories to the build directory. 
+\newline Example:
+\newline \commandline{cd /home/user/ElmerModuleBuild}
+\item Run \software{CMake} on the module driver source directory with the \texttt{CMAKE\_PREFIX\_PATH} set to both the \IMPACT\, install location (or locations of the \impact\, \irfilename{bin} and \irfilename{lib} directories) and the directory containing the \elmer installation (or the location of the \elmer \irfilename{lib} directory). 
+\newline Example:
+\newline \commandline{cmake -DCMAKE\_PREFIX\_PATH=/home/user/IMPACT-install$\backslash$; \newline /home/user/elmer-install /home/user/ElmerModule} 
+\newline (\textbf{Note} that there is no space between $\backslash$\texttt{;} and \texttt{/home/user/elmer-install}. The new line shown above is used only for visual clarity.)
+\item Run \texttt{make} and, if desired, \texttt{make install}.
+\end{itemize}
+
+\textbf{Note} that \elmer may install more libraries in the installation directory under \irfilename{share/elmersolver/lib/}. You can either create a soft link to these libraries in the \irfilename{elmer-install/lib} or you can include this directory in the \texttt{CMAKE\_PREFIX\_PATH} by appending it after another $\backslash$; in the \texttt{cmake} command shown above.
+
+Once the build process has finished ensure that the module driver built by checking the \irfilename{bin} directory within the module driver build directory for \irfilename{SolverModuleDriver.}

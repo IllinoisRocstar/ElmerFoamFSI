@@ -1,0 +1,6 @@
+source ~/foam/foam-extend-3.1/etc/cshrc
+setenv CC mpicc
+setenv CXX mpicxx
+setenv FC mpif90
+setenv IRMULTIPHYSICS /home/mtcampbe/Software/Install/IMPACT_COUPLING
+setenv LD_LIBRARY_PATH ${IRMULTIPHYSICS}/lib:/home/mtcampbe/Software/Install/Elmer.impact.fsi/lib:${LD_LIBRARY_PATH}

@@ -1,0 +1,120 @@
+%provide useful commands and default settings
+\input{preamble}
+
+%------------------------------------------------------------------
+% Includeed Packages
+%------------------------------------------------------------------
+\usepackage{enumitem}
+\usepackage{fancybox}
+\usepackage{threeparttable}
+\usepackage{multicol}
+\usepackage[export]{adjustbox}
+
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{2.5ex plus 1 ex minus .5ex}{1.5ex plus .75ex minus .5 ex}
+\titlespacing*{\subsection}{0pt}{2ex plus .5ex minus .25ex}{1ex plus .5ex minus .25ex}
+\titlespacing*{\subsubsection}{0pt}{1.5ex plus .5ex minus .25ex}{.75ex plus .5ex minus .25ex}
+\titlespacing*{\paragraph}{0pt}{1ex plus .25ex minus .25ex}{.5ex plus .25ex minus .25ex}
+
+%------------------------------------------------------------------
+% New Commands: Programs
+%------------------------------------------------------------------
+\newcommand{\impact}{\software{IMPACT}}
+\newcommand{\IMPACT}{\software{IMPACT}}
+\newcommand{\icofoam}{\software{IcoFoam}}
+\newcommand{\openfoam}{\software{OpenFoam}}
+\newcommand{\openfoamex}{\software{OpenFoam Extend}}
+\newcommand{\elmer}{\software{Elmer}\;}
+
+\def\cpp{C{}\texttt{++}}
+
+\newcommand{\wbs}[1]{\textcolor{MidnightBlue}{\textsf{WBS\# #1}}}
+\newcommand{\subcap}[1]{{\footnotesize #1}}
+\newcommand{\mybox}[1]{\doublebox{\parbox{0.97\textwidth}{{#1}}}}
+\newcommand{\term}[1]{{\textbf{\textsf{#1}}}}
+\newcommand{\snoteTe}[1]{{\textcolor{red}{\textbf{#1}}}}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+
+\newcommand{\vv}{V\&V}
+\newcommand{\x}[1]{$#1\times$}
+\newcommand{\percent}[1]{#1\%}
+\newcommand{\siper}{\SI[per-mode=symbol]}
+\newcommand{\g}{\gram}
+\newcommand{\ms}{\milli\second}
+\newcommand{\m}{\meter}
+\newcommand{\cm}{\centi\meter}
+\newcommand{\mm}{\milli\meter}
+\newcommand{\um}{\micro\meter}
+\newcommand{\nm}{\nano\meter}
+\newcommand{\kpa}{\kilo\pascal}
+\newcommand{\mpa}{\mega\pascal}
+\DeclareSIUnit\pixel{pixel}
+\DeclareSIUnit\ppm{ppm}
+\DeclareSIUnit\amu{amu}
+\DeclareSIUnit\in{in}
+\DeclareSIUnit\psi{psi}
+\DeclareSIUnit\psia{psia}
+\DeclareSIUnit\psig{psig}
+\newcommand{\mpix}{\mega\pixel}
+
+\newcommand{\chem}[1]{\mathrm{#1}}
+
+
+%------------------------------------------------------------------
+%  These two lines will number figures and tables as #1.#2, where #1
+%  number of chapter and #2 is the figure or table number within the chapter
+%------------------------------------------------------------------
+\renewcommand{\thefigure}{\thesection.\arabic{figure}}
+\renewcommand{\thetable}{\thesection.\arabic{table}}
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+%==================================================================
+% Document build
+%==================================================================
+
+\begin{document}
+
+%Information for the Title page
+\pagestyle{fancy}
+
+\begin{figure}
+  \centering
+  \includegraphics[height=3.in]{../Figures/IR_Logo.png}
+\end{figure}
+%-----------------------------------------------
+\irtitle{\impact\, Module for \elmer\!\!}
+\irauthor{Illinois Rocstar LLC}
+\date{\textsf{\today}}
+
+\pagestyle{empty}
+\maketitle
+
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{4}
+
+
+\irheader{\elmer Module}{}
+\newpage
+\thispagestyle{empty}
+
+\newpage
+\renewcommand{\contentsname}{Table of Contents}
+\tableofcontents
+
+%\newpage
+\listoffigures
+\listoftables
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\input{Elmer}
+\input{IMPACT}
+\input{ModuleFiles}
+\input{BuildModule}
+\input{RunModule}
+
+%\newpage
+
+\end{document}

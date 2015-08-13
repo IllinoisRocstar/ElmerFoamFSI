@@ -1,0 +1,9 @@
+EXE_INC = \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I/path/to/IMPACT/install/include
+
+LIB_LIBS = \
+    -lfiniteVolume \
+    -llduSolvers \
+    -L/path/to/IMPACT/install/lib \
+    -lSITCOM

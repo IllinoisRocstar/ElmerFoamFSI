@@ -1,0 +1,148 @@
+!/*****************************************************************************/
+! *
+! *  Elmer, A Finite Element Software for Multiphysical Problems
+! *
+! *  Copyright 1st April 1995 - , CSC - IT Center for Science Ltd., Finland
+! * 
+! * This library is free software; you can redistribute it and/or
+! * modify it under the terms of the GNU Lesser General Public
+! * License as published by the Free Software Foundation; either
+! * version 2.1 of the License, or (at your option) any later version.
+! *
+! * This library is distributed in the hope that it will be useful,
+! * but WITHOUT ANY WARRANTY; without even the implied warranty of
+! * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+! * Lesser General Public License for more details.
+! * 
+! * You should have received a copy of the GNU Lesser General Public
+! * License along with this library (in file ../LGPL-2.1); if not, write 
+! * to the Free Software Foundation, Inc., 51 Franklin Street, 
+! * Fifth Floor, Boston, MA  02110-1301  USA
+! *
+! *****************************************************************************/
+
+!> \ingroup ElmerLib
+
+!------------------------------------------------------------------------------
+!> A caller for the Elmer main program.
+!------------------------------------------------------------------------------
+
+
+#include "SolverModuleHeader.h"
+
+
+SUBROUTINE RUN(global)
+  
+   USE TESTOBJECT
+
+   IMPLICIT NONE
+
+   INCLUDE 'comf90.h'
+
+   TYPE(t_global), POINTER :: global
+
+   CALL Solver()
+
+END SUBROUTINE RUN
+
+SUBROUTINE SOLVERMODULE_LOAD_MODULE(name)
+
+  USE TESTOBJECT
+
+  IMPLICIT NONE
+
+  INCLUDE "comf90.h"
+
+  INTERFACE
+    SUBROUTINE COM_set_pointer(attr,ptr,asso)
+      USE TESTOBJECT
+      CHARACTER(*), INTENT(IN) :: attr
+      TYPE(t_global), POINTER  :: ptr
+      EXTERNAL asso
+    END SUBROUTINE COM_set_pointer
+
+    SUBROUTINE RUN(global)
+      USE TESTOBJECT
+      TYPE(t_global), POINTER :: global
+    END SUBROUTINE RUN
+
+  END INTERFACE
+
+  CHARACTER(*),intent(in) :: name
+  INTEGER :: types(7)
+  TYPE(t_global), POINTER :: glb
+  
+
+  WRITE(*,'(A)') "Loading SolverModule: "//TRIM(name)
+  
+
+  ALLOCATE(glb)
+  glb%window_name = TRIM(name)
+  glb%other_window_handle = -1
+  glb%c_window_handle = -1
+  CALL COM_NEW_WINDOW(TRIM(name))
+
+  CALL COM_new_dataitem(TRIM(name)//'.global','w',COM_F90POINTER,1,'')
+  CALL COM_allocate_array(TRIM(name)//'.global')
+
+  types(1) = COM_F90POINTER
+  types(2) = COM_STRING
+  
+  CALL COM_set_member_function(TRIM(name)//'.Run',RUN, &
+                               TRIM(name)//'.global','b',types)
+
+  CALL COM_WINDOW_INIT_DONE(name)
+
+  CALL COM_set_pointer(name//'.global',glb,associate_pointer )
+
+END SUBROUTINE SOLVERMODULE_LOAD_MODULE
+
+
+SUBROUTINE SOLVERMODULE_UNLOAD_MODULE(name)
+  USE TESTOBJECT
+  IMPLICIT NONE
+  INCLUDE "comf90.h"
+  INTERFACE 
+    SUBROUTINE COM_get_pointer(attr,ptr,asso)
+      USE TESTOBJECT
+      CHARACTER(*), INTENT(IN) :: attr
+      TYPE(t_global), POINTER :: ptr
+      EXTERNAL asso
+    END SUBROUTINE COM_get_pointer
+  END INTERFACE
+  character(*),intent(in) :: name
+  TYPE(t_global), POINTER :: glb
+  INTEGER :: window_handle,other_window_handle,c_window_handle, owlen
+
+  WRITE(*,'(A)') "Unloading SolverModule: "//TRIM(name)
+  NULLIFY(glb)
+  window_handle = COM_GET_WINDOW_HANDLE(TRIM(name))
+  if(window_handle .gt. 0) then
+     CALL COM_get_pointer(TRIM(name)//'.global',glb,associate_pointer)
+     IF(ASSOCIATED(glb).eqv..true.) THEN       
+        WRITE(*,'(A)') 'Fortran module '//TRIM(glb%window_name)//' unloading name '//TRIM(name)
+        if(glb%other_window_handle .gt. 0) then
+           WRITE(*,*) 'Fortran module '//TRIM(glb%window_name)//&
+                ' unloading external Fortran module '//TRIM(glb%other_window_name)//'.'
+           other_window_handle = COM_GET_WINDOW_HANDLE(TRIM(glb%other_window_name))
+           IF(other_window_handle .gt. 0) THEN
+              CALL COM_UNLOAD_MODULE("SOLVERMODULE",TRIM(glb%other_window_name))
+           ENDIF
+        endif
+        if(glb%c_window_handle .gt. 0) then
+           WRITE(*,*) 'Fortran module '//TRIM(glb%window_name)//&
+                ' unloading external C module '//TRIM(glb%c_window_name)//'.'
+           c_window_handle = COM_GET_WINDOW_HANDLE(TRIM(glb%c_window_name))
+           IF(c_window_handle .gt. 0) THEN
+              CALL COM_UNLOAD_MODULE("SOLVERMODULE",TRIM(glb%c_window_name))
+           ENDIF
+        endif
+!        DEALLOCATE(glb)
+     ENDIF
+     CALL COM_DELETE_WINDOW(TRIM(name))
+  endif
+END SUBROUTINE SOLVERMODULE_UNLOAD_MODULE
+
+! ******************************************************************************
+
+!> \}
