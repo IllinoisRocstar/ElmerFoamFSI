@@ -27,7 +27,8 @@ protected:
   std::string fluidsInterfaceName;
   std::string structuresInterfaceName;
   std::string transferInterfaceName;
-
+  std::string surfUtilInterfaceName;
+  std::string simpalInterfaceName;
 
   double simulationTime;
   double simulationFinalTime;
@@ -55,6 +56,103 @@ public:
     for(int i = 0;i < isize;i++)
       std::cout << "Load(" << i << ") = " << tractions[i] << std::endl;
     transferAgent->Transfer("traction","Loads",true);
+    return(0); 
+  };
+  int TransferPressuresToStructures(fluidagent *fluidAgent,solidagent *solidAgent)
+  { 
+    int stride = 0, solidStride = 0, solidLoadStride = 0;
+    int cap = 0, solidCap = 0, solidLoadCap = 0;
+    double *pressures = NULL, *solidPressures = NULL, *solidLoads = NULL;
+
+    //Get pressure array from fluid solver
+    COM_get_array((fluidsInterfaceName+".pressure").c_str(),101,&pressures,&stride,&cap);
+    int isize = cap*stride;
+    //Add atmospheric pressure
+    for(int i = 0;i < isize;i++){
+      std::cout << "Pressure(" << i << ") = " << pressures[i] << std::endl;
+    }
+    //Transfer the pressures from the fluid to the solid
+    transferAgent->Transfer("pressure","Pressures",true);
+    transferAgent->Transfer("pressure","NodePressures",true);
+
+    //////////////////////////Change the pressures to loads 
+    //Get handles for dataitems needed
+    int solidFaceLoadsHandle = COM_get_dataitem_handle(structuresInterfaceName+".FaceLoads");
+    if(solidFaceLoadsHandle < 0){
+      std::cout << "Error: (TransferPressuresToStructures)" << std::endl
+                << "       No handle for FaceLoads with structure solver" << std::endl;
+      return(1);
+    }
+    int solidPressuresHandle = COM_get_dataitem_handle(structuresInterfaceName+".Pressures");
+    if(solidPressuresHandle < 0){
+      std::cout << "Error: (TransferPressuresToStructures)" << std::endl
+                << "       No handle for Pressures with structure solver" << std::endl;
+      return(1);
+    }
+
+    //Account for atmospheric pressure when transferring to Elmer
+    //Get pressure array from solid solver
+    COM_get_array((structuresInterfaceName+".Pressures").c_str(),11,&solidPressures,
+                   &solidStride,&solidCap);
+    int solidIsize = solidCap*solidStride;
+    //Add atmospheric pressure
+    for(int i = 0;i < solidIsize;i++){
+      //solidPressures[i] += 101325.0;
+      //solidPressures[i] = 1.0;
+      std::cout << std::setprecision(15) << "solidPressure(" << i << ") = " << solidPressures[i] << std::endl;
+    }
+
+    //Get handles for functions needed
+    std::string funcName;
+    funcName = surfUtilInterfaceName + ".compute_element_normals";
+    int faceNormalsHandle = COM_get_function_handle(funcName.c_str());
+    if(faceNormalsHandle < 0){
+      std::cout << "Error: (TransferPressuresToStructures)" << std::endl
+                << "       No handle for compute_element_normals function " << std::endl;
+      return(1);
+    }
+    funcName = simpalInterfaceName + ".mul";
+    int mulHandle = COM_get_function_handle(funcName.c_str());
+    if(mulHandle < 0){
+      std::cout << "Error: (TransferPressuresToStructures)" << std::endl
+                << "       No handle for simpal multiply function " << std::endl;
+      return(1);
+    }
+    funcName = simpalInterfaceName + ".neg";
+    int negHandle = COM_get_function_handle(funcName.c_str());
+    if(negHandle < 0){
+      std::cout << "Error: (TransferPressuresToStructures)" << std::endl
+                << "       No handle for simpal negate function " << std::endl;
+      return(1);
+    }
+
+    //Execute the appropriate function calls
+    //I'm gonna try not normalizing them!! 
+    int normalize=1;
+    COM_call_function(faceNormalsHandle, &solidFaceLoadsHandle, &normalize);
+    COM_call_function(mulHandle, &solidFaceLoadsHandle, &solidPressuresHandle, 
+                      &solidFaceLoadsHandle); 
+    COM_call_function(negHandle, &solidFaceLoadsHandle, &solidFaceLoadsHandle); 
+    /////////////////////Done changing pressures to loads
+
+    //////////////////Transfer the structures face loads to structures node loads
+    transferagent *structuresTransferAgent   = new transferagent("structuresTransferAgent");
+    
+    // Initialize the transfer module's common refinement
+    structuresTransferAgent->Overlay(structuresInterfaceName,structuresInterfaceName);
+ 
+    // Call the transfer now   
+    structuresTransferAgent->Transfer("FaceLoads","Loads");
+
+    //Get loads array from solid solver to check
+    COM_get_array((structuresInterfaceName+".Loads").c_str(),11,&solidLoads,
+                   &solidLoadStride,&solidLoadCap);
+    int solidLoadsize = solidLoadCap*solidLoadStride;
+    for(int i = 0;i < solidLoadsize;i++){
+      std::cout << std::setprecision(15) << "solidLoads(" << i << ") = " << solidLoads[i] << std::endl;
+    }
+
+
     return(0); 
   };
   void SetRunMode(const std::string &inMode)
@@ -161,6 +259,8 @@ public:
     fluidsInterfaceName     = componentInterfaceNames[0];
     structuresInterfaceName = componentInterfaceNames[1];
     transferInterfaceName   = componentInterfaceNames[2];
+    surfUtilInterfaceName     = componentInterfaceNames[3];
+    simpalInterfaceName      = componentInterfaceNames[4];
 
     fluidsAgent     = new fluidagent;
     structuresAgent = new solidagent;
@@ -176,7 +276,6 @@ public:
 
     // Initialize the transfer module's common refinement
     if(runMode == 0) {
-      transferAgent->SetVerbose(52);
       transferAgent->Overlay(structuresInterfaceName,fluidsInterfaceName);
       //      TestTransfer();
     }
@@ -187,7 +286,7 @@ public:
     componentAgents[1] = structuresAgent;
     
     simulationTime = 0; // ? (restart)
-    simulationFinalTime = 10.0;
+    simulationFinalTime = 10e10;
     simulationTimeStep = 1e-3;
 
     DumpSolution();
@@ -224,9 +323,21 @@ public:
 
       if(!runMode){
         // Transfer loads @ T(n+1) to structures
-        std::cout << "FSICoupling: Transferring loads from fluids to structures @ time(" 
+        //std::cout << "FSICoupling: Transferring loads from fluids to structures @ time(" 
+        //          << simulationTime+simulationTimeStep << ")" << std::endl;
+        //TransferLoadsToStructures(fluidsAgent,structuresAgent);
+        // Transfer pressures @ T(n+1) to structures
+        std::cout << "FSICoupling: Transferring pressures from fluids to structures @ time(" 
                   << simulationTime+simulationTimeStep << ")" << std::endl;
-        TransferLoadsToStructures(fluidsAgent,structuresAgent);
+        TransferPressuresToStructures(fluidsAgent,structuresAgent);
+        //std::cout << "FSICoupling: Transferring pressures from fluids to structures with "
+        //          << "TransferLoad function" << std::endl; 
+        //int err = transferAgent->TransferLoad("pressure","Loads",true);
+        //if(err == -1){
+        //  std::cout << "FSICoupling: Error: Unable to transfer pressures from fluids agent" 
+        //            << "to loads at structures agent." << std::endl;
+        //  exit(1);
+        //}
       }
       if(!(runMode==1)){
         structuresAgent->InitializeTimeStep(simulationTime);
@@ -315,6 +426,8 @@ namespace ElmerFoamFSI {
       time_final = 1e+24;
     }
     
+    std::cout << "time_final = " << time_final << std::endl;
+ 
     double timestep = 0;
     timestep = userParameters.GetValue<double>("TimeStep");
     if(timestep <= 0){
@@ -338,6 +451,8 @@ namespace ElmerFoamFSI {
     FunctionEntry("LoadModules");
     COM_load_module(fluidSolverName.c_str(),"FluidsComponentInterface");
     COM_load_module(solidSolverName.c_str(),"StructuresComponentInterface");
+    COM_load_module("SurfUtil","SurfUtil");
+    COM_load_module("Simpal","Simpal");
     FunctionExit("LoadModules");
 
     fsicoupling fsiCoupler;
@@ -347,6 +462,8 @@ namespace ElmerFoamFSI {
     componentInterfaceNames.push_back("FluidsComponentInterface");
     componentInterfaceNames.push_back("StructuresComponentInterface");
     componentInterfaceNames.push_back("TransferInterface");
+    componentInterfaceNames.push_back("SurfUtil");
+    componentInterfaceNames.push_back("Simpal");
 
     FunctionEntry("coupler.Init");
     fsiCoupler.Initialize(componentInterfaceNames);
