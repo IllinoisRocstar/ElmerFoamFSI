@@ -93,6 +93,26 @@
   CONTAINS
 !------------------------------------------------------------------------------
 
+  SUBROUTINE FaceLoadsToNodeLoads(global, runs)
+     USE TESTOBJECT
+     USE Lists
+  
+     IMPLICIT NONE
+  
+     INCLUDE 'comf90.h'
+  
+     TYPE(t_global), POINTER :: global
+     INTEGER :: runs
+     REAL(KIND=dp), ALLOCATABLE  :: F(:)
+     INTEGER :: MyN, CurrentInterval
+     TYPE(ValueList_t), POINTER :: ptr
+
+     WRITE(6,*) '*******************************************************'
+     WRITE(6,*) '***********INSIDE FaceLoadsToNodeLoads Function*****************'
+     WRITE(6,*) '*******************************************************'
+
+  END SUBROUTINE FaceLoadsToNodeLoads
+
   SUBROUTINE UpdateLoads(global,runs)
      USE TESTOBJECT
      USE Lists
@@ -124,19 +144,32 @@
            WRITE(*,*) global%NodeLoads(3*(t-1) + 1), global%NodeLoads(3*(t-1) + 2), &
            global%NodeLoads(3*(t-1) + 3)
        END DO
-     END IF
-     IF( MyVerbosity > 3) THEN
        WRITE(*,*) 'global%PreviousLoads:'
        DO t = 1, global%nNodes
          DO j =1,3
            WRITE(*,*) global%PreviousLoads(j,t)
          END DO
        END DO
+
+       WRITE(*,*) 'global%NodePressures:'
+       DO t = 1, global%nNodes
+         WRITE(*,*) global%NodePressures(t)
+       END DO
+
+       WRITE(*,*) 'global%PreviousNodePressures:'
+       DO t = 1, global%nNodes
+         WRITE(*,*) global%PreviousNodePressures(t)
+       END DO
      END IF
+
+     CALL FaceLoadsToNodeLoads(global, runs)
   
      !Setting the loads accessible by Elmer to the interpolated value
      !for the current time
      DO t = 1, global%nNodes
+       CurrentModel % NodePressuresPass(t) = global%PreviousNodePressures(t) + &
+         (global%NodePressures(t) - global%PreviousNodePressures(t))&
+         *(sTime(1) - PreviousTime)/(FinalTime - PreviousTime)
        j=1
        DO j =1,3
          CurrentModel % NodeLoadsPass(j,t) = global%PreviousLoads(j,t) + &
@@ -152,6 +185,11 @@
          DO j =1,3
            WRITE(*,*) CurrentModel % NodeLoadsPass(j,t)
          END DO
+       END DO
+
+       WRITE(*,*) 'CurrentModel % NodePressuresPass:'
+       DO t = 1, global%nNodes
+         WRITE(*,*) CurrentModel % NodePressuresPass(t)
        END DO
      END IF
  

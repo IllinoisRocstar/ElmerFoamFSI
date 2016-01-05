@@ -58,6 +58,8 @@ SUBROUTINE Initializer(global, runs)
    INTEGER, POINTER :: TempNodeList(:)
    LOGICAL :: NodePresent
    INTEGER :: LastFSIElement
+   DOUBLE PRECISION :: xmin, xmax, ymin, ymax, zmin, zmax    
+  
 !   INTEGER, POINTER :: Conn2(:)
 #if defined(MINGW32)
    CALL SET_STDIO_BUFS()
@@ -202,6 +204,11 @@ SUBROUTINE Initializer(global, runs)
    !Allocate space for storing the NodePressures
    !This location will be registered with IMPACT
    ALLOCATE(global%NodePressures(global%nNodes))
+   !Allocate the NodePressures that gets passed to the user defined function
+   ALLOCATE(CurrentModel%NodePressuresPass(global%nNodes))
+   !Allocate space for storing the previous node pressures
+   !so linear interpolation can be done
+   ALLOCATE(global%PreviousNodePressures(global%nNodes))
    !Allocate space for storing the NodeLoads
    !This location will be registered with IMPACT
    ALLOCATE(global%NodeLoads(3*global%nNodes))
@@ -213,6 +220,8 @@ SUBROUTINE Initializer(global, runs)
    IF( MyVerbosity > 3) WRITE(*,*) 'SIZE(NodeLoads)=',SIZE(global%NodeLoads)
    !Initialize the loads to 0.0
    DO t = 1, global%nNodes
+     CurrentModel%NodePressuresPass(t) = 0.0
+     global%PreviousNodePressures(t) = 0.0
      DO j =1,3
 !       CurrentModel%NodeLoadsPass(j,t) = (t-1)*3.0 + j*1.0
         CurrentModel%NodeLoadsPass(j,t) = 0.0
@@ -267,6 +276,13 @@ SUBROUTINE Initializer(global, runs)
    !Populate the mesh arrays
    !Loop over the boundary elements
    counter = 0
+   xmin = 1.0e10
+   ymin = 1.0e10
+   zmin = 1.0e10
+   xmax = -1.0e10
+   ymax = -1.0e10
+   zmax = -1.0e10
+
    DO t = MyMesh % NumberOfBulkElements+1, &
           MyMesh % NumberOfBulkElements + &
           MyMesh % NumberOfBoundaryElements
@@ -309,6 +325,26 @@ SUBROUTINE Initializer(global, runs)
             global%Coords(3*(nindex-1) + 1) = ElementNodes % x(nt)
             global%Coords(3*(nindex-1) + 2) = ElementNodes % y(nt)
             global%Coords(3*(nindex-1) + 3) = ElementNodes % z(nt)
+           
+            IF( ElementNodes % x(nt) < xmin) THEN
+              xmin = ElementNodes % x(nt)
+            END IF 
+            IF( ElementNodes % x(nt) > xmax) THEN
+              xmax = ElementNodes % x(nt)
+            END IF 
+            IF( ElementNodes % y(nt) < ymin) THEN
+              ymin = ElementNodes % y(nt)
+            END IF 
+            IF( ElementNodes % y(nt) > ymax) THEN
+              ymax = ElementNodes % y(nt)
+            END IF 
+            IF( ElementNodes % z(nt) < zmin) THEN
+              zmin = ElementNodes % z(nt)
+            END IF 
+            IF( ElementNodes % z(nt) > zmax) THEN
+              zmax = ElementNodes % z(nt)
+            END IF 
+
             global%NodeLoads(3*(nindex-1) + 1) = 0.0
             global%NodeLoads(3*(nindex-1) + 2) = 0.0
             global%NodeLoads(3*(nindex-1) + 3) = 0.0
@@ -316,6 +352,13 @@ SUBROUTINE Initializer(global, runs)
          END DO
       END IF
    END DO
+
+   WRITE(*,*) "xmin = ", xmin
+   WRITE(*,*) "xmax = ", xmax
+   WRITE(*,*) "ymin = ", ymin
+   WRITE(*,*) "ymax = ", ymax
+   WRITE(*,*) "zmin = ", zmin
+   WRITE(*,*) "zmax = ", zmax
 
    IF( MyVerbosity > 4) THEN 
      WRITE(6,*) 'global%MyToElmerNodes = '
@@ -530,6 +573,7 @@ SUBROUTINE RUN(global, runs, tFinal)
    !Setting PreviousLoads values to NodeLoads now that
    !Run is finished
    DO t = 1, global%nNodes
+     global%PreviousNodePressures(t) = global%NodePressures(t)
      DO j =1,3
        global%PreviousLoads(j,t) = global%NodeLoads(3*(t-1) + j)
      END DO
@@ -675,6 +719,10 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
      WRITE(6,*) 'tFinal = ', tFinal
      WRITE(6,*) 'NodeDisplacements'
      DO i = 1,global%nNodes
+        !DO j = 1,3
+        !  global%NodeDisplacements(3*(i-1) + j)=&
+        !  global%NodeDisplacements(3*(i-1) + j)*10000.0
+        !ENDDO
         WRITE(6,*) (global%NodeDisplacements(3*(i-1) + j),j=1,3)
      ENDDO
      WRITE(6,*) 'Exiting UpdateDisplacements'

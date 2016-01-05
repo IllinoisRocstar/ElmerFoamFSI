@@ -12,7 +12,7 @@ MODULE TESTOBJECT
      DOUBLE PRECISION, POINTER :: NodeDisplacements(:), Coords(:)
      DOUBLE PRECISION, POINTER :: NodeLoads(:), PreviousLoads(:,:)
      DOUBLE PRECISION, POINTER :: FacePressures(:), FaceLoads(:)
-     DOUBLE PRECISION, POINTER :: NodePressures(:)
+     DOUBLE PRECISION, POINTER :: NodePressures(:), PreviousNodePressures(:)
      INTEGER :: FSIbcId, nElem, nNodes, nConn, SolverId
      INTEGER, POINTER :: Conn(:)!, NodeMap(:)
      CHARACTER(80) :: MeshType 

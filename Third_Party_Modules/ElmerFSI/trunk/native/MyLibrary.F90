@@ -124,3 +124,27 @@ FUNCTION MyFunction3(Model, inindex, Tvalue) RESULT(load)
 
 END FUNCTION MyFunction3
 
+FUNCTION SupplyNodePressures(Model, inindex, Tvalue) RESULT(pressure)
+
+   USE DefUtils
+   USE MyModule
+ 
+   IMPLICIT None
+
+   TYPE(Model_t) :: Model
+   INTEGER :: inindex, funci
+   REAL(KIND=dp) :: Tvalue, pressure, diff
+
+   Model%UDFUsed = .TRUE.
+
+   pressure =  Model%NodePressuresPass(Model%ElmerToMyNodes(inindex))
+
+   IF (MyVerbosity > 3) THEN
+     WRITE(6,*)'Inside [MyLibrary]...[SupplyNodePressures]'
+     WRITE(6,*) 'inindex = ', inindex
+     WRITE(*,*) 'Pressure for node:', &
+       Model%NodePressuresPass(Model%ElmerToMyNodes(inindex))
+     WRITE(*,*) 'Time = ', Tvalue
+   END IF
+
+END FUNCTION SupplyNodePressures
