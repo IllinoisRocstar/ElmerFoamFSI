@@ -206,7 +206,7 @@ public:
   void RunFoam();
   void StepFoam();
   void StepFluid();
-  //void ModifyEndTime(const double &endTime);
+  void ModifyEndTime(const double &endTime);
   static void Load(const std::string &name);
   static void Unload(const std::string &name);
 

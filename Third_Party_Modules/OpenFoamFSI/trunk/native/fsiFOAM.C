@@ -2313,13 +2313,10 @@ void fsifoam_module::Load(const std::string &name){
                            (Member_func_ptr)(&fsifoam_module::StepFluid),
                            global_name.c_str(), "b", &types[0]);
 
-/*
   types[1] = COM_DOUBLE;
   COM_set_member_function( (name+".ModifyEndTime").c_str(),
                            (Member_func_ptr)(&fsifoam_module::ModifyEndTime),
                            global_name.c_str(), "bi", &types[0]);
-*/
-  
 
   COM_window_init_done(name);  
 }
@@ -2471,11 +2468,16 @@ void fsifoam_module::StepFluid(){
 
   Foam::Time &runTime(RunTime());
 
+  Info << "*********************************" << endl;
   Info << "\nStepping time loop\n" << endl;
 
-  //  while(!runTime.end()){
-  if(!runTime.end()){
-    Info << "Time = " << runTime.timeName() << nl << endl;
+  //Info << "Line " << __LINE__ << " Time = " << runTime.timeName() << nl << endl;
+  Info << "End time = " << runTime.endTime().value() << endl << endl;
+ 
+  while(runTime.value() < runTime.endTime().value()){
+  //while(!runTime.end()){
+  //if(!runTime.end()){
+    //Info << "Line " << __LINE__ << " Time = " << runTime.timeName() << nl << endl;
     StepFluidAlone();
     Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
         << "  ClockTime = " << runTime.elapsedClockTime() << " s"
@@ -2487,19 +2489,23 @@ void fsifoam_module::StepFluid(){
     UpdateTime();
     UpdateFSISurfaceData();
     UpdateFSISurfaceMesh();
+//    Info << "Line " << __LINE__ << " Time = " << runTime.timeName() << nl << endl;
+    Info << "runTime.end() = " << runTime.end() << endl;
   }
   if(runTime.end()){
     Info<< "End\n" << endl;
   }
+//  Info << "Line " << __LINE__ << " Time = " << runTime.timeName() << nl << endl;
   runStatus[0] = 0;
+  Info << "*********************************" << endl;
   return;
 }
 
-/*
+
 void fsifoam_module::ModifyEndTime(const double &endTime){
  RunTime().setEndTime(endTime); 
 }
-*/
+
 
 void fsifoam_module::CreateFSISurfaceMesh(){
 
