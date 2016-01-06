@@ -426,8 +426,6 @@ namespace ElmerFoamFSI {
       time_final = 1e+24;
     }
     
-    std::cout << "time_final = " << time_final << std::endl;
- 
     double timestep = 0;
     timestep = userParameters.GetValue<double>("TimeStep");
     if(timestep <= 0){
