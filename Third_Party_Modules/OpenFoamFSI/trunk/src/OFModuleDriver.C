@@ -298,12 +298,14 @@ int main(int argc, char *argv[]){
   /// Get the handle for the step function
   if (regression) {
     step_handle = COM_get_function_handle("OFModule.StepFoam");
+    std::cout << "StepFoam will be running shortly." << std::endl;
     if(step_handle <= 0) { // fail
       std::cout << "Could not get handle for step function." << std::endl;
       exit(-1);
     }
   } else if (prescribedDisplacement) {
     step_handle = COM_get_function_handle("OFModule.StepFluid");
+    std::cout << "StepFluid will be running shortly." << std::endl;
     if(step_handle <= 0) { // fail
       std::cout << "Could not get handle for step fluid alone function." << std::endl;
       exit(-1);

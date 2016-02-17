@@ -43,7 +43,80 @@ public:
                   runMode(0), writeHDF(true), writeVTK(true) {};
   int TransferDisplacementsToFluid(solidagent *solidAgent,fluidagent *fluidAgent)
   {
+    // Masoud: Checking quality of coordinate transfer
+    std::vector<double> crdVecSolid1(solidAgent->Coordinates());
+    std::vector<double> crdVecFluid1(fluidAgent->Coordinates());
+    std::cout << "Solid Coodinates are : " << std::endl;
+    //for (int i = 0; i < crdVecSolid1.size()/3; i++)
+        std::cout << crdVecSolid1[152*3] << " " 
+                  << crdVecSolid1[152*3+1] << " " 
+                  << crdVecSolid1[152*3+2] << std::endl;
+    std::cout << "Fluid Coodinates are : " << std::endl;
+    //for (int i = 0; i < crdVecFluid1.size(); i = i + 3)
+        std::cout << crdVecFluid1[93*3] << " " 
+                  << crdVecFluid1[93*3+1] << " " 
+                  << crdVecFluid1[93*3+2] << std::endl;
+    // Masoud: End
+    
+    // Masoud: Checking quality of displacement transfer
+    double *fluidDisp1 = NULL;
+    double *fluidDisp2 = NULL;
+    double *solidDisp1 = NULL;
+    double *solidDisp2 = NULL;
+    std::string fluidsCoordinateName(fluidsInterfaceName+".solidDisplacement");
+    std::string solidsCoordinateName(structuresInterfaceName+".Displacements");
+    COM_get_array(fluidsCoordinateName.c_str(),fluidsAgent->PaneID(),&fluidDisp1);
+    COM_get_array(solidsCoordinateName.c_str(),structuresAgent->PaneID(),&solidDisp1);
+    int numberFluidNodes = fluidsAgent->Coordinates().size()/3;
+    int numberSolidNodes = structuresAgent->Coordinates().size()/3;
+    //std::cout << "Fluid displacements before transfer: " << std::endl;
+    //for (int i = 0; i < numberFluidNodes; i++)
+    //    std::cout << fluidDisp1[i*3] << " " 
+    //              << fluidDisp1[i*3+1] << " " 
+    //              << fluidDisp1[i*3+2] << std::endl;
+    std::cout << "Solid displacements before transfer: " << std::endl;
+    std::cout << "Number of nodes: " << numberSolidNodes  <<std::endl;
+    //for (int i = 0; i < numberSolidNodes; i++)
+        std::cout << solidDisp1[152*3] << " " 
+                  << solidDisp1[152*3+1] << " " 
+                  << solidDisp1[152*3+2] << std::endl;
+    
     transferAgent->Interpolate("Displacements","solidDisplacement");
+
+
+    COM_get_array(fluidsCoordinateName.c_str(),fluidsAgent->PaneID(),&fluidDisp2);
+    COM_get_array(solidsCoordinateName.c_str(),structuresAgent->PaneID(),&solidDisp2);
+    std::cout << "Fluid displacements after transfer: " << std::endl;
+    std::cout << "Number of nodes: " << numberFluidNodes  <<std::endl;
+    //for (int i = 0; i < numberFluidNodes; i++)
+        std::cout << fluidDisp2[93*3] << " " 
+                  << fluidDisp2[93*3+1] << " " 
+                  << fluidDisp2[93*3+2] << std::endl;
+
+    // Original
+    // transferAgent->Interpolate("Displacements","solidDisplacement");
+
+
+    // Masoud: Cheking if displacements are updated properly
+    //std::vector<double> crdVecSolid2(solidAgent->Coordinates());
+    //std::vector<double> crdVecFluid2(fluidAgent->Coordinates());
+    //std::cout << "Fluid Coodinate Updates : " << std::endl;
+    //for (int i = 0; i < crdVecFluid2.size(); i = i + 3)
+    //{
+    //    // adding some value to it
+    //    std::cout << crdVecFluid2[i]   - crdVecFluid1[i]  << " " 
+    //              << crdVecFluid2[i+1] - crdVecFluid1[i+1]<< " " 
+    //              << crdVecFluid2[i+2] - crdVecFluid1[i+2]<< std::endl;
+    //}
+    //std::cout << "Solid Coodinate Updates : " << std::endl;
+    //for (int i = 0; i < crdVecSolid2.size(); i = i + 3)
+    //{
+    //    std::cout << crdVecSolid2[i]   - crdVecSolid1[i]  << " " 
+    //              << crdVecSolid2[i+1] - crdVecSolid1[i+1]<< " " 
+    //              << crdVecSolid2[i+2] - crdVecSolid1[i+2]<< std::endl;
+    //}
+    // Masoud: End
+
     return(0);
   };
   int TransferLoadsToStructures(fluidagent *fluidAgent,solidagent *solidAgent)
@@ -53,9 +126,21 @@ public:
     double *tractions = NULL;
     COM_get_array((fluidsInterfaceName+".traction").c_str(),101,&tractions,&stride,&cap);
     int isize = cap*stride;
-    for(int i = 0;i < isize;i++)
-      std::cout << "Load(" << i << ") = " << tractions[i] << std::endl;
+    std::cout << "Tractions (driver): " << std::endl;
+    for(int i = 0;i < isize/3;i++)
+      std::cout << tractions[3*i + 0] << " "
+                << tractions[3*i + 1] << " "
+                << tractions[3*i + 2] << std::endl;
     transferAgent->Transfer("traction","Loads",true);
+    //Get loads array from solid solver to check
+    int solidLoadStride = 0, solidLoadCap = 0;
+    double  *solidLoads = NULL;
+    COM_get_array((structuresInterfaceName+".Loads").c_str(),11,&solidLoads,
+                   &solidLoadStride,&solidLoadCap);
+    int solidLoadsize = solidLoadCap*solidLoadStride;
+    for(int i = 0;i < solidLoadsize;i++){
+      std::cout << std::setprecision(15) << "solidLoads(" << i << ") = " << solidLoads[i] << std::endl;
+    }
     return(0); 
   };
   int TransferPressuresToStructures(fluidagent *fluidAgent,solidagent *solidAgent)
@@ -90,12 +175,12 @@ public:
       return(1);
     }
 
-    //Account for atmospheric pressure when transferring to Elmer
+    //Account for atmospheric pressure when transferring to Elmer (we aren't doing this)
     //Get pressure array from solid solver
     COM_get_array((structuresInterfaceName+".Pressures").c_str(),11,&solidPressures,
                    &solidStride,&solidCap);
     int solidIsize = solidCap*solidStride;
-    //Add atmospheric pressure
+    //Add atmospheric pressure (we aren't doing this - should we?)
     for(int i = 0;i < solidIsize;i++){
       //solidPressures[i] += 101325.0;
       //solidPressures[i] = 1.0;
@@ -129,7 +214,11 @@ public:
     //Execute the appropriate function calls
     //I'm gonna try not normalizing them!! 
     int normalize=1;
+    //Call function to get face normals, store them in solidFaceLoads, do not
+    //normalize them
     COM_call_function(faceNormalsHandle, &solidFaceLoadsHandle, &normalize);
+    //Call function to get face normals, store them in solidFaceLoads, do not
+    //normalize them
     COM_call_function(mulHandle, &solidFaceLoadsHandle, &solidPressuresHandle, 
                       &solidFaceLoadsHandle); 
     COM_call_function(negHandle, &solidFaceLoadsHandle, &solidFaceLoadsHandle); 
@@ -152,6 +241,33 @@ public:
       std::cout << std::setprecision(15) << "solidLoads(" << i << ") = " << solidLoads[i] << std::endl;
     }
 
+    //Print out the face normals from the fluid solver as a check
+    int fluidFaceNormalsHandle = COM_get_dataitem_handle(fluidsInterfaceName+".normals");
+    if(fluidFaceNormalsHandle < 0){
+      std::cout << "Error: (TransferPressuresToStructures)" << std::endl
+                << "       No handle for FaceNormals with fluids solver" << std::endl;
+      return(1);
+    }
+    normalize=0;
+    COM_call_function(faceNormalsHandle, &fluidFaceNormalsHandle, &normalize);
+    double *fluidFaceNormals = NULL;
+    COM_get_array((fluidsInterfaceName+".normals").c_str(),101,&fluidFaceNormals,&stride,&cap);
+    isize = stride*cap; 
+
+    std::cout << "stride = " << stride << std::endl;
+    std::vector<double> sums (stride, 0.0);
+    std::cout << "Driver: fluid face normals:" << std::endl;
+    for(int i=0; i < cap; i++){
+      for(int j=0; j < stride; j++){
+        std::cout << fluidFaceNormals[stride*i + j] << " ";
+        sums[j] += fluidFaceNormals[stride*i + j];
+      }
+      std::cout << std::endl;
+    }
+    std::cout << "sums: ";
+    for(int i=0; i < sums.size(); i++)
+      std::cout << sums[i] << " ";
+    std::cout << std::endl;
 
     return(0); 
   };
@@ -249,6 +365,7 @@ public:
       if(false)
         WriteAgentToVTK("structure",*structuresAgent);
     }
+    std::cout << "FSICoupling: Done with solution dump." << std::endl;
     return(0);
   }
   virtual int Initialize(std::vector<std::string> &componentInterfaceNames){
@@ -286,10 +403,10 @@ public:
     componentAgents[1] = structuresAgent;
     
     simulationTime = 0; // ? (restart)
-    simulationFinalTime = 10e10;
+    simulationFinalTime = 5.0;
     simulationTimeStep = 1e-3;
 
-    DumpSolution();
+    //DumpSolution();
 
     return(0);
   };
@@ -299,6 +416,7 @@ public:
     int maxSubSteps = 1000;
     int dumpinterval = 1;
     int systemStep = 0;
+    std::cout << "FSICoupling: Simulation final time = " << simulationFinalTime << std::endl;
     while(simulationTime < simulationFinalTime){
       
       // if(!(time%screenInterval) && (innerCount == 0)){
@@ -325,11 +443,11 @@ public:
         // Transfer loads @ T(n+1) to structures
         //std::cout << "FSICoupling: Transferring loads from fluids to structures @ time(" 
         //          << simulationTime+simulationTimeStep << ")" << std::endl;
-        //TransferLoadsToStructures(fluidsAgent,structuresAgent);
+        TransferLoadsToStructures(fluidsAgent,structuresAgent);
         // Transfer pressures @ T(n+1) to structures
-        std::cout << "FSICoupling: Transferring pressures from fluids to structures @ time(" 
-                  << simulationTime+simulationTimeStep << ")" << std::endl;
-        TransferPressuresToStructures(fluidsAgent,structuresAgent);
+        //std::cout << "FSICoupling: Transferring pressures from fluids to structures @ time(" 
+        //          << simulationTime+simulationTimeStep << ")" << std::endl;
+        //TransferPressuresToStructures(fluidsAgent,structuresAgent);
         //std::cout << "FSICoupling: Transferring pressures from fluids to structures with "
         //          << "TransferLoad function" << std::endl; 
         //int err = transferAgent->TransferLoad("pressure","Loads",true);
@@ -368,7 +486,7 @@ public:
       }
       
       if(!(systemStep%dumpinterval)){
-        DumpSolution();
+        //DumpSolution();
       }
     }
     return(0);
