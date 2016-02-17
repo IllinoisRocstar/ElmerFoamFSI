@@ -1,0 +1,3 @@
+[submodule "IMPACT"]
+	path = IMPACT
+	url = https://github.com/IllinoisRocstar/IMPACT.git
