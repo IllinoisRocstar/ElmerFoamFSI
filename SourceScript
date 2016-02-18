@@ -1,0 +1,19 @@
+# make sure you have the appropriate compilers
+module load compilers/mpich-3.1.2.gnu
+# source the openfoam source file
+if (! $?FOAM_SRC) then
+  source $HOME/foam/foam-extend-3.1/etc/cshrc
+else
+  source $FOAM_SRC/cshrc
+endif
+# make set the mpi environment variables
+setenv CC mpicc
+setenv CXX mpicxx
+setenv FC mpif90
+set currentDir = `pwd`
+# set IRMULTIPHYSICS for compiling and running openfoam module & driver
+set OFSupport = "$currentDir/support_install"
+setenv IRMULTIPHYSICS $OFSupport
+## set LD_LIBRARY_PATH with path to elmer libraries for running the elmer module
+set ElmerSupport = "$currentDir/support_install/lib:$LD_LIBRARY_PATH"
+setenv LD_LIBRARY_PATH $ElmerSupport
