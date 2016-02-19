@@ -1,8 +1,8 @@
 # source the openfoam source file
-if (! $?FOAM_SRC) then
+if (! $?FOAM_HOME) then
   source $HOME/foam/foam-extend-3.1/etc/cshrc
 else
-  source $FOAM_SRC/cshrc
+  source $FOAM_HOME/cshrc
 endif
 # make set the mpi environment variables
 setenv CC mpicc
