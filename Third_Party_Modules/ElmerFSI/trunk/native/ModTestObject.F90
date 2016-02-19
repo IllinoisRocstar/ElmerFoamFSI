@@ -10,9 +10,12 @@ MODULE TESTOBJECT
      INTEGER :: c_window_handle
      TYPE(Model_t), POINTER :: MyModel
      DOUBLE PRECISION, POINTER :: NodeDisplacements(:), Coords(:)
+     !Masoud: Registering global variables in the Elmer memory
+     DOUBLE PRECISION, POINTER :: PreviousNodeDisplacements(:)
+     !Masoud End
      DOUBLE PRECISION, POINTER :: NodeLoads(:), PreviousLoads(:,:)
      DOUBLE PRECISION, POINTER :: FacePressures(:), FaceLoads(:)
-     DOUBLE PRECISION, POINTER :: NodePressures(:), PreviousNodePressures(:)
+     DOUBLE PRECISION, POINTER :: NodePressures(:)
      INTEGER :: FSIbcId, nElem, nNodes, nConn, SolverId
      INTEGER, POINTER :: Conn(:)!, NodeMap(:)
      CHARACTER(80) :: MeshType 

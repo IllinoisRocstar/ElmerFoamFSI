@@ -17,9 +17,8 @@ FUNCTION MyFunction1(Model, inindex, Tvalue) RESULT(load)
    Model%UDFUsed = .TRUE.
 
    load =  Model%NodeLoadsPass(1,Model%ElmerToMyNodes(inindex))
-   !WRITE(*,*) load
 
-   IF (MyVerbosity > 3) WRITE(6,*)'Inside [MyLibrary]...[MyFunction1]'
+   IF (MyVerbosity > 3) WRITE(6,*)'Inside [MyLibrary]...[MyFunction]'
 
    !Calculate diff for testing purposes
    IF (Tvalue < 8.001) THEN
@@ -55,15 +54,11 @@ FUNCTION MyFunction2(Model, inindex, Tvalue) RESULT(load)
    INTEGER :: inindex, funci
    REAL(KIND=dp) :: Tvalue, load, diff
 
-   ! M.S. Added
-   !WRITE (*,*) 'THIS COMMENT IS ADDED BY MASOUD'
-   ! M.S. Ended
-
    Model%UDFUsed = .TRUE.
 
-   load = Model%NodeLoadsPass(2,Model%ElmerToMyNodes(inindex)) 
+   load = Model%NodeLoadsPass(2,Model%ElmerToMyNodes(inindex))
 
-   IF (MyVerbosity > 3) WRITE(6,*)'Inside [MyLibrary]...[MyFunction2]'
+   IF (MyVerbosity > 3) WRITE(6,*)'Inside [MyLibrary]...[MyFunction]'
 
    !Calculate diff for testing purposes
    IF (Tvalue < 8.001) THEN
@@ -104,7 +99,7 @@ FUNCTION MyFunction3(Model, inindex, Tvalue) RESULT(load)
 
    load =  Model%NodeLoadsPass(3,Model%ElmerToMyNodes(inindex))
 
-   IF (MyVerbosity > 3) WRITE(6,*)'Inside [MyLibrary]...[MyFunction3]'
+   IF (MyVerbosity > 3) WRITE(6,*)'Inside [MyLibrary]...[MyFunction]'
 
    !Calculate diff for testing purposes
    IF (Tvalue < 8.001) THEN

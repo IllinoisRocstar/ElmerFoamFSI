@@ -112,7 +112,7 @@
      TYPE(Mesh_t), POINTER :: ExtrudedMesh
 
      INTEGER :: omp_get_max_threads
-     INTEGER :: MyVerbosity = 5
+     INTEGER :: MyVerbosity = 0
 
 
 #ifdef HAVE_TRILINOS
@@ -1713,9 +1713,9 @@ END INTERFACE
       IF( NewLoadMesh ) THEN
         Model % Meshes => LoadMesh2( Model, MeshDir, MeshName, &
             BoundariesOnly, numprocs, mype, Def_Dofs )
-      !ELSE
-      !  Model % Meshes => LoadMesh( Model, MeshDir, MeshName, &
-      !      BoundariesOnly, numprocs, mype, Def_Dofs(1,:) )
+      ELSE
+        Model % Meshes => LoadMesh( Model, MeshDir, MeshName, &
+            BoundariesOnly, numprocs, mype, Def_Dofs(1,:) )
       END IF
 
       CALL CheckTimer('LoadMesh',Level=5,Delete=.TRUE.)
@@ -1892,17 +1892,17 @@ END INTERFACE
           IF( NewLoadMesh ) THEN
             Model % Solvers(s) % Mesh => &
               LoadMesh2( Model,MeshDir,MeshName,BoundariesOnly,1,0,def_dofs )
-          !ELSE
-          !  Model % Solvers(s) % Mesh => &
-          !    LoadMesh( Model,MeshDir,MeshName,BoundariesOnly,1,0,def_dofs(1,:) )
+          ELSE
+            Model % Solvers(s) % Mesh => &
+              LoadMesh( Model,MeshDir,MeshName,BoundariesOnly,1,0,def_dofs(1,:) )
           END IF
         ELSE
           IF( NewLoadMesh ) THEN
             Model % Solvers(s) % Mesh => &
               LoadMesh2( Model,MeshDir,MeshName,BoundariesOnly,numprocs,mype,Def_Dofs )
-          !ELSE
-          !  Model % Solvers(s) % Mesh => &
-          !    LoadMesh( Model,MeshDir,MeshName,BoundariesOnly,numprocs,mype,Def_Dofs(1,:) )
+          ELSE
+            Model % Solvers(s) % Mesh => &
+              LoadMesh( Model,MeshDir,MeshName,BoundariesOnly,numprocs,mype,Def_Dofs(1,:) )
           END IF
         END IF
         Model % Solvers(s) % Mesh % OutputActive = .TRUE.

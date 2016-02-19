@@ -315,6 +315,9 @@
          !----------------------------------------------------------------------------------
          CoordTransform = ListGetString(CurrentModel % Simulation,'Coordinate Transformation',GotIt)
          IF( GotIt ) THEN
+           ! Masoud
+           WRITE(*,*) 'Coordinate Transformation is activated for Elmer.\n'
+           ! Masoud : End
            CALL CoordinateTransformation( CurrentModel % Meshes, CoordTransform, &
                CurrentModel % Simulation, .TRUE. )
          END IF

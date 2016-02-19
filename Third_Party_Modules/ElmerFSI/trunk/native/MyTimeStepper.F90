@@ -12,6 +12,10 @@ SUBROUTINE MyDeprecatedTimeStepper(global,runs)
      TYPE(t_global), POINTER :: global
      INTEGER :: runs
 
+     ! Masoud
+     WRITE(*,*) 'Inside MyDeprecatedTimeStepper ... '
+     ! Masoud : End
+
      DO interval = 1, TimeIntervals
         stepcount = stepcount + Timesteps(interval)
      END DO

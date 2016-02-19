@@ -93,26 +93,6 @@
   CONTAINS
 !------------------------------------------------------------------------------
 
-  SUBROUTINE FaceLoadsToNodeLoads(global, runs)
-     USE TESTOBJECT
-     USE Lists
-  
-     IMPLICIT NONE
-  
-     INCLUDE 'comf90.h'
-  
-     TYPE(t_global), POINTER :: global
-     INTEGER :: runs
-     REAL(KIND=dp), ALLOCATABLE  :: F(:)
-     INTEGER :: MyN, CurrentInterval
-     TYPE(ValueList_t), POINTER :: ptr
-
-     WRITE(6,*) '*******************************************************'
-     WRITE(6,*) '***********INSIDE FaceLoadsToNodeLoads Function*****************'
-     WRITE(6,*) '*******************************************************'
-
-  END SUBROUTINE FaceLoadsToNodeLoads
-
   SUBROUTINE UpdateLoads(global,runs)
      USE TESTOBJECT
      USE Lists
@@ -138,38 +118,29 @@
      END IF
  
      !printing the loads as a check
-     IF( MyVerbosity > 3) THEN
+     !IF( MyVerbosity > 3) THEN
        WRITE(*,*) 'global%NodeLoads:'
        DO t = 1, global%nNodes
            WRITE(*,*) global%NodeLoads(3*(t-1) + 1), global%NodeLoads(3*(t-1) + 2), &
            global%NodeLoads(3*(t-1) + 3)
        END DO
+     !END IF
+     !IF( MyVerbosity > 3) THEN
        WRITE(*,*) 'global%PreviousLoads:'
        DO t = 1, global%nNodes
          DO j =1,3
            WRITE(*,*) global%PreviousLoads(j,t)
          END DO
        END DO
-
-       WRITE(*,*) 'global%NodePressures:'
-       DO t = 1, global%nNodes
-         WRITE(*,*) global%NodePressures(t)
-       END DO
-
-       WRITE(*,*) 'global%PreviousNodePressures:'
-       DO t = 1, global%nNodes
-         WRITE(*,*) global%PreviousNodePressures(t)
-       END DO
-     END IF
-
-     CALL FaceLoadsToNodeLoads(global, runs)
+     !END IF
   
      !Setting the loads accessible by Elmer to the interpolated value
      !for the current time
+     WRITE(*,*) 'Time Step Summary '
+     WRITE(*,*) 'sTime(1) = ', sTime(1), ' PreviousTime = ', PreviousTime,&
+                'FinalTime = ', FinalTime
+     !Original
      DO t = 1, global%nNodes
-       CurrentModel % NodePressuresPass(t) = global%PreviousNodePressures(t) + &
-         (global%NodePressures(t) - global%PreviousNodePressures(t))&
-         *(sTime(1) - PreviousTime)/(FinalTime - PreviousTime)
        j=1
        DO j =1,3
          CurrentModel % NodeLoadsPass(j,t) = global%PreviousLoads(j,t) + &
@@ -177,21 +148,27 @@
            *(sTime(1) - PreviousTime)/(FinalTime - PreviousTime)
        END DO
      END DO
+     !Original End
+
+     !Masoud: Sending load update only
+     !DO t = 1, global%nNodes
+     !  j=1
+     !  DO j =1,3
+     !    CurrentModel % NodeLoadsPass(j,t) = global%NodeLoads(3*(t-1) + j) - global%PreviousLoads(j,t)
+     !  END DO
+     !END DO
+     !Masoud End
+    
  
      !printing the loads as a check
-     IF( MyVerbosity > 3) THEN
+     !IF( MyVerbosity > 3) THEN
        WRITE(*,*) 'CurrentModel % NodeLoadsPass:'
        DO t = 1, global%nNodes
          DO j =1,3
            WRITE(*,*) CurrentModel % NodeLoadsPass(j,t)
          END DO
        END DO
-
-       WRITE(*,*) 'CurrentModel % NodePressuresPass:'
-       DO t = 1, global%nNodes
-         WRITE(*,*) CurrentModel % NodePressuresPass(t)
-       END DO
-     END IF
+     !END IF
  
      WRITE(6,*) '*******************************************************'
   
@@ -475,9 +452,10 @@ SUBROUTINE MyTimeStepper(global,runs)
   
             DEALLOCATE( xx, xxnrm, yynrm, prevxx )
          ELSE ! Adaptive timestepping
-            IF (MyVerbosity > 3) THEN
+            !IF (MyVerbosity > 3) THEN
               WRITE(*,*) 'Calling SolveEquations (no transient and no adaptive)'
-            END IF
+              WRITE(*,*) 'Transient = ', Transient
+            !END IF
             CALL SolveEquations( CurrentModel, dt, Transient, &
               CoupledMinIter, CoupledMaxIter, SteadyStateReached, RealTimestep )
             RealTimestep = RealTimestep+1

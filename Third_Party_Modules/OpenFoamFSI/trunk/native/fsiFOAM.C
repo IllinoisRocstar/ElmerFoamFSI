@@ -2,9 +2,6 @@
 
 using namespace COM;
 
-// my includes
-//using namespace std;
-
 int fsifoam_module::Initialize(int argc,char *argv[])
 {
   sumLocalContErr = 0;
@@ -693,7 +690,6 @@ int fsifoam_module::ReadFSIControls()
   fsiRelaxationFactorMin = scalar(readScalar(couplingProperties.lookup("fsiRelaxationFactor")));
   fsiRelaxationFactor = fsiRelaxationFactorMin;
   outerCorrTolerance = scalar(readScalar(couplingProperties.lookup("outerCorrTolerance")));
-  Info << "outerCorrTolerance = " << outerCorrTolerance << endl;
   fsi = Switch(couplingProperties.lookup("fsi"));
   if(fsi)
     Info << "FSI ENABLED!!" << endl;
@@ -1923,7 +1919,6 @@ int fsifoam_module::StepFluidAlone(){
     do
       {
         outerCorr++;
-        Info << "outerCorr = " << outerCorr << endl;
         
         //#           include "setInterfaceDisplacement.H"
         Info << "\nTime = " << runTime.timeName()
@@ -2187,9 +2182,6 @@ int fsifoam_module::StepFluidAlone(){
                           
                 pEqn.setReference(pRefCell, pRefValue);
                 pEqn.solve();
-
-                // Added by Masoud
-                //Info << "p = " << (this-> p()) << endl;
                           
                 if (nonOrth == nNonOrthCorr)
                   {
@@ -2226,17 +2218,8 @@ int fsifoam_module::StepFluidAlone(){
             fsiResidualOld = fsiResidual;
                           
             this->UpdateFSISurface(solidPatchPointsDispl);
-            
- 	    // Masoud
-            Info << "solidPatchPointsDispl = " << solidPatchPointsDispl << endl;
-            //Masoud end
-            
-            // Original (solidPatchPointsDispl won't change by iteration
-            // therefore huge pressure build-up happens) 
-            fsiResidual = (solidPatchPointsDispl - fluidPatchPointsDispl);                          
-            //fsiResidual = fluidPatchPointsDispl;                          
-            // Original end
 
+            fsiResidual = solidPatchPointsDispl - fluidPatchPointsDispl;                          
                           
             fsiResidualNorm = ::sqrt(gSum(magSqr(fsiResidual)));
                           
@@ -2254,7 +2237,7 @@ int fsifoam_module::StepFluidAlone(){
     while
       (
        (fsiResidualNorm > outerCorrTolerance)
-       && (outerCorr < nOuterCorr)  //Masoud changed from outerCorr < nOuterCorr
+       && (outerCorr < nOuterCorr)
        );
     
     
@@ -2432,6 +2415,7 @@ void fsifoam_module::RunFoam(){
   Foam::Time &runTime(RunTime());
 
   Info << "\nStarting time loop\n" << endl;
+  Info << "This is added by Masoud" << endl;
 
   while(!runTime.end()){
     Info << "Time = " << runTime.timeName() << nl << endl;
@@ -2485,28 +2469,15 @@ void fsifoam_module::StepFoam(){
 ///
 void fsifoam_module::StepFluid(){
 
-  // Masoud: probe output file and preps
-  ofstream prb2DmpFile;
-  dynamicFvMesh &fluidsMesh(this->FluidMesh());
-  pointField foamCoords = fluidsMesh.allPoints();
-  // Masoud: end
 
   Foam::Time &runTime(RunTime());
 
   Info << "\nStepping time loop\n" << endl;
-  Info << "Masoud: This is StepFluid() method in fsiFOAM.C " << endl;
 
   //  while(!runTime.end()){
   if(!runTime.end()){
     Info << "Time = " << runTime.timeName() << nl << endl;
-    // Original: This step routine does not perform iterations properly
     StepFluidAlone();
-    // Original: End
-    
-    // Added by Masoud
-    // StepFoam();
-    // Masoud: end
-    
     Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
         << "  ClockTime = " << runTime.elapsedClockTime() << " s"
         << endl << endl;
@@ -2516,17 +2487,7 @@ void fsifoam_module::StepFluid(){
     // update IMPACT data
     UpdateTime();
     UpdateFSISurfaceData();
-    UpdateFSISurfaceMesh(); 
-
-   // Masoud: output for probe
-   prb2DmpFile.open("prb2.dat", std::ios::app);
-   prb2DmpFile <<  runTime.timeName()  << " " << \
-   foamCoords[64].x() << " " << \
-   foamCoords[64].y() << " " << \
-   foamCoords[64].z() << "\n"; 
-   prb2DmpFile.close();
-   // Masoud: end
-
+    UpdateFSISurfaceMesh();
   }
   if(runTime.end()){
     Info<< "End\n" << endl;
@@ -2614,10 +2575,6 @@ void fsifoam_module::UpdateTime(){
 }
 
 int fsifoam_module::UpdateFSISurface(Foam::vectorField &solidDispl){
-  //Masoud : Testing displacement
-  std::cout<<"Inside UpdateFSISurface " << std::endl;
-  std::cout<< "Displacements passed to me : " << std::endl;
-  // Masoud : End
   /////////////////////////////
   // final displacement of the fluid surface 
   /////////////////////////////
@@ -2628,11 +2585,6 @@ int fsifoam_module::UpdateFSISurface(Foam::vectorField &solidDispl){
       solidDisplacement[3*i+1];
     solidDispl[foamGlobalToPatchNodeMap[interfaceToFoamNodeMap[i+1]]].z() =
       solidDisplacement[3*i+2];
-    //Masoud : Testing displacement
-    std::cout<< solidDisplacement[3*i] << " " 
-             << solidDisplacement[3*i+1] << " "
-             << solidDisplacement[3*i+2] << std::endl;
-    //Masoud: End
   }
   return(0);
 }
@@ -2656,24 +2608,8 @@ void fsifoam_module::UpdateFSISurfaceData(){
   /////////////////////////////
   dimensionedScalar &nu(this->nu());
   volVectorField &U(this->U());
-  // Original
-  //vectorField foamSurfaceTraction = -rhoFluid.value()*nu.value()*
-  //  U.boundaryField()[fluidPatchID].snGrad();
-  // Original end
-
-  // Masoud change: based on following taken from StepFoam() 
-          //     vectorField fluidPatchTraction =
-          //        -rhoFluid.value()*nu.value()
-          //        *U.boundaryField()[fluidPatchID].snGrad()
-          //       + rhoFluid.value()*p.boundaryField()[fluidPatchID]
-          //        *fluidsMesh.boundary()[fluidPatchID].nf();
-
-  dynamicFvMesh &fluidsMesh(this->FluidMesh());
   vectorField foamSurfaceTraction = -rhoFluid.value()*nu.value()*
-    U.boundaryField()[fluidPatchID].snGrad()
-    + rhoFluid.value()*p.boundaryField()[fluidPatchID]
-      *fluidsMesh.boundary()[fluidPatchID].nf();
-  //Masoud: end
+    U.boundaryField()[fluidPatchID].snGrad();
 
   for(int i=0; i<numElementsSurface; ++i) {
     surfaceTraction[3*i] = foamSurfaceTraction[i].x();

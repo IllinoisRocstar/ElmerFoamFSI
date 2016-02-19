@@ -58,8 +58,6 @@ SUBROUTINE Initializer(global, runs)
    INTEGER, POINTER :: TempNodeList(:)
    LOGICAL :: NodePresent
    INTEGER :: LastFSIElement
-   DOUBLE PRECISION :: xmin, xmax, ymin, ymax, zmin, zmax    
-  
 !   INTEGER, POINTER :: Conn2(:)
 #if defined(MINGW32)
    CALL SET_STDIO_BUFS()
@@ -187,6 +185,10 @@ SUBROUTINE Initializer(global, runs)
    !This location will be registered with IMPACT
    IF( MyVerbosity > 3) WRITE(*,*) 'global%nNodes =', global%nNodes
    ALLOCATE(global%NodeDisplacements(3*global%nNodes))
+   !Masoud
+   ALLOCATE(global%PreviousNodeDisplacements(3*global%nNodes))
+   global%PreviousNodeDisplacements = 0.0d0
+   !Masoud End
    ALLOCATE(global%MyToElmerNodes(global%nNodes))
    IF( MyVerbosity > 3) THEN 
      WRITE(*,*) 'SIZE(NodeDisplacements)=',SIZE(global%NodeDisplacements)
@@ -204,11 +206,6 @@ SUBROUTINE Initializer(global, runs)
    !Allocate space for storing the NodePressures
    !This location will be registered with IMPACT
    ALLOCATE(global%NodePressures(global%nNodes))
-   !Allocate the NodePressures that gets passed to the user defined function
-   ALLOCATE(CurrentModel%NodePressuresPass(global%nNodes))
-   !Allocate space for storing the previous node pressures
-   !so linear interpolation can be done
-   ALLOCATE(global%PreviousNodePressures(global%nNodes))
    !Allocate space for storing the NodeLoads
    !This location will be registered with IMPACT
    ALLOCATE(global%NodeLoads(3*global%nNodes))
@@ -220,8 +217,6 @@ SUBROUTINE Initializer(global, runs)
    IF( MyVerbosity > 3) WRITE(*,*) 'SIZE(NodeLoads)=',SIZE(global%NodeLoads)
    !Initialize the loads to 0.0
    DO t = 1, global%nNodes
-     CurrentModel%NodePressuresPass(t) = 0.0
-     global%PreviousNodePressures(t) = 0.0
      DO j =1,3
 !       CurrentModel%NodeLoadsPass(j,t) = (t-1)*3.0 + j*1.0
         CurrentModel%NodeLoadsPass(j,t) = 0.0
@@ -276,19 +271,23 @@ SUBROUTINE Initializer(global, runs)
    !Populate the mesh arrays
    !Loop over the boundary elements
    counter = 0
-   xmin = 1.0e10
-   ymin = 1.0e10
-   zmin = 1.0e10
-   xmax = -1.0e10
-   ymax = -1.0e10
-   zmax = -1.0e10
-
    DO t = MyMesh % NumberOfBulkElements+1, &
           MyMesh % NumberOfBulkElements + &
           MyMesh % NumberOfBoundaryElements
 
+      !WRITE(*,*) "SolverModule element = ", t
+
       MyCurrentElement => MyMesh % Elements(t)
       bc_id = GetBCId(MyCurrentElement)
+
+      !For debugging - you can remove later
+      CALL GetElementNodes(ElementNodes,MyCurrentElement)
+      !WRITE(*,*) 'Elmer elements:'    
+      !DO nt = 1,MyCurrentElement % TYPE % NumberOfNodes
+      !  WRITE(*,*) nt,':',ElementNodes % x(nt),' ',ElementNodes % y(nt),' ',&
+      !                    ElementNodes % z(nt)
+      !END DO
+      !end of debugging
 
       IF ( bc_id == global%FSIbcId ) THEN
          counter = counter + 1
@@ -325,26 +324,6 @@ SUBROUTINE Initializer(global, runs)
             global%Coords(3*(nindex-1) + 1) = ElementNodes % x(nt)
             global%Coords(3*(nindex-1) + 2) = ElementNodes % y(nt)
             global%Coords(3*(nindex-1) + 3) = ElementNodes % z(nt)
-           
-            IF( ElementNodes % x(nt) < xmin) THEN
-              xmin = ElementNodes % x(nt)
-            END IF 
-            IF( ElementNodes % x(nt) > xmax) THEN
-              xmax = ElementNodes % x(nt)
-            END IF 
-            IF( ElementNodes % y(nt) < ymin) THEN
-              ymin = ElementNodes % y(nt)
-            END IF 
-            IF( ElementNodes % y(nt) > ymax) THEN
-              ymax = ElementNodes % y(nt)
-            END IF 
-            IF( ElementNodes % z(nt) < zmin) THEN
-              zmin = ElementNodes % z(nt)
-            END IF 
-            IF( ElementNodes % z(nt) > zmax) THEN
-              zmax = ElementNodes % z(nt)
-            END IF 
-
             global%NodeLoads(3*(nindex-1) + 1) = 0.0
             global%NodeLoads(3*(nindex-1) + 2) = 0.0
             global%NodeLoads(3*(nindex-1) + 3) = 0.0
@@ -353,14 +332,7 @@ SUBROUTINE Initializer(global, runs)
       END IF
    END DO
 
-   WRITE(*,*) "xmin = ", xmin
-   WRITE(*,*) "xmax = ", xmax
-   WRITE(*,*) "ymin = ", ymin
-   WRITE(*,*) "ymax = ", ymax
-   WRITE(*,*) "zmin = ", zmin
-   WRITE(*,*) "zmax = ", zmax
-
-   IF( MyVerbosity > 4) THEN 
+   IF( MyVerbosity >= 50) THEN 
      WRITE(6,*) 'global%MyToElmerNodes = '
      DO i=1,global%nNodes
         WRITE(6,*) i,' = ',global%MyToElmerNodes(i)
@@ -412,6 +384,13 @@ SUBROUTINE Initializer(global, runs)
    CALL COM_NEW_DATAITEM(TRIM(global%window_name)//'.Displacements', 'n', COM_DOUBLE_PRECISION, 3, 'm')
    CALL COM_SET_ARRAY(TRIM(global%window_name)//'.Displacements',11,&
                       global%NodeDisplacements,3)
+   !Masoud
+   ! n: means node quantity, 3: number of columns, 11: window number (currently
+   ! default used everywhere), 'm': is units of the quanitity
+   CALL COM_NEW_DATAITEM(TRIM(global%window_name)//'.PreviousDisplacements', 'n', COM_DOUBLE_PRECISION, 3, 'm')
+   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.PreviousDisplacements',11,&
+                      global%PreviousNodeDisplacements,3)
+   !Masoud End
 
    !Set the loads array with COM now that the mesh is registered
    CALL COM_NEW_DATAITEM(TRIM(global%window_name)//'.Loads', 'n', COM_DOUBLE_PRECISION, 3, '')
@@ -573,7 +552,6 @@ SUBROUTINE RUN(global, runs, tFinal)
    !Setting PreviousLoads values to NodeLoads now that
    !Run is finished
    DO t = 1, global%nNodes
-     global%PreviousNodePressures(t) = global%NodePressures(t)
      DO j =1,3
        global%PreviousLoads(j,t) = global%NodeLoads(3*(t-1) + j)
      END DO
@@ -609,7 +587,7 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
    TYPE(t_global), POINTER :: global
    INTEGER :: runs
    DOUBLE PRECISION :: tFinal
-   INTEGER :: nCount, counter
+   INTEGER :: nCount, counter, nCountMax
 
    WRITE(6,*)'-------------------------------------------'
    WRITE(6,*) '**********INSIDE UpdateDisplacements Function*********'
@@ -622,6 +600,7 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
    StressSol => Solver % Variable
    Displacement   => StressSol % Values
    MyPerm => StressSol % Perm
+
    IF( MyVerbosity > 3) THEN
      WRITE(*,*) 'The SIZE(Displacement) = ', SIZE(Displacement)
      WRITE(*,*) 'After SolverActivate Call, Displacement(1) = ',&
@@ -640,6 +619,7 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
    !Write out nodes, coordinates, and connectivities
    !Store at registered address
    nCount = 0
+   nCountMax = 0
    counter = 0
    IF( MyVerbosity > 3) THEN 
      WRITE(*,*) 'Number of bulk elements = ', MyMesh % NumberOfBulkElements
@@ -679,32 +659,110 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
                IF( MyVerbosity > 3) WRITE(*,*) 'DOFs = ', StressSol % DOFs
 
                nCount = CurrentModel%ElmerToMyNodes(MyNodeIndexes(nt))
+               
+               ! Masoud : Avoding displacement update duplicates and
+               !          implementing a correct displacement update
 
-               IF( MyVerbosity > 3) THEN
-                 WRITE(6,*) 'Updating NodeDisplacement(',nCount,')'
-               END IF
+               IF ( nCount > nCountMax ) THEN
+                  IF( MyVerbosity > 3) THEN
+                  WRITE(6,*) 'Updating NodeDisplacement(',nCount,')'
+                 END IF
+ 
+                 IF ( StressSol % DOFs == 1 ) THEN
+                     IF( MyVerbosity > 3) WRITE(*,*) Displacement(nk+1), 0.0, 0.0
+                     global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
+                     global%NodeDisplacements(3*(nCount-1) + 2) = 0.0d0
+                     global%NodeDisplacements(3*(nCount-1) + 3) = 0.0d0
+                 ELSE IF ( StressSol % DOFs == 2 ) THEN
+                     IF( MyVerbosity > 3) WRITE(*,*) Displacement(nk+1), Displacement(nk+2)
+                     global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
+                     global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)
+                     global%NodeDisplacements(3*(nCount-1) + 3) = 0.0d0
+                 ELSE IF ( StressSol % DOFs == 3 ) THEN
+                     ! Original
+                     !global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
+                     !global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)
+                     !global%NodeDisplacements(3*(nCount-1) + 3) = Displacement(nk+3)
+                     ! Original: End
 
-               IF ( StressSol % DOFs == 1 ) THEN
-                  IF( MyVerbosity > 3) WRITE(*,*) Displacement(nk+1), 0.0, 0.0
-                  global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
-                  global%NodeDisplacements(3*(nCount-1) + 2) = 0.0d0
-                  global%NodeDisplacements(3*(nCount-1) + 3) = 0.0d0
-               ELSE IF ( StressSol % DOFs == 2 ) THEN
-                  IF( MyVerbosity > 3) WRITE(*,*) Displacement(nk+1), Displacement(nk+2)
-                  global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
-                  global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)
-                  global%NodeDisplacements(3*(nCount-1) + 3) = 0.0d0
-               ELSE IF ( StressSol % DOFs == 3 ) THEN
-                  IF( MyVerbosity > 3) WRITE(*,*) Displacement(nk+1),&
-                                       Displacement(nk+2), Displacement(nk+3)
-                  global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
-                  global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)
-                  global%NodeDisplacements(3*(nCount-1) + 3) = Displacement(nk+3)
-               ELSE
-                  WRITE(*,*) 'StressSol % DOFs = ', StressSol % DOFs
-                  WRITE(*,*) 'DOFs are assumed to be <= 3'
-                  CALL Fatal( ' ', 'StressSol DOFs are greater than 3 ' )
+                     ! Masoud
+                     !Printing old and new displacements for the user
+                     WRITE(*,*) '----------------------'
+                     WRITE(*,*) ' new disps= ', Displacement(nk+1),&
+                                Displacement(nk+2), Displacement(nk+3)
+                     WRITE(*,*) ' old disps= ',&
+                     global%PreviousNodeDisplacements(3*(nCount-1) + 1),&
+                     global%PreviousNodeDisplacements(3*(nCount-1) + 2), &
+                     global%PreviousNodeDisplacements(3*(nCount-1) + 3)
+                     !Calculating displacement differences to pass to fluid solver
+                     global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)&
+                     - global%PreviousNodeDisplacements(3*(nCount-1) + 1)
+                     global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)&
+                     - global%PreviousNodeDisplacements(3*(nCount-1) + 2)
+                     global%NodeDisplacements(3*(nCount-1) + 3) = Displacement(nk+3)&
+                     - global%PreviousNodeDisplacements(3*(nCount-1) + 3)
+                     !Updating previous displacements to the current values for the
+                     !next timestep
+                     global%PreviousNodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1) 
+                     global%PreviousNodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)
+                     global%PreviousNodeDisplacements(3*(nCount-1) + 3) = Displacement(nk+3)
+                     !Priniting increament displacement values for the user
+                     WRITE(*,*) ' increament disps= ', global%NodeDisplacements(3*(nCount-1) + 1),&
+                     global%NodeDisplacements(3*(nCount-1) + 2), &
+                     global%NodeDisplacements(3*(nCount-1) + 3)
+                     WRITE(*,*) '----------------------'
+                     ! Masoud : End
+                 ELSE
+                     WRITE(*,*) 'StressSol % DOFs = ', StressSol % DOFs
+                     WRITE(*,*) 'DOFs are assumed to be <= 3'
+                     CALL Fatal( ' ', 'StressSol DOFs are greater than 3 ' )
+                 END IF
+                 nCountMax = MAX(nCount, nCountMax)
                END IF
+               ! Masoud:  End
+
+               ! Original: uses a funny update order with dubplicates
+               !!IF( MyVerbosity > 3) THEN
+               !  WRITE(6,*) 'Updating NodeDisplacement(',nCount,')'
+               !!END IF
+
+               !IF ( StressSol % DOFs == 1 ) THEN
+               !   IF( MyVerbosity > 3) WRITE(*,*) Displacement(nk+1), 0.0, 0.0
+               !   global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
+               !   global%NodeDisplacements(3*(nCount-1) + 2) = 0.0d0
+               !   global%NodeDisplacements(3*(nCount-1) + 3) = 0.0d0
+               !ELSE IF ( StressSol % DOFs == 2 ) THEN
+               !   IF( MyVerbosity > 3) WRITE(*,*) Displacement(nk+1), Displacement(nk+2)
+               !   global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
+               !   global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)
+               !   global%NodeDisplacements(3*(nCount-1) + 3) = 0.0d0
+               !ELSE IF ( StressSol % DOFs == 3 ) THEN
+               !   ! Masoud
+               !   !WRITE(*,*) '----------------------'
+               !   WRITE(*,*) ' new = ', Displacement(nk+1),&
+               !              Displacement(nk+2), Displacement(nk+3)
+               !   WRITE(*,*) ' old = ', global%NodeDisplacements(3*(nCount-1) + 1),&
+               !   global%NodeDisplacements(3*(nCount-1) + 2), &
+               !   global%NodeDisplacements(3*(nCount-1) + 3)
+               !   ! Masoud : end 
+
+               !   ! Original
+               !   global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
+               !   global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)
+               !   global%NodeDisplacements(3*(nCount-1) + 3) = Displacement(nk+3)
+               !   ! Original: End
+
+               !   !WRITE(*,*) '----------------------'
+               !   !global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1) - global%NodeDisplacements(3*(nCount-1) + 1)
+               !   !global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2) - global%NodeDisplacements(3*(nCount-1) + 2)
+               !   !global%NodeDisplacements(3*(nCount-1) + 3) = Displacement(nk+3) - global%NodeDisplacements(3*(nCount-1) + 3)
+               !   ! Masoud : End
+               !ELSE
+               !   WRITE(*,*) 'StressSol % DOFs = ', StressSol % DOFs
+               !   WRITE(*,*) 'DOFs are assumed to be <= 3'
+               !   CALL Fatal( ' ', 'StressSol DOFs are greater than 3 ' )
+               !END IF
+               ! Original : End
             END IF
 
          END DO                
@@ -715,18 +773,14 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
    WRITE(*,*) 'UpdateDisps global%NodeDisplacements = '
    WRITE(6,*)'-------------------------------------------'
 
-!   IF( MyVerbosity > 3) THEN
+   IF( MyVerbosity > 50) THEN
      WRITE(6,*) 'tFinal = ', tFinal
      WRITE(6,*) 'NodeDisplacements'
      DO i = 1,global%nNodes
-        !DO j = 1,3
-        !  global%NodeDisplacements(3*(i-1) + j)=&
-        !  global%NodeDisplacements(3*(i-1) + j)*10000.0
-        !ENDDO
         WRITE(6,*) (global%NodeDisplacements(3*(i-1) + j),j=1,3)
      ENDDO
      WRITE(6,*) 'Exiting UpdateDisplacements'
-!   END IF
+   END IF
 
 END SUBROUTINE UpdateDisplacements
 
