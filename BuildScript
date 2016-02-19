@@ -1,7 +1,5 @@
 #!/bin/tcsh
 
-module load compilers/mpich-3.1.2.gnu
-
 # Source the SourceScript to ensure the proper build environment
 source SourceScript
 
