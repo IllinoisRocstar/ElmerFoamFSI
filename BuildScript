@@ -21,7 +21,7 @@ cd $currentDir
 cd elmerfem/fem/src/
 cp -r $currentDir/Third_Party_Modules/ElmerFSI/trunk/native/ ElmerModule
 # Patch the elmer source
-pacth < ElmerModule/ElmerPatch
+patch < ElmerModule/ElmerPatch
 cd $currentDir
 
 # Build elmer and the elmer module
