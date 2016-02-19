@@ -3,12 +3,10 @@
 # Source the SourceScript to ensure the proper build environment
 source SourceScript
 
-
 # Set our current directory, which should be the top
 # level source for ElmerFoamFSI
 set currentDir = `pwd`
 set installDir = "$currentDir/support_install"
-
 
 # Build IMPACT, which will also build IRAD 
 cd IMPACT
@@ -19,9 +17,15 @@ make
 make install
 cd $currentDir
 
+# Copy the appropriate source files into elmer
+cd elmerfem/fem/src/
+cp -r $currentDir/Third_Party_Modules/ElmerFSI/trunk/native/ ElmerModule
+# Patch the elmer source
+pacth < ElmerModule/ElmerPatch
+cd $currentDir
 
 # Build elmer and the elmer module
-cd elmer
+cd elmerfem
 mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$installDir
