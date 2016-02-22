@@ -1,12 +1,26 @@
 #!/bin/tcsh
 
-# Source the SourceScript to ensure the proper build environment
-source SourceScript
-
 # Set our current directory, which should be the top
 # level source for ElmerFoamFSI
-set currentDir = `pwd`
-set installDir = "$currentDir/support_install"
+set topSourceDir = `pwd`
+set installDir = "$topSourceDir/support_install"
+
+# Patch Openfoam build files
+cd foam/foam-extend-3.2/ThirdParty/rpmBuild/SPECS/
+cp $topSourceDir/Third_Party_Modules/OpenFoamFSI/trunk/SPECSPatch .
+patch < SPECSPatch
+cd $topSourceDir
+cd foam/foam-extend-3.2/etc
+cp $topSourceDir/Third_Party_Modules/OpenFoamFSI/trunk/cshrcPatch .
+patch < csrchPatch
+cd $topSourceDir
+
+# Build OpenFoam
+cd foam/foam-extend-3.2
+./Allwmake.firstInstall
+
+# Source the SourceScript to ensure the proper build environment
+source SourceScript
 
 # Build IMPACT, which will also build IRAD 
 cd IMPACT
@@ -15,14 +29,14 @@ cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$installDir
 make
 make install
-cd $currentDir
+cd $topSourceDir
 
 # Copy the appropriate source files into elmer
 cd elmerfem/fem/src/
-cp -r $currentDir/Third_Party_Modules/ElmerFSI/trunk/native/ ElmerModule
+cp -r $topSourceDir/Third_Party_Modules/ElmerFSI/trunk/native/ ElmerModule
 # Patch the elmer source
 patch < ElmerModule/ElmerPatch
-cd $currentDir
+cd $topSourceDir
 
 # Build elmer and the elmer module
 cd elmerfem
@@ -31,7 +45,7 @@ cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=$installDir
 make
 make install
-cd $currentDir
+cd $topSourceDir
 # we don't like where elmer installs its libraries
 # so we'll link to wehre we want them
 ln -s $installDir/share/elmersolver/lib/* $installDir/lib/.
@@ -39,7 +53,7 @@ ln -s $installDir/share/elmersolver/lib/* $installDir/lib/.
 # Build openfoam module
 cd Third_Party_Modules/OpenFoamFSI/trunk/native
 wmake libso .
-cd $currentDir
+cd $topSourceDir
 
 # Build the ElmerFoamFSI driver
 mkdir build
