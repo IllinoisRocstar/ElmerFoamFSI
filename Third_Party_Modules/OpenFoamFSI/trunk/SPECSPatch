@@ -1,0 +1,32 @@
+--- openmpi-1.8.8.spec_orig	2016-02-22 11:42:33.660492236 -0600
++++ openmpi-1.8.8.spec	2016-02-22 11:46:57.869733398 -0600
+@@ -98,8 +98,8 @@ Group: 			Development/Tools
+ 
+ %build
+     # export WM settings in a form that GNU configure recognizes
+-    [ -n "$WM_CC" ]         &&  export CC="$WM_CC"
+-    [ -n "$WM_CXX" ]        &&  export CXX="$WM_CXX"
++    [ -n "$WM_CC" ]         &&  export CC="$WM_CC -fPIC"
++    [ -n "$WM_CXX" ]        &&  export CXX="$WM_CXX -fPIC"
+     [ -n "$WM_CFLAGS" ]     &&  export CFLAGS="$WM_CFLAGS"
+     [ -n "$WM_CXXFLAGS" ]   &&  export CXXFLAGS="$WM_CXXFLAGS"
+     [ -n "$WM_LDFLAGS" ]    &&  export LDFLAGS="$WM_LDFLAGS"
+@@ -111,6 +111,9 @@ Group: 			Development/Tools
+     echo ""
+     set -x
+ 
++    export FC="gfortran -fPIC"
++    export F90="gfortran -fPIC"
++
+     unset mpiWith
+     # Enable GridEngine if it appears to be in use
+     # If you don't want any integration with SGE, simply unset the SGE
+@@ -139,8 +142,6 @@ Group: 			Development/Tools
+         --enable-shared \
+         --enable-mpi-cxx \
+ 	--disable-static \
+-        --disable-mpi-f77 \
+-        --disable-mpi-f90 \
+         --without-slurm \
+         --enable-mpi-profile $mpiWith \
+         --disable-vt \
