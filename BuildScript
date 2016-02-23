@@ -29,15 +29,15 @@ echo "Sourcing BashSourceScript"
 source BuildTools/BashSourceScript $topSourceDir
 
 # Build OpenFoam
-#if $isFirst
-#then 
-#  ./BuildTools/BuildOpenFoam $topSourceDir first
-#else 
-#  ./BuildTools/BuildOpenFoam $topSourceDir
-#fi
+if $isFirst
+then 
+  ./BuildTools/BuildOpenFoam $topSourceDir first
+else 
+  ./BuildTools/BuildOpenFoam $topSourceDir
+fi
 
 ## Build IMPACT, which will also build IRAD 
-./BuildTools/BuildImpact $topSourceDir
+./BuildTools/BuildIMPACT $topSourceDir
 
 # Build elmer and the elmer module
 ./BuildTools/BuildElmerModule $topSourceDir
