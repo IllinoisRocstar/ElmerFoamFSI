@@ -5,7 +5,7 @@
  # Location of FOAM installation
  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -set foamInstall = $HOME/$WM_PROJECT
-+set foamInstall = /Projects/IR/Users/jkress/ElmerFoamFSI/$WM_PROJECT
++set foamInstall = $ElmerFoamTop/$WM_PROJECT
  # set foamInstall = ~$WM_PROJECT
  # set foamInstall = /usr/local/$WM_PROJECT
  # set foamInstall = /opt/$WM_PROJECT
@@ -14,14 +14,14 @@
  # - remove anything under top-level directory.
  # NB: the WM_PROJECT_INST_DIR might not be identical between versions
 -set foamOldDirs="$FOAM_INST_DIR $HOME/$WM_PROJECT/$LOGNAME"
-+set foamOldDirs="$FOAM_INST_DIR /Projects/IR/Users/jkress/ElmerFoamFSI/$WM_PROJECT/$LOGNAME"
++set foamOldDirs="$FOAM_INST_DIR $ElmerFoamTop/$WM_PROJECT/$LOGNAME"
  
  # Location of site/user files
  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~
  setenv WM_PROJECT_INST_DIR $FOAM_INST_DIR
  setenv WM_PROJECT_DIR $WM_PROJECT_INST_DIR/$WM_PROJECT-$WM_FORK-$WM_PROJECT_VERSION
 -setenv WM_PROJECT_USER_DIR $HOME/$WM_PROJECT/$LOGNAME-$WM_PROJECT_VERSION
-+setenv WM_PROJECT_USER_DIR /Projects/IR/Users/jkress/ElmerFoamFSI/$WM_PROJECT/$LOGNAME-$WM_PROJECT_VERSION
++setenv WM_PROJECT_USER_DIR $ElmerFoamTop/$WM_PROJECT/$LOGNAME-$WM_PROJECT_VERSION
  
  
  # Location of third-party software
