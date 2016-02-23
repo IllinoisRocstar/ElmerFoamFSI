@@ -17,24 +17,36 @@ fi
 topSourceDir=`pwd`
 installDir="$topSourceDir/support_install"
 
+echo "Build log for ElmerFoam Tool Chain" 2>&1 | tee Build.dat
+ 
 if $isFirst
 then
-  echo "Patching OpenFoam & Elmer for the first build"
-  ./BuildTools/PatchScript $topSourceDir
+  echo "Patching OpenFoam & Elmer for the first build"  2>&1 | tee -a Build.dat
+  ./BuildTools/PatchScript $topSourceDir 2>&1 | tee -a Build.dat
+  if [ ${PIPESTATUS[0]} -ne 0 ]
+  then
+    echo "Error: in executing PatchScript" 2>&1 | tee -a Build.dat
+    exit 1
+  fi
 fi
 
-echo "Sourcing BashSourceScript"
+echo "Sourcing BashSourceScript" 2>&1 | tee -a Build.dat 
 
 # Source the SourceScript to ensure the proper build environment
 source BuildTools/BashSourceScript $topSourceDir
+if [ ${PIPESTATUS[0]} -ne 0 ]
+then
+  echo "Error: Unable to source BashSourceScript"
+  exit 1
+fi
 
 # Build OpenFoam
-if $isFirst
-then 
-  ./BuildTools/BuildOpenFoam $topSourceDir first
-else 
-  ./BuildTools/BuildOpenFoam $topSourceDir
-fi
+#if $isFirst
+#then 
+#  ./BuildTools/BuildOpenFoam $topSourceDir first
+#else 
+#  ./BuildTools/BuildOpenFoam $topSourceDir
+#fi
 
 ## Build IMPACT, which will also build IRAD 
 ./BuildTools/BuildIMPACT $topSourceDir
