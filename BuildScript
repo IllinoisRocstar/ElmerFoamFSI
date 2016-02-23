@@ -25,7 +25,7 @@ then
   ./BuildTools/PatchScript $topSourceDir 2>&1 | tee -a Build.dat
   if [ ${PIPESTATUS[0]} -ne 0 ]
   then
-    echo "Error: in executing PatchScript" 2>&1 | tee -a Build.dat
+    echo "Error in executing PatchScript" 2>&1 | tee -a Build.dat
     exit 1
   fi
 fi
@@ -33,34 +33,69 @@ fi
 echo "Sourcing BashSourceScript" 2>&1 | tee -a Build.dat 
 
 # Source the SourceScript to ensure the proper build environment
-source BuildTools/BashSourceScript $topSourceDir
+source BuildTools/BashSourceScript $topSourceDir 2>&1 | tee -a Build.dat
 if [ ${PIPESTATUS[0]} -ne 0 ]
 then
-  echo "Error: Unable to source BashSourceScript"
+  echo "Error: Unable to source BashSourceScript" 2>&1 | tee -a Build.dat
   exit 1
 fi
 
 # Build OpenFoam
-#if $isFirst
-#then 
-#  ./BuildTools/BuildOpenFoam $topSourceDir first
-#else 
-#  ./BuildTools/BuildOpenFoam $topSourceDir
-#fi
+if $isFirst
+then 
+  ./BuildTools/BuildOpenFoam $topSourceDir first 2>&1 | tee -a Build.dat
+  if [ ${PIPESTATUS[0]} -ne 0 ]
+  then
+    echo "Error in building OpenFoam" 2>&1 | tee -a Build.dat
+    exit 1
+  fi
+else 
+  ./BuildTools/BuildOpenFoam $topSourceDir 2>&1 | tee -a Build.dat
+  if [ ${PIPESTATUS[0]} -ne 0 ]
+  then
+    echo "Error in building OpenFoam" 2>&1 | tee -a Build.dat
+    exit 1
+  fi
+fi
 
-## Build IMPACT, which will also build IRAD 
-./BuildTools/BuildIMPACT $topSourceDir
+# Build IMPACT, which will also build IRAD 
+./BuildTools/BuildIMPACT $topSourceDir 2>&1 | tee -a Build.dat
+if [ ${PIPESTATUS[0]} -ne 0 ]
+then
+  echo "Error in building IMPACT & IRAD" 2>&1 | tee -a Build.dat
+  exit 1
+fi
 
 # Build elmer and the elmer module
-./BuildTools/BuildElmerModule $topSourceDir
+./BuildTools/BuildElmerModule $topSourceDir 2>&1 | tee -a Build.dat
+if [ ${PIPESTATUS[0]} -ne 0 ]
+then
+  echo "Error in building Elmer & Elmer Module" 2>&1 | tee -a Build.dat
+  exit 1
+fi
 
 # Build openfoam module
-./BuildTools/BuildOpenFoamModule $topSourceDir
+./BuildTools/BuildOpenFoamModule $topSourceDir 2>&1 | tee -a Build.dat
+if [ ${PIPESTATUS[0]} -ne 0 ]
+then
+  echo "Error in building OpenFoam module" 2>&1 | tee -a Build.dat
+  exit 1
+fi
 
 # Build the ElmerFoamFSI driver
 if $noTest
 then
-  ./BuildTools/BuildElmerFoamFSIDriver $topSourceDir noTest
+  ./BuildTools/BuildElmerFoamFSIDriver $topSourceDir noTest 2>&1 | tee -a Build.dat
+  if [ ${PIPESTATUS[0]} -ne 0 ]
+  then
+    echo "Error in building ElmerFoamFSI Driver" 2>&1 | tee -a Build.dat
+    exit 1
+  fi
 else
-  ./BuildTools/BuildElmerFoamFSIDriver $topSourceDir
+  ./BuildTools/BuildElmerFoamFSIDriver $topSourceDir 2>&1 | tee -a Build.dat
+  if [ ${PIPESTATUS[0]} -ne 0 ]
+  then
+    echo "Error in building ElmerFoamFSI Driver & running tests" 2>&1 | tee -a Build.dat
+    exit 1
+  fi
 fi

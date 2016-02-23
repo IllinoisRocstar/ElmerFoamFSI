@@ -4,8 +4,10 @@ export ElmerFoamTop=$1
 export installDir=$ElmerFoamTop/support_install
 
 source $ElmerFoamTop/BuildTools/BashSourceScript $ElmerFoamTop
+if [ $? -ne 0 ]; then exit 1; fi
 
 cd $ElmerFoamTop/Third_Party_Modules/OpenFoamFSI/trunk/native
 wmake libso .
+if [ $? -ne 0 ]; then exit 1; fi
 cd $topSourceDir
 
