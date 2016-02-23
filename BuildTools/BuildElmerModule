@@ -1,0 +1,17 @@
+#!/bin/bash
+
+export ElmerFoamTop=$1
+export installDir=$ElmerFoamTop/support_install
+
+source $ElmerFoamTop/BuildTools/BashSourceScript $ElmerFoamTop
+
+cd $ElmerFoamTop/elmerfem
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$installDir
+make
+make install
+cd $topSourceDir
+# we don't like where elmer installs its libraries
+# so we'll link to wehre we want them
+ln -s $installDir/share/elmersolver/lib/* $installDir/lib/.

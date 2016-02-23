@@ -1,0 +1,24 @@
+#!/bin/bash
+
+export ElmerFoamTop=$1
+export installDir=$ElmerFoamTop/support_install
+noTest=false
+
+if [ "$1" = "notest" ] || [ "$1" = "NoTest" ] || [ "$1" = "NOTEST" ] || [ "$2" = "notest" ] || [ "$2" = "NoTest" ] || [ "$2" = "NOTEST" ] 
+then
+  noTest=true
+fi
+
+source $ElmerFoamTop/BuildTools/BashSourceScript $ElmerFoamTop
+
+cd $ElmerFoamTop
+mkdir build
+cd build
+cmake .. -DCMAKE_PREFIX_PATH=$installDir
+make
+if $noTest
+then
+  echo "Not running tests for ElmerFoamFSI Driver"
+else
+  make test
+fi

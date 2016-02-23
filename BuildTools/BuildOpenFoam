@@ -1,0 +1,29 @@
+#!/bin/bash
+
+export ElmerFoamTop=$1
+
+i=$((${#ElmerFoamTop}-1))
+char="${ElmerFoamTop:$i:1}"
+
+if [ "$char" = "/" ]
+then
+  ElmerFoamTop="${ElmerFoamTop:0:$i}"
+fi
+
+source $ElmerFoamTop/BuildTools/BashSourceScript $ElmerFoamTop
+
+isFirst=false
+ 
+ if [ "$2" = "First" ] || [ "$2" = "FIRST" ] || [ "$2" = "first" ]
+ then
+   isFirst=true
+ fi
+
+
+cd $ElmerFoamTop/foam/foam-extend-3.2
+if $isFirst
+then
+  ./Allwmake.firstInstall | tee OpenFoamBuild.dat
+else 
+  ./Allwmake | tee OpenFoamBuild.dat
+fi

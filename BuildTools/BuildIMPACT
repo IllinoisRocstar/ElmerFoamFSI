@@ -1,0 +1,15 @@
+#!/bin/bash
+
+export ElmerFoamTop=$1
+export installDir=$ElmerFoamTop/support_install
+
+source $ElmerFoamTop/BuildTools/BashSourceScript $ElmerFoamTop
+
+cd $ElmerFoamTop/IMPACT
+mkdir build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$installDir
+make
+make install
+cd $topSourceDir
+

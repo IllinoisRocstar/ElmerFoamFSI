@@ -1,0 +1,25 @@
+#!/bin/tcsh
+
+# Set our current directory, which should be the top
+# level source for ElmerFoamFSI
+set topSourceDir = $1
+set installDir = "$topSourceDir/support_install"
+
+# Patch Openfoam build files
+cd foam/foam-extend-3.2/ThirdParty/rpmBuild/SPECS/
+cp $topSourceDir/Third_Party_Modules/OpenFoamFSI/trunk/SPECSPatch .
+patch < SPECSPatch
+cd $topSourceDir
+cd foam/foam-extend-3.2/etc
+cp $topSourceDir/Third_Party_Modules/OpenFoamFSI/trunk/cshrcPatch .
+patch < cshrcPatch
+cp $topSourceDir/Third_Party_Modules/OpenFoamFSI/trunk/bashrcPatch .
+patch < bashrcPatch
+cd $topSourceDir
+
+# Copy the appropriate source files into elmer
+cd elmerfem/fem/src/
+cp -r $topSourceDir/Third_Party_Modules/ElmerFSI/trunk/native/ ElmerModule
+# Patch the elmer source
+patch < ElmerModule/ElmerPatch
+cd $topSourceDir

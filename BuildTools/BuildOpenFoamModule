@@ -1,0 +1,11 @@
+#!/bin/bash
+
+export ElmerFoamTop=$1
+export installDir=$ElmerFoamTop/support_install
+
+source $ElmerFoamTop/BuildTools/BashSourceScript $ElmerFoamTop
+
+cd $ElmerFoamTop/Third_Party_Modules/OpenFoamFSI/trunk/native
+wmake libso .
+cd $topSourceDir
+
