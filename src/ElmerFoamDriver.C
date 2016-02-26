@@ -46,16 +46,17 @@ public:
     // Masoud: Checking quality of coordinate transfer
     std::vector<double> crdVecSolid1(solidAgent->Coordinates());
     std::vector<double> crdVecFluid1(fluidAgent->Coordinates());
-    std::cout << "Solid Coodinates are : " << std::endl;
+    //std::cout << "Solid Coodinates are : " << std::endl;
     //for (int i = 0; i < crdVecSolid1.size()/3; i++)
-        std::cout << crdVecSolid1[152*3] << " " 
-                  << crdVecSolid1[152*3+1] << " " 
-                  << crdVecSolid1[152*3+2] << std::endl;
-    std::cout << "Fluid Coodinates are : " << std::endl;
-    //for (int i = 0; i < crdVecFluid1.size(); i = i + 3)
-        std::cout << crdVecFluid1[93*3] << " " 
-                  << crdVecFluid1[93*3+1] << " " 
-                  << crdVecFluid1[93*3+2] << std::endl;
+    //    std::cout << crdVecSolid1[i*3] << " " 
+    //              << crdVecSolid1[i*3+1] << " " 
+    //              << crdVecSolid1[i*3+2] << std::endl;
+    //std::cout << "ElmerFoamDriver:TransferDisplacementsToFluid:"
+    //          << " Fluid Coodinates are : " << std::endl;
+    //for (int i = 0; i < crdVecFluid1.size()/3; i++)
+    //    std::cout << crdVecFluid1[i*3] << " " 
+    //              << crdVecFluid1[i*3+1] << " " 
+    //              << crdVecFluid1[i*3+2] << std::endl;
     // Masoud: End
     
     // Masoud: Checking quality of displacement transfer
@@ -74,24 +75,24 @@ public:
     //    std::cout << fluidDisp1[i*3] << " " 
     //              << fluidDisp1[i*3+1] << " " 
     //              << fluidDisp1[i*3+2] << std::endl;
-    std::cout << "Solid displacements before transfer: " << std::endl;
-    std::cout << "Number of nodes: " << numberSolidNodes  <<std::endl;
+    std::cout << "ElmerFoamDriver:TransferDisplacementsToFluid: Solid displacements for node 0: " << std::endl;
+    //std::cout << "Number of nodes: " << numberSolidNodes  <<std::endl;
     //for (int i = 0; i < numberSolidNodes; i++)
-        std::cout << solidDisp1[152*3] << " " 
-                  << solidDisp1[152*3+1] << " " 
-                  << solidDisp1[152*3+2] << std::endl;
+        std::cout << solidDisp1[0*3] << " " 
+                  << solidDisp1[0*3+1] << " " 
+                  << solidDisp1[0*3+2] << std::endl;
     
     transferAgent->Interpolate("Displacements","solidDisplacement");
 
 
     COM_get_array(fluidsCoordinateName.c_str(),fluidsAgent->PaneID(),&fluidDisp2);
     COM_get_array(solidsCoordinateName.c_str(),structuresAgent->PaneID(),&solidDisp2);
-    std::cout << "Fluid displacements after transfer: " << std::endl;
-    std::cout << "Number of nodes: " << numberFluidNodes  <<std::endl;
+    std::cout << "ElmerFoamDriver:TransferDisplacementsToFluid: Fluid displacements for node 0: " << std::endl;
+    //std::cout << "Number of nodes: " << numberFluidNodes  <<std::endl;
     //for (int i = 0; i < numberFluidNodes; i++)
-        std::cout << fluidDisp2[93*3] << " " 
-                  << fluidDisp2[93*3+1] << " " 
-                  << fluidDisp2[93*3+2] << std::endl;
+        std::cout << fluidDisp2[0*3] << " " 
+                  << fluidDisp2[0*3+1] << " " 
+                  << fluidDisp2[0*3+2] << std::endl;
 
     // Original
     // transferAgent->Interpolate("Displacements","solidDisplacement");
@@ -126,11 +127,13 @@ public:
     double *tractions = NULL;
     COM_get_array((fluidsInterfaceName+".traction").c_str(),101,&tractions,&stride,&cap);
     int isize = cap*stride;
-    std::cout << "Tractions (driver): " << std::endl;
-    for(int i = 0;i < isize/3;i++)
-      std::cout << tractions[3*i + 0] << " "
-                << tractions[3*i + 1] << " "
-                << tractions[3*i + 2] << std::endl;
+    std::cout << "ElmerFoamDriver:TransferLoadsToStructures: " 
+              << "Transfering loads to the structures solver." << std::endl;
+    //std::cout << "Tractions (driver): " << std::endl;
+    //for(int i = 0;i < isize/3;i++)
+    //  std::cout << tractions[3*i + 0] << " "
+    //            << tractions[3*i + 1] << " "
+    //            << tractions[3*i + 2] << std::endl;
     transferAgent->Transfer("traction","Loads",true);
     //Get loads array from solid solver to check
     int solidLoadStride = 0, solidLoadCap = 0;
@@ -138,9 +141,9 @@ public:
     COM_get_array((structuresInterfaceName+".Loads").c_str(),11,&solidLoads,
                    &solidLoadStride,&solidLoadCap);
     int solidLoadsize = solidLoadCap*solidLoadStride;
-    for(int i = 0;i < solidLoadsize;i++){
-      std::cout << std::setprecision(15) << "solidLoads(" << i << ") = " << solidLoads[i] << std::endl;
-    }
+    //for(int i = 0;i < solidLoadsize;i++){
+    //  std::cout << std::setprecision(15) << "solidLoads(" << i << ") = " << solidLoads[i] << std::endl;
+    //}
     return(0); 
   };
   int TransferPressuresToStructures(fluidagent *fluidAgent,solidagent *solidAgent)
@@ -368,7 +371,14 @@ public:
     std::cout << "FSICoupling: Done with solution dump." << std::endl;
     return(0);
   }
-  virtual int Initialize(std::vector<std::string> &componentInterfaceNames){
+  virtual int Initialize(std::vector<std::string> &componentInterfaceNames, 
+          double finalTime, double timeStep){
+    
+    //Masoud 
+    std::cout << "ElmerFoamDriver:Initialize: Final Time = " << finalTime << std::endl;
+    std::cout << "ElmerFoamDriver:Initialize: Time Step  = " << timeStep << std::endl;
+    //Masoud: End
+
     
     if(componentInterfaceNames.size() < 2)
       return(1);
@@ -403,8 +413,8 @@ public:
     componentAgents[1] = structuresAgent;
     
     simulationTime = 0; // ? (restart)
-    simulationFinalTime = 5.0;
-    simulationTimeStep = 1e-3;
+    simulationFinalTime = finalTime;
+    simulationTimeStep = timeStep;
 
     //DumpSolution();
 
@@ -416,25 +426,33 @@ public:
     int maxSubSteps = 1000;
     int dumpinterval = 1;
     int systemStep = 0;
-    std::cout << "FSICoupling: Simulation final time = " << simulationFinalTime << std::endl;
+    std::cout << std::endl << std::endl 
+              << "***************************************** " << std::endl;
+    std::cout << "       Starting Stepping in Time          " << std::endl;
+    std::cout << "***************************************** " << std::endl << std::endl;
+    std::cout << "ElmerFoamDriver:Run: Summary of the simulation " << std::endl;
+    std::cout << "     Simulation Type       = ElmerFoamFSI" << std::endl;
+    std::cout << "     Simulation final time = " << simulationFinalTime << std::endl;
+    std::cout << "     Simulation time step  = " << simulationTimeStep << std::endl;
+    std::cout << std::endl;
     while(simulationTime < simulationFinalTime){
       
       // if(!(time%screenInterval) && (innerCount == 0)){
       // Write some stuff to screen
-      std::cout << "FSICoupling: System timestep " << ++systemStep 
+      std::cout << "ElmerFoamDriver:Run: System timestep " << ++systemStep 
                 << " @ Time = " << simulationTime << std::endl;
       // }
           
       if(!runMode){
         // Transfer displacements @ Tn to fluids
-        std::cout << "FSICoupling: Transferring displacements from structures to fluids @ time(" 
+        std::cout << "ElmerFoamDriver:Run: Transferring displacements from structures to fluids @ time(" 
                   << simulationTime << ")" << std::endl;
         TransferDisplacementsToFluid(structuresAgent,fluidsAgent);
       }
       if(runMode < 2){
         fluidsAgent->InitializeTimeStep(simulationTime);
         // Step fluids to get loads @ T(n+1)
-        std::cout << "FSICoupling: Stepping fluids to time(" 
+        std::cout << "ElmerFoamDriver:Run: Stepping fluids to time(" 
                   << simulationTime+simulationTimeStep << ")" << std::endl;
         fluidsAgent->Run(simulationTime+simulationTimeStep);
       }
@@ -460,7 +478,7 @@ public:
       if(!(runMode==1)){
         structuresAgent->InitializeTimeStep(simulationTime);
         // Step structures to get displacements @ T(n+1)
-        std::cout << "FSICoupling: Stepping structures to time(" 
+        std::cout << "ElmerFoamDriver:Run: Stepping structures to time(" 
                   << simulationTime+simulationTimeStep << ")" << std::endl;
         structuresAgent->Run(simulationTime+simulationTimeStep);
       }
@@ -469,7 +487,7 @@ public:
       bool converged = true;
       if(converged){
         simulationTime += simulationTimeStep;
-        std::cout << "FSICoupling: Converged at time(" 
+        std::cout << "ElmerFoamDriver:Run: Converged at time(" 
                   << simulationTime << ")" << std::endl;
         if(runMode < 2)
           fluidsAgent->FinalizeTimeStep(simulationTime+simulationTimeStep);
@@ -479,7 +497,7 @@ public:
       } else {
         innerCount++;
         if(innerCount > maxSubSteps){
-          std::cout << "FSICoupling: Failed to converge after "
+          std::cout << "ElmerFoamDriver:Run: Failed to converge after "
                     << maxSubSteps << ", giving up." << std::endl;
           return(1);
         }
@@ -546,7 +564,7 @@ namespace ElmerFoamFSI {
     
     double timestep = 0;
     timestep = userParameters.GetValue<double>("TimeStep");
-    if(timestep <= 0){
+    if(timestep <= 1e-5){
       // warn = default
       timestep = 1e-5;
     }
@@ -582,7 +600,7 @@ namespace ElmerFoamFSI {
     componentInterfaceNames.push_back("Simpal");
 
     FunctionEntry("coupler.Init");
-    fsiCoupler.Initialize(componentInterfaceNames);
+    fsiCoupler.Initialize(componentInterfaceNames, time_final, timestep);
     FunctionExit("coupler.Init");
 
     FunctionEntry("coupler.Run");
