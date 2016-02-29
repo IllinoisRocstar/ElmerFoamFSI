@@ -107,9 +107,7 @@
      INTEGER :: MyN, CurrentInterval
      TYPE(ValueList_t), POINTER :: ptr
      
-     WRITE(6,*) '*******************************************************'
-     WRITE(6,*) '***********INSIDE UpdateLoads Function*****************'
-     WRITE(6,*) '*******************************************************'
+     WRITE(6,*) 'MyTimeModule:UpdateLoads: Updating loads on the structure'
     
      IF (MyVerbosity > 3) THEN
        WRITE(6,*) 'sTime(1) = ', sTime(1)
@@ -118,34 +116,43 @@
      END IF
  
      !printing the loads as a check
-     !IF( MyVerbosity > 3) THEN
+     IF( MyVerbosity > 3) THEN
        WRITE(*,*) 'global%NodeLoads:'
        DO t = 1, global%nNodes
            WRITE(*,*) global%NodeLoads(3*(t-1) + 1), global%NodeLoads(3*(t-1) + 2), &
            global%NodeLoads(3*(t-1) + 3)
        END DO
-     !END IF
-     !IF( MyVerbosity > 3) THEN
+     END IF
+     IF( MyVerbosity > 3) THEN
        WRITE(*,*) 'global%PreviousLoads:'
        DO t = 1, global%nNodes
          DO j =1,3
            WRITE(*,*) global%PreviousLoads(j,t)
          END DO
        END DO
-     !END IF
+     END IF
   
      !Setting the loads accessible by Elmer to the interpolated value
      !for the current time
-     WRITE(*,*) 'Time Step Summary '
-     WRITE(*,*) 'sTime(1) = ', sTime(1), ' PreviousTime = ', PreviousTime,&
-                'FinalTime = ', FinalTime
+     WRITE(*,*) 'MyTimeModule:UpdateLoads: Time Step Summary '
+     WRITE(*,*) '    sTime(1)     = ', sTime(1)
+     WRITE(*,*) '    PreviousTime = ', PreviousTime
+     WRITE(*,*) '    FinalTime    = ', FinalTime
      !Original
      DO t = 1, global%nNodes
        j=1
        DO j =1,3
-         CurrentModel % NodeLoadsPass(j,t) = global%PreviousLoads(j,t) + &
-           (global%NodeLoads(3*(t-1) + j) - global%PreviousLoads(j,t))&
-           *(sTime(1) - PreviousTime)/(FinalTime - PreviousTime)
+         IF (global%IsLoadFreeNode(t)) THEN
+           !Masoud : setting node loads to zero for beam end nodes in the
+           !Heron-Turek problem
+           CurrentModel % NodeLoadsPass(j,t) = 0.d0
+           WRITE(*,*) '   Node #',t,' is load free'
+           !Masoud End
+         ELSE
+           CurrentModel % NodeLoadsPass(j,t) = global%PreviousLoads(j,t) + &
+             (global%NodeLoads(3*(t-1) + j) - global%PreviousLoads(j,t))&
+             *(sTime(1) - PreviousTime)/(FinalTime - PreviousTime)
+         END IF
        END DO
      END DO
      !Original End
@@ -161,16 +168,16 @@
     
  
      !printing the loads as a check
-     !IF( MyVerbosity > 3) THEN
+     IF( MyVerbosity > 3) THEN
        WRITE(*,*) 'CurrentModel % NodeLoadsPass:'
        DO t = 1, global%nNodes
          DO j =1,3
            WRITE(*,*) CurrentModel % NodeLoadsPass(j,t)
          END DO
        END DO
-     !END IF
+     END IF
  
-     WRITE(6,*) '*******************************************************'
+     WRITE(6,*) 'MyTimeModule:UpdateLoads: Finishing'
   
   END SUBROUTINE UpdateLoads
 !----------------------------------------------------------------------
@@ -218,7 +225,7 @@ SUBROUTINE MyTimeStepper(global,runs)
 
 
        RealTimestep = 1
-       WRITE(*,*) 'Timesteps(interval) = ', Timesteps(interval)
+       WRITE(*,*) 'MyTimeModule:MyTimeStepper: Timesteps(interval) = ', Timesteps(interval)
        DO timestep = 1,Timesteps(interval)
 
          cum_Timestep = cum_Timestep + 1
@@ -453,8 +460,8 @@ SUBROUTINE MyTimeStepper(global,runs)
             DEALLOCATE( xx, xxnrm, yynrm, prevxx )
          ELSE ! Adaptive timestepping
             !IF (MyVerbosity > 3) THEN
-              WRITE(*,*) 'Calling SolveEquations (no transient and no adaptive)'
-              WRITE(*,*) 'Transient = ', Transient
+              WRITE(*,*) 'MyTimeModule:MyTimeStepper: Calling SolveEquations'
+              WRITE(*,*) '   Transient = ', Transient
             !END IF
             CALL SolveEquations( CurrentModel, dt, Transient, &
               CoupledMinIter, CoupledMaxIter, SteadyStateReached, RealTimestep )

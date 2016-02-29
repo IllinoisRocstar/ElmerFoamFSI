@@ -198,6 +198,8 @@ public:
   int ReadFSIControls();
   int Step();
   int StepFluidAlone();
+  int StepFluidNonItr();
+  int StepFluidItr();
   int Dump();
 
 

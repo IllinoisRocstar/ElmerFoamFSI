@@ -51,8 +51,7 @@ public:
     //    std::cout << crdVecSolid1[i*3] << " " 
     //              << crdVecSolid1[i*3+1] << " " 
     //              << crdVecSolid1[i*3+2] << std::endl;
-    //std::cout << "ElmerFoamDriver:TransferDisplacementsToFluid:"
-    //          << " Fluid Coodinates are : " << std::endl;
+    //std::cout << "Fluid Coodinates are : " << std::endl;
     //for (int i = 0; i < crdVecFluid1.size()/3; i++)
     //    std::cout << crdVecFluid1[i*3] << " " 
     //              << crdVecFluid1[i*3+1] << " " 

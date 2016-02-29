@@ -63,7 +63,7 @@ SUBROUTINE Initializer(global, runs)
    CALL SET_STDIO_BUFS()
 #endif
 
-   WRITE(6,*) 'Initializer *************************************'
+   WRITE(6,*) 'SolverModule:Initializer: Starting ...'
 
    CALL envir( 'ELMERSOLVER_OUTPUT_TOTAL'//CHAR(0), toutput, tlen )
    Silent = toutput(1:1)=='0' .OR. toutput(1:5)=='false'
@@ -187,7 +187,9 @@ SUBROUTINE Initializer(global, runs)
    ALLOCATE(global%NodeDisplacements(3*global%nNodes))
    !Masoud
    ALLOCATE(global%PreviousNodeDisplacements(3*global%nNodes))
-   global%PreviousNodeDisplacements = 0.0d0
+   global%PreviousNodeDisplacements = 0.d0
+   ALLOCATE(global%IsLoadFreeNode(global%nNodes))
+   global%IsLoadFreeNode = .FALSE.
    !Masoud End
    ALLOCATE(global%MyToElmerNodes(global%nNodes))
    IF( MyVerbosity > 3) THEN 
@@ -328,11 +330,20 @@ SUBROUTINE Initializer(global, runs)
             global%NodeLoads(3*(nindex-1) + 2) = 0.0
             global%NodeLoads(3*(nindex-1) + 3) = 0.0
             global%NodePressures(nindex) = 0.0
+            !Masoud: Marking LoadLessNodes
+            IF (ABS(ElementNodes % x(nt) - 0.6) < 10.0*EPSILON(1.0)) THEN
+               !global%IsLoadFreeNode(nindex-1) = .TRUE.
+            END IF
+            !Masoud End
          END DO
       END IF
    END DO
 
-   IF( MyVerbosity >= 50) THEN 
+   !Masoud : printing IsLoadFreeNode
+   !WRITE(*,*) 'global%IsLoadFreeNode = ', global%IsLoadFreeNode
+   !Masoud End
+
+   IF( MyVerbosity >= 5) THEN 
      WRITE(6,*) 'global%MyToElmerNodes = '
      DO i=1,global%nNodes
         WRITE(6,*) i,' = ',global%MyToElmerNodes(i)
@@ -432,7 +443,7 @@ SUBROUTINE Initializer(global, runs)
    END IF
 
 
-   WRITE(6,*) 'Initializer DONE*********************************'
+   WRITE(6,*) 'SolverModule:Initializer: Done.....'
 
    NULLIFY(TempNodeList)
  
@@ -539,7 +550,7 @@ SUBROUTINE RUN(global, runs, tFinal)
 !      Here we actually start the simulation ....
 !      First go trough timeintervals
 !------------------------------------------------------------------------------
-          WRITE(*,*) 'global%nNodes = ',global%nNodes
+          !WRITE(*,*) 'global%nNodes = ',global%nNodes
           IF (MyVerbosity > 3) WRITE(*,*) 'Calling MyTimeStepper' 
           CALL MyTimeStepper(global,runs)
           IF (MyVerbosity > 3) WRITE(*,*) 'Done with MyTimeStepper' 
@@ -561,10 +572,10 @@ SUBROUTINE RUN(global, runs, tFinal)
    !Run is finished
    PreviousTime = FinalTime
 
-   WRITE(*,*) 'SolverModule runs = ',runs
-   WRITE(*,*) 'SolverModule CurrentModel%GetTestLoads = ',&
+   WRITE(*,*) 'SolverModule:Run: runs = ',runs
+   WRITE(*,*) 'SolverModule:Run: CurrentModel%GetTestLoads = ',&
               CurrentModel%GetTestLoads
-   WRITE(*,*) 'SolverModule CurrentModel%UDFUsed = ',&
+   WRITE(*,*) 'SolverModule:Run: CurrentModel%UDFUsed = ',&
               CurrentModel%UDFUsed
    IF (runs == 1 .AND. CurrentModel%GetTestLoads .eqv. .TRUE. & 
       .AND. CurrentModel%UDFUsed .eqv. .TRUE.) THEN
@@ -589,9 +600,8 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
    DOUBLE PRECISION :: tFinal
    INTEGER :: nCount, counter, nCountMax
 
-   WRITE(6,*)'-------------------------------------------'
-   WRITE(6,*) '**********INSIDE UpdateDisplacements Function*********'
-   WRITE(6,*)'-------------------------------------------'
+   WRITE(*,*) 'SolverModule:UpdateDisplacements:',&
+              ' Reporting displacements to the fluid solver'
 
    !access the displacements here
    Solver => CurrentModel % Solvers(global%SolverId)
@@ -687,13 +697,13 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
 
                      ! Masoud
                      !Printing old and new displacements for the user
-                     WRITE(*,*) '----------------------'
-                     WRITE(*,*) ' new disps= ', Displacement(nk+1),&
-                                Displacement(nk+2), Displacement(nk+3)
-                     WRITE(*,*) ' old disps= ',&
-                     global%PreviousNodeDisplacements(3*(nCount-1) + 1),&
-                     global%PreviousNodeDisplacements(3*(nCount-1) + 2), &
-                     global%PreviousNodeDisplacements(3*(nCount-1) + 3)
+                     !WRITE(*,*) '----------------------'
+                     !WRITE(*,*) ' new disps= ', Displacement(nk+1),&
+                     !           Displacement(nk+2), Displacement(nk+3)
+                     !WRITE(*,*) ' old disps= ',&
+                     !global%PreviousNodeDisplacements(3*(nCount-1) + 1),&
+                     !global%PreviousNodeDisplacements(3*(nCount-1) + 2), &
+                     !global%PreviousNodeDisplacements(3*(nCount-1) + 3)
                      !Calculating displacement differences to pass to fluid solver
                      global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)&
                      - global%PreviousNodeDisplacements(3*(nCount-1) + 1)
@@ -707,10 +717,10 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
                      global%PreviousNodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)
                      global%PreviousNodeDisplacements(3*(nCount-1) + 3) = Displacement(nk+3)
                      !Priniting increament displacement values for the user
-                     WRITE(*,*) ' increament disps= ', global%NodeDisplacements(3*(nCount-1) + 1),&
-                     global%NodeDisplacements(3*(nCount-1) + 2), &
-                     global%NodeDisplacements(3*(nCount-1) + 3)
-                     WRITE(*,*) '----------------------'
+                     !WRITE(*,*) ' increament disps= ', global%NodeDisplacements(3*(nCount-1) + 1),&
+                     !global%NodeDisplacements(3*(nCount-1) + 2), &
+                     !global%NodeDisplacements(3*(nCount-1) + 3)
+                     !WRITE(*,*) '----------------------'
                      ! Masoud : End
                  ELSE
                      WRITE(*,*) 'StressSol % DOFs = ', StressSol % DOFs
@@ -769,10 +779,6 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
       END IF
    END DO
 
-   WRITE(6,*)'-------------------------------------------'
-   WRITE(*,*) 'UpdateDisps global%NodeDisplacements = '
-   WRITE(6,*)'-------------------------------------------'
-
    IF( MyVerbosity > 50) THEN
      WRITE(6,*) 'tFinal = ', tFinal
      WRITE(6,*) 'NodeDisplacements'
@@ -807,7 +813,7 @@ SUBROUTINE Finalize(global, runs)
 
    CurrentModel => global%MyModel
 
-   WRITE(*,*) 'In Finalize *************************'
+   WRITE(*,*) 'SolverModule:Finalize: Finishing simulation'
 
    CALL MyFinalize(runs)
 
@@ -823,7 +829,7 @@ SUBROUTINE Finalize(global, runs)
       END IF
    END IF
 
-   WRITE(6,*) 'End Finalize. FirstTime = ',FirstTime 
+   WRITE(6,*) 'SolverModule:Finalize: End Finalize. FirstTime = ',FirstTime 
 
 END SUBROUTINE Finalize
 
