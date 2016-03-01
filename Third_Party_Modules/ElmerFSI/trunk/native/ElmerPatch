@@ -1,14 +1,6 @@
---- CMakeLists.txt_orig	2016-02-19 12:44:55.436668109 -0600
-+++ CMakeLists.txt	2016-02-19 12:45:25.600066712 -0600
-@@ -296,3 +296,5 @@ IF(WITH_MPI)
-     \${CMAKE_INSTALL_PREFIX}/bin/ElmerSolver.exe)")
-   ENDIF()
- ENDIF()
-+
-+ADD_SUBDIRECTORY(ElmerModule)
---- Types.F90_orig	2016-02-19 12:38:44.300774483 -0600
-+++ Types.F90	2016-02-19 12:42:21.015632013 -0600
-@@ -770,6 +770,15 @@ END INTERFACE
+--- Types.F90_orig	2015-04-02 19:27:15.679036037 -0500
++++ Types.F90	2015-04-02 19:02:43.528995196 -0500
+@@ -690,6 +690,13 @@ END INTERFACE
      TYPE Model_t
  !------------------------------------------------------------------------------
  !
@@ -16,32 +8,20 @@
 +     INTEGER, POINTER :: ElmerToMyNodes(:)
 +!    Loads at the nodes to pass to UDF
 +     DOUBLE PRECISION, POINTER :: NodeLoadsPass(:,:)
-+!    Pressures at the nodes to pass to UDF
-+     DOUBLE PRECISION, POINTER :: NodePressuresPass(:)
 +!    Two values used for testing in the UDF
 +     LOGICAL :: GetTestLoads = .TRUE., UDFUsed = .FALSE.
 +!
  !     Coodrinate system dimension + type
  !
        INTEGER :: DIMENSION, CoordinateSystem
---- SParIterComm.F90_orig	2016-02-19 12:42:45.065949354 -0600
-+++ SParIterComm.F90	2016-02-19 12:44:42.427497196 -0600
-@@ -135,7 +135,7 @@ CONTAINS
+--- SParIterComm.F90_orig	2015-04-01 14:02:03.916548054 -0500
++++ SParIterComm.F90	2015-04-01 14:08:58.460440947 -0500
+@@ -132,12 +132,12 @@ CONTAINS
+     ParEnv % ActiveComm = MPI_COMM_WORLD
+ 
      ierr = 0
- #ifdef _OPENMP
-     req = MPI_THREAD_FUNNELED
--    CALL MPI_Init_Thread(req, prov, ierr)
-+!    CALL MPI_Init_Thread(req, prov, ierr)
-     IF (prov < req) THEN
-       WRITE( Message, '(A,I0,A,I0,A,I0,A)' ) &
-               'MPI Thread Initialization failed! (req=', req,&
-@@ -144,13 +144,13 @@ CONTAINS
-       CALL Fatal( 'ParCommInit', Message )
-     END IF
- #else
 -    CALL MPI_INIT( ierr )
 +!    CALL MPI_INIT( ierr )
- #endif
      IF ( ierr /= 0 ) RETURN
  
      CALL MPI_COMM_SIZE( MPI_COMM_WORLD, ParEnv % PEs, ierr )
@@ -51,7 +31,7 @@
      ELSE
         CALL MPI_COMM_RANK( MPI_COMM_WORLD, ParEnv % MyPE, ierr )
         OutputPE = ParEnv % MyPe
-@@ -2035,7 +2035,7 @@ tstart = realtime()
+@@ -1998,7 +1998,7 @@ tstart = realtime()
             !---------------------------------------------------
             WRITE(*,'(A,I4,A,I6)') 'SParIterGlobalNumbering: PE:', ParEnv % MyPE+1, &
                  ' Could not determine owner for node(loc)=', i
@@ -60,7 +40,7 @@
          END IF
          !
          ! Finalize by sorting the parent table:
-@@ -2414,7 +2414,7 @@ tstart = realtime()
+@@ -2377,7 +2377,7 @@ tstart = realtime()
       Iterate = Iterate+1
       IF(Iterate > MaxIterates ) THEN
          WRITE(*,'(A,I6,A)') 'SParIterGlobalNumbering: PE: ', ParEnv % MyPE+1,'Max iterations exceeded'
@@ -69,7 +49,7 @@
       END IF
       DO i = n, Mesh % NumberOfNodes
          Mesh % ParallelInfo % GlobalDOFs(i) = 0
-@@ -4716,7 +4716,7 @@ SUBROUTINE ParEnvFinalize()
+@@ -4679,7 +4679,7 @@ SUBROUTINE ParEnvFinalize()
  
    !*********************************************************************
    CALL MPI_BARRIER( MPI_COMM_WORLD, ierr )
@@ -78,3 +58,11 @@
  
    IF ( ierr /= 0 ) THEN
       WRITE( Message, * ) 'MPI Finalization failed ! (ierr=', ierr, ')'
+--- CMakeLists.txt.orig	2016-03-01 10:06:00.283031511 -0600
++++ CMakeLists.txt	2016-03-01 10:07:07.714901743 -0600
+@@ -290,3 +290,5 @@ IF(WITH_MPI)
+     \${CMAKE_INSTALL_PREFIX}/bin/ElmerSolver.exe)")
+   ENDIF()
+ ENDIF()
++
++ADD_SUBDIRECTORY(ElmerModule)
