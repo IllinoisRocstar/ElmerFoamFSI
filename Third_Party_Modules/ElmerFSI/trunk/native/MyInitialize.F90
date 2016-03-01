@@ -228,7 +228,7 @@
        
        CALL InitializeElementDescriptions
        
-       WRITE(*,*) "Setting FirstTime to FALSE"
+       WRITE(*,*) "MyInitialize: Setting FirstTime to FALSE"
        FirstTime = .FALSE.
      END IF
 
@@ -316,7 +316,7 @@
          CoordTransform = ListGetString(CurrentModel % Simulation,'Coordinate Transformation',GotIt)
          IF( GotIt ) THEN
            ! Masoud
-           WRITE(*,*) 'Coordinate Transformation is activated for Elmer.\n'
+           WRITE(*,*) 'MyInitialize: Coordinate Transformation is activated for Elmer.\n'
            ! Masoud : End
            CALL CoordinateTransformation( CurrentModel % Meshes, CoordTransform, &
                CurrentModel % Simulation, .TRUE. )
@@ -337,7 +337,7 @@
          END IF
 
          IF (MyVerbosity > 3) THEN
-            WRITE(6,*) 'CurrentModel % NumberOfNodes&
+            WRITE(6,*) 'MyInitialize: CurrentModel % NumberOfNodes&
             = ', CurrentModel % NumberOfNodes
          END IF
 
