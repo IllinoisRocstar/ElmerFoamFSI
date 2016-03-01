@@ -1,184 +1,85 @@
-///
-/// @mainpage ElmerFoamFSI Documentation
-/// 
-/// @section elmerfoamfsi_intro Introduction 
-/// <b><i>ElmerFoamFSI</i></b> is an aeroelastic simulation application built up 
-/// from <b><i>OpenFOAM</i></b> CFD and <b><i>Elmer</i></b> CSM coupled through the <b><i>IMPACT</i></b> 
-/// multiphysics software integration infrastructure.
-///
-/// @section elmerfoamfsi_installation Installation
-/// The general quick-start steps for installing <b><i>ElmerFoamFSI</i></b> are as follows:
-///
-/// @note The instructions presented herein require a Linux terminal. As such the commands are fairly general and are not shell specific. For these reasons instructions that require setting paths are left deliberately vague. Users should set path variables using the form dictated by their shell environment. The general forms for bash and csh are given here for ease-of-use. Note the syntax; it is <b><i>very</i></b> important! Users can determine their current shell environment by using SHELL.
-/// > echo $SHELL \n
-/// > /bin/bash: export USR_VAR="/path/to/user/location/" \n
-/// > ../bin/csh: setenv USR_VAR /path/to/user/location
-///
-/// @warning 
-/// * Users will need to modify one critical file <i>before</i> building <b><i>OpenFOAM</i></b>. These changes enable options that are used to build other components of the <b><i>ElmerFoamFSI</i></b> package. If users do not follow this step, <b><i>OpenFOAM</i></b> will need to be rebuilt after enabling these options.
-/// * According to the <b><i>Elmer</i></b> forum, <b><i>Elmer</i></b> uses gfortran of versions 4.8 or later. Be sure to start with v-4.8+, or users will have rebuild the system from scratch. A consistent toolchain is <b><i>mandatory</i></b> to install the <b><i>ElmerFoamFSI</i></b> application!
-///
-/// ###1. Install <b><i>OpenFOAM</i></b> extend from [OpenFOAM-extend](http://www.extend-project.de/ "OpenFOAM Extend Project")
-///    * Download *foam-extend* latest release
-///    * Unpack the source into <b>~/foam/foam-extend-<version></b>
-///    * Review the native <b><i>OpenFOAM</i></b> build instructions: <b>~/foam/foam-extend-<version>/doc/buildInstructions</b>
-///    * Install system packages (optional, but recommended)
-///    * Modify the <i>\%build</i> section of the spec file associated with the lastest version of openmpi (e.g., openmpi-1.6.5.spec)
-/// > cd ~/foam/foam-extend-<version> \n
-/// > cd ./ThirdParty/rpmBuild/SPECS \n
-/// > ls openmpi* \n
-/// > <i>open associated spec file using editor of choice (e.g., vi or emacs)</i>
-///    ** In the section labeled "export WM settings in a form that GNU configure recognizes," add the "-fPIC" option flag to the <i>CC</i> and <i>CXX</i> lines:
-/// > [ -n "$WM_CC" ]         &&  export CC="$WM_CC -fPIC" \n
-/// > [ -n "$WM_CXX" ]        &&  export CXX="$WM_CXX -fPIC" \n
-///    ** Just below this same section, add two export statements before "unset mpiWith":
-/// > export FC="gfortran -fPIC" \n
-/// > export F90="gfortran -fPIC" \n
-/// > unset mpiWith
-///    ** Slightly farther down in the <i>./configure</i> section, delete the following lines:
-/// > \-\-disable-mpi-f77 \n
-/// > \-\-disable-mpi-f90 \n
-/// > \-\-disable-mpi-cxx
-///    * Source the appropriate shell script (bash or csh)
-///    * Build with (or without) <b><i>ParaView</i></b> (user choice)
-///    * Review the build output to make sure that the 5 stages of <b><i>OpenFOAM</i></b> built properly
-/// > cd ~/foam/foam-extend\*\n 
-/// > source etc/cshrc \n
-/// > ./Allwmake.firstInstall | tee build_firstInstall.out \n
-/// > grep "Done" build_firstInstall.out
-///
-/// @note Users can choose to install <b><i>OpenFOAM</i></b> in an alternate location than <b>~/foam</b> (i.e., /usr/home), but doing so requires setting an additional path. Here <b>$USR_DIR</b> is the path to the unpacked <b><i>OpenFOAM</i></b> source. This location <b>must</b> contain the source directory <b>/foam/foam-extend-<version></b>.
-/// > FOAM_INST_DIR = ~/[USR_DIR] \n
-/// Users <b>must also</b> then modify the shell script accordingly (e.g., ~/etc/cshrc):
-/// > set foamInstall=$FOAM_INST_DIR/$WM_PROJECT \n
-/// > setenv WM_PROJECT_INST_DIR $FOAM_INST_DIR/$WM_PROJECT \n
-/// > setenv WM_PROJECT_USER_DIR $FOAM_INST_DIR/$WM_PROJECT/$USER-$WM_PROJECT_VERSION
-///
-/// ###2. Set up the proper user build environment for the rest of the toolchain
-///    * (Re-)source the appropriate shell script (bash or csh)
-/// > source ~/foam/foam-extend-<version>/etc/cshrc
-///    * Set the <i>CC</i>, <i>CXX</i>, and <i>FC</i> environment variables
-/// > CC = mpicc\n
-/// > CXX = mpicxx\n
-/// > FC = mpif90
-///    * Ensure that the correct version of compiler wrappers are being used. The system should return some <b><i>OpenFOAM</i></b> path to MPI and the system version of the compiler to which the wrapper points.
-/// > which mpicc  \n
-/// > mpicc \-\-version \n
-/// > which mpicxx \n
-/// > mpicxx \-\-version \n
-/// > which mpif90 \n
-/// > mpif90 \-\-version \n
-///    * If users receive a system error, it is likely associated with missing modifications to the openmpi spec file.
-///
-/// ###3. Install <b><i>IMPACT</i></b> and <b><i>IRAD</i></b> infrastructures from [ElmerFoamSupport](http://openmultiphysics.org)
-/// Because the <b><i>IMPACT</i></b> and <b><i>IRAD</i></b> infrastructures are really just used as <i>support</i> libraries, the following build scenario is recommended. Note that these support libraries should be built <i>out-of-source</i> <b>but</b> installed <i>in the same place</i>.
-///    * Create a new directory for ElmerFoamSupport
-///    * Create a new subdirectory for install
-/// > mkdir /user/desired/location/ElmerFoamSupport \n
-/// > cd ~/ElmerFoamSupport \n
-/// > mkdir support_install \n
-///    * Download latest release of <b><i>IRAD</i></b>
-///    * Unpack <b><i>IRAD</i></b> into ~/ElmerFoamSupport/ location (e.g., ~/irad_source) 
-///    * Install <b><i>IRAD</i></b>
-/// > cd ~/ElmerFoamSupport \n
-/// > git clone git://github.com/IllinoisRocstar/IRAD irad \n
-/// > cd ~/ElmerFoamSupport/irad_build \n
-/// > cmake -DCMAKE_INSTALL_PREFIX=/full/path/to/selected/support/install ../short/path/to/irad/source \n
-/// > make \n
-/// > make install \n
-///    * Download latest release of <b><i>IMPACT</i></b>
-///    * Unpack <b><i>IMPACT</i></b> into ~/ElmerFoamSupport/ location (e.g., ~/impact_source)
-///    * Install <b><i>IMPACT</i></b> and include <b><i>IRAD</i></b> and HDF4 dependencies
-/// > sudo yum install hdf4 hdf4-devel \n
-/// > cd ~/ElmerFoamSupport \n
-/// > git clone git://github.com/IllinoisRocstar/IMPACT impact \n
-/// > cd ~/ElmerFoamSupport/impact_build \n
-/// > cmake -DCMAKE_INSTALL_PREFIX=/full/path/to/selected/support/install ../short/path/to/impact/source \n
-/// > make \n
-/// > make install \n
-///
-/// ###4. Install <b><i>Elmer</i></b> from [CSC-Elmer](https://www.csc.fi/web/elmer)
-///    * Download latest release of <b><i>Elmer</i></b>
-///    * Unpack <b><i>Elmer</i></b> into desired location (e.g., ~/elmer_source)
-///    * It is recommended to build <b><i>Elmer</i></b> out-of-source (i.e., separate build and install directories)
-/// > cd ~/elmer_build \n
-/// > cmake -DCMAKE_INSTALL_PREFIX=/full/path/to/selected/elmer/install ../short/path/to/elmer/source \n
-/// > make \n
-/// > make install \n
-///
-/// ###5. Update (patch) <b><i>OpenFOAM</i></b> and rebuild (build the <b><i>OpenFoamFSI</i></b> module)
-///    * Obtain <b><i>OpenFOAM</i></b> module native source from [OpenFoamModule](http://openmultiphysics.org)
-///    * Unpack <b><i>OpenFoamFSI</i></b> module in desired location (e.g., ~/OpenFoamFSIdriver)
-///    * Set IRMULTIPHYSICS to install location of ElmerFoamSupport for IMPACT / IRAD dependencies
-/// > mkdir /user/desired/location/OpenFoamFSIdriver \n 
-/// > git clone git://github.com/openmultiphysics/OpenFoamModule.git OpenFoamModule \n
-/// > IRMULTIPHYSICS = /full/path/to/selected/ElmerFoamSupport/install \n
-///    * Check the definition of MPI_HOME that specifies the location of the desired openmpi libraries. \n
-/// The system should return some path containing "~/foam/foam-extend-<version>/ThirdParty/packages/..." \n
-/// The path will look similar to the location of the spec file edited in Step 1.
-/// > echo $MPI_HOME
-///    * Create the <b><i>OpenFoamFSI</i></b> library that will be automatically copied into the library directory of the unaltered <b><i>OpenFOAM</i></b>
-/// > cd ~/OpenFoamFSIdriver/OpenFoamModule/native \n
-/// > wmake libso .
-///    * Build the <b><i>OpenFoamFSI</i></b> driver and test: 14 tests in approximately 1.5 min.
-/// > cd ~/OpenFoamFSIdriver/OpenFoamModule/ \n
-/// > cmake -DCMAKE_PREFIX_PATH=/full/path/to/selected/ElmerFoamSupport/install \n
-/// > make \n
-/// > make test \n
-///
-/// ###6. Update (patch) <b><i>Elmer</i></b> and rebuild (build the <b><i>ElmerFSI</i></b> module)
-///    * Obtain <b><i>Elmer</i></b> module native source from [ElmerModule](http://openmultiphysics.org) 
-///    * Place module native source directory <b>inside</b> existing source: <b>~/elmer_source/fem/src</b>
-/// > cd ~/elmer_source/fem/src \n
-/// > git clone git://github.com/openmultiphysics/ElmerModule.git ElmerModule \n
-///    * Edit the <i>CMakeList.txt</i> file in <b>~/elmer_source/fem/src</b> to include this new directory name
-/// > ADD_SUBDIRECTORY (ElmerModule) \n
-///    * Patch the <b><i>Elmer</i></b> source
-/// > patch < ElmerModule/ElmerPatch
-///    * Remove the old directories and reinstall the patched <b><i>Elmer</i></b> source, linking to IMPACT
-/// > rm -r ~/elmer_build ~/elmer_install \n
-/// > mkdir ~/elmer_build ~/elmer_install \n
-/// > cd ~/elmer_build \n
-/// > cmake -DCMAKE_PREFIX_PATH=/full/path/to/selected/ElmerFoamSupport/install -DCMAKE_INSTALL_PREFIX=/full/path/to/selected/elmer/install ../short/path/to/elmer/source \n
-/// > make \n
-/// > make install \n
-///    * Set the LD library path to the location of the Elmer native libraries.
-/// > LD_LIBRARY_PATH = /full/path/to/selected/patched/Elmer/install/lib/ $LD_LIBRARY_PATH \n
-///    * Obtain, build, and test the <b><i>ElmerFSI</i></b> driver: XX tests in approximately XX min.
-/// > git clone git://github.com/openmultiphysics/ElmerModuleDriver.git ElmerModuleDriver \n
-/// > cd ~/build_ElmerModuleDriver/ \n
-/// > cmake -DCMAKE_PREFIX_PATH=/full/path/to/selected/ElmerFoamSupport/install ../short/path/to/ElmerModuleDriver/source \n
-/// > make \n
-/// > make test \n
-///
-/// @warning After completing <b>Steps 1 - 6</b>, users should have the following installed components
-/// > ~/foam (+ module) \n
-/// > ~/elmer (+ module) \n
-/// > ~/fsiSupport (IMPACT + IRAD)
-/// If, for whatever reason, one or more of these directories does not exist, start over at the appropriate step! \n
-/// If one or more of these directories does not appear to be correct, remove the attempted build of the associated component, and start over at the appropriate step! O_o \n
-/// If everything looks good, the last step in building <b><i>ElmerFoamFSI</i></b> can be completed! ^_^
-///
-/// ###7. Install <b><i>ElmerFoamFSI</i></b> orchestrator (OpenFOAM-Elmer system driver for FSI problems)
-///    * Obtain <b><i>ElmerFoamFSI</i></b> native source from [ElmerFoamFSIdriver](http://openmultiphysics.org) 
-///    * Build and test the <b><i>ElmerFoamFSI</i></b> driver: XX tests in approximately XX min.
-/// > git clone git://github.com/openmultiphysics/ElmerFoamFSI.git ElmerFoamFSI \n
-/// > cd ~/build_ElmerFoamFSI/ \n
-/// > cmake -DCMAKE_PREFIX_PATH=/full/path/to/selected/ElmerFoamSupport/install ../short/path/to/ElmerFoamFSI/source \n
-/// > make \n
-/// > make docs \n
-/// > make test \n
-///
-/// @section irsec Illinois Rocstar 
-/// @subsection irproj Project Template 
-/// ElmerFoamFSI uses the Illinois Rocstar Project Template [IRProject](http://irweb/irproject) and
-/// uses the following internal and third-party packages:
-/// * [OpenFOAM](http://openfoam.org "Open Source CFD")
-/// * [Elmer](http://elmerfem.org "Open Source CSM")
-/// * [CMake](http://www.cmake.org "Cross Platform Make")
-/// * [CTest](http://cmake.org/Wiki/CMake/Testing_With_CTest "CMake-integrated Testing Tool") 
-/// * [Doxygen](http://www.stack.nl/~dimitri/doxygen/ "Code documentation system")
-/// * [IMPACT](http://openmultiphysics.org "Illinois Multiphysics Application Coupling Toolkit")
-/// * [IRAD](http://irweb/irad)
-/// * [MPI](http://www.mcs.anl.gov/research/projects/mpi/ "Message Passing Interface")
-///
+/**
+
+@mainpage ElmerFoamFSI Documentation
+
+@section elmerfoamfsi_intro Introduction 
+<b><i>ElmerFoamFSI</i></b> is an aeroelastic simulation application built up 
+from <b><i>OpenFOAM</i></b> CFD and <b><i>Elmer</i></b> CSM coupled through the <b><i>IMPACT</i></b> 
+multiphysics software integration infrastructure.
+
+@section quick_start Build and Install
+
+ElmerFoamFSI comes with a build script that should work on a Linux terminal. This scripts essentially executes cmake, make, and make install for the various components of the project.  The commands in these build instructions assume use of a Linux terminal. ElmerFoamFSI requires C, C++, and Fortran compilers. Additionally, it requires gfortran of version greater than 4.8. Before beginning ensure that your gfortran compiler meets this requirement.
+
+###1. Obtain the required submodules
+
+Navigate into the top level directory for ElmerFoamFSI.
+
+> cd ElmerFoamFSI
+
+Issue the following command to obtain the necessary submodules from GitHub:
+
+> git submodule update \--init \--recursive
+ 
+The directories IMPACT, IMPACT/IRAD/ elmerfem, and foam should now be unempty.
+
+###2. Execute the build script
+
+Call the build script from the top level ElmerFoamFSI directory. Provide it with the argument "first," since this is the first time building it.
+
+> ./BuildScript first
+
+The entire build and install process can take up to around 6 hours depending on the machine. If any errors occur along the way it should stop the process. All output from the build is located in a file named Build.dat, that can be checked for error messages. At the end of the build, the tests for ElmerFoamFSI should run and all pass. If any tests fail, there may be an issue with the build.
+
+###3. Rebuilding
+
+In the case of rebuilding, BuildScript can simply be executed again without the argument "first" given. The "first" argument causes the OpenFoam first install script to be called instead of the regular build script, patches some files required for linking the two applications, and makes some useful links in the install directory. 
+
+The full list of arguments for BuildScript are as follows:
+  - first: 
+    - Causes OpenFoam's Allwmake.firstInstall to be called instead of Allwmake
+    - Patches appropriate files in Elmer and OpenFoam
+    - Links Elmer's libraries to the main lib directory in the ElmerFoamFSI install directory
+  - notest: 
+    - Causes no ElmerFoamFSI tests to be run
+  - nofoam:
+    - Skips the building of OpenFoam (generally the building of OpenFoam is the longest portion so skipping this component when possible is desirable)
+
+BuildScript calls a series of other scripts located in the BuildTools directory. The precise manner in which these scripts are called can be seen by looking in the BuildScript file. If the user wishes to rebuild only one component of the project, these files can be called individually. They are listed below with their associated arguments:
+
+  - BuildElmerFoamFSIDriver: builds only the orchestrator component
+    - first argument must be the full path to the top level ElmerFoamFSI directory
+    - optional second argument "notest" skips the running of the tests
+  - BuildElmerModule: builds the Elmer software as well as the module for interfacting Elmer with IMPACT
+    - first argument must be the full path to the top level ElmerFoamFSI directory
+    - optional second argument "first" indicates that it is the first build and the Elmer libraries need to be linked to the appropriate location
+  - BuildIMPACT: builds IMPACT as well as IMPACT's submodule IRAD
+    - first argument must be the full path to the top level ElmerFoamFSI directory
+  - BuildOpenFoam: builds the OpenFoam application only
+    - first argument must be the full path to the top level ElmerFoamFSI directory
+  - BuildOpenFoamModule: builds the module to interface OpenFoam with IMPACT
+    - first argument must be the full path to the top level ElmerFoamFSI directory
+  - PatchScript: patches some files within the the Elmer and OpenFoam sources in order for interfacing with IMPACT
+    - first argument must be the full path to the top level ElmerFoamFSI directory
+
+Two additional files are present in the BuildTools directory: BashSourceScript and CshellSourceScript. These two files provide the appropriate environment setup for building and running ElmerFoamFSI. Users should source the one appropriate for the shell they are using before running the code. Each takes the full path to the top level ElmerFoamFSI directory as the first argument. 
+
+###4. Troubleshooting
+
+In the event that something goes wrong with the build, it is recommended that the build steps be executed in smaller batches or potentially the entire process done manually. BuildScript calls a series of other scripts as noted above in the "Rebuilding" section. Each of these scripts can be executed by hand in order to help clarify any issues that are occuring. Additionally, all the steps taken in the various build scripts can be done by hand. In order to manually build ElmerFoamFSI users should either follow the steps in the scripts or read the instructions at @subpage manual_install.
+
+
+@section irsec Illinois Rocstar 
+@subsection irproj Project Template 
+ElmerFoamFSI uses the Illinois Rocstar Project Template [IRProject](http://irweb/irproject) and
+uses the following internal and third-party packages:
+* [OpenFOAM](http://openfoam.org "Open Source CFD")
+* [Elmer](http://elmerfem.org "Open Source CSM")
+* [CMake](http://www.cmake.org "Cross Platform Make")
+* [CTest](http://cmake.org/Wiki/CMake/Testing_With_CTest "CMake-integrated Testing Tool") 
+* [Doxygen](http://www.stack.nl/~dimitri/doxygen/ "Code documentation system")
+* [IMPACT](http://openmultiphysics.org "Illinois Multiphysics Application Coupling Toolkit")
+* [IRAD](http://irweb/irad)
+* [MPI](http://www.mcs.anl.gov/research/projects/mpi/ "Message Passing Interface")
+
+ */
