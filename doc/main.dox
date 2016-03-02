@@ -29,7 +29,7 @@ Call the build script from the top level ElmerFoamFSI directory. Provide it with
 
 > ./BuildScript first
 
-The entire build and install process can take up to around 6 hours depending on the machine. If any errors occur along the way it should stop the process. All output from the build is located in a file named Build.dat, that can be checked for error messages. At the end of the build, the tests for ElmerFoamFSI should run and all pass. If any tests fail, there may be an issue with the build.
+The script may ask if the user wishes to compile without Paraview. It is fine to say "yes" to this question. The entire build and install process can take up to around 6 hours depending on the machine. If any errors occur along the way it should stop the process. All output from the build is located in a file named Build.dat, that can be checked for error messages. At the end of the build, the tests for ElmerFoamFSI should run and all pass. If any tests fail, there may be an issue with the build. If all goes according to plan, executing this script and answering "yes" should be the only steps required to build.
 
 ###3. Rebuilding
 
