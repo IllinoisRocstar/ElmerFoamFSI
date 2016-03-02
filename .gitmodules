@@ -1,6 +1,3 @@
-[submodule "IMPACT"]
-	path = IMPACT
-	url = https://github.com/IllinoisRocstar/IMPACT.git
 [submodule "elmerfem"]
 	path = elmerfem
 	url = https://github.com/ElmerCSC/elmerfem.git
