@@ -77,7 +77,7 @@ namespace ElmerModuleDriver
   int MakeProject(int argc,char *argv[])
   {
     if(argc < 3){
-      std::cout << "Usage:" << std::endl << std::endl
+      std::cout << "ElmerModuleDriver:MakeProject: " << std::endl << "Usage:" << std::endl << std::endl
                 << argv[0] << " <template name> <new name> [verb level]" << std::endl
                 << std::endl
                 << "This program will read the project template from the <template name> "
@@ -117,17 +117,18 @@ namespace ElmerModuleDriver
     std::transform(nupper.begin(),nupper.end(),nupper.begin(),toupper);
   
     if(verb)
-      std::cout << "Creating a new project (" << NewName 
+      std::cout << "ElmerModuleDriver:MakeProject:" << std::endl
+                << " Creating a new project (" << NewName 
                 << ") from project template (" << OriginalName
                 << ")." << std::endl << std::endl
                 << "Creating top level project directories...";
     std::string dirname(NewName);
     if(!IRAD::Sys::FILEEXISTS(NewName)){
       if(verb > 1)
-        std::cout << "   Creating directory " << dirname << "...";
+        std::cout << "ElmerModuleDriver:MakeProject:    Creating directory " << dirname << "...";
       syserr = IRAD::Sys::CreateDirectory(dirname);
       if(syserr){
-        std::cout << "Unable to create directory " << dirname << "."
+        std::cout << "ElmerModuleDriver:MakeProject: Unable to create directory " << dirname << "."
                   << std::endl;
         return(1);
       }
@@ -137,41 +138,41 @@ namespace ElmerModuleDriver
     dirname += "/branches";
     if(!IRAD::Sys::FILEEXISTS(dirname)){
       if(verb > 1)
-        std::cout << "   Creating directory " << dirname << "...";
+        std::cout << "ElmerModuleDriver:MakeProject:    Creating directory " << dirname << "...";
       syserr = IRAD::Sys::CreateDirectory(dirname);
       if(syserr){
-        std::cout << "Unable to create directory " << dirname << "."
+        std::cout << "ElmerModuleDriver:MakeProject: Unable to create directory " << dirname << "."
                   << std::endl;
         return(1);
       }
       if(verb > 1)
-        std::cout << "done." << std::endl;
+        std::cout << "ElmerModuleDriver:MakeProject: done." << std::endl;
     }
     dirname = NewName+"/tags";
     if(!IRAD::Sys::FILEEXISTS(dirname)){
       if(verb > 1)
-        std::cout << "   Creating directory " << dirname << "...";
+        std::cout << "ElmerModuleDriver:MakeProject:    Creating directory " << dirname << "...";
       syserr = IRAD::Sys::CreateDirectory(dirname);
       if(syserr){
-        std::cout << "Unable to create directory " << dirname << "."
+        std::cout << "ElmerModuleDriver:MakeProject: Unable to create directory " << dirname << "."
                   << std::endl;
         return(1);
       }
       if(verb > 1)
-        std::cout << "done." << std::endl;
+        std::cout << "ElmerModuleDriver:MakeProject: done." << std::endl;
     }
     dirname.assign(NewName+"/examples");
     if(!IRAD::Sys::FILEEXISTS(dirname)){
       if(verb > 1)
-        std::cout << "   Creating directory " << dirname << "...";
+        std::cout << "ElmerModuleDriver:MakeProject:    Creating directory " << dirname << "...";
       syserr = IRAD::Sys::CreateDirectory(dirname);
       if(syserr){
-        std::cout << "Unable to create directory " << dirname << "."
+        std::cout << "ElmerModuleDriver:MakeProject: Unable to create directory " << dirname << "."
                   << std::endl;
         return(1);
       }
       if(verb > 1)
-        std::cout << "done." << std::endl;
+        std::cout << "ElmerModuleDriver:MakeProject: done." << std::endl;
     }
     bool protect_svn = false;
     dirname = NewName+"/trunk";
@@ -192,11 +193,11 @@ namespace ElmerModuleDriver
     std::ostringstream ComStr;
     if(!IRAD::Sys::FILEEXISTS(dirname)){
       if(verb > 1)
-        std::cout << "   Creating directory " << dirname << "...";
+        std::cout << "ElmerModuleDriver:MakeProject:    Creating directory " << dirname << "...";
       ComStr << "cp -r " << OriginalName << " " << dirname;
     } else {
       if(verb > 1)
-        std::cout <<   "   Making project files from template ...";
+        std::cout <<   "ElmerModuleDriver:MakeProject:    Making project files from template ...";
       ComStr << "cp -r " << OriginalName << "/* " << dirname;
     }
     IRAD::Sys::InProcess System(ComStr.str());
@@ -206,9 +207,9 @@ namespace ElmerModuleDriver
         std::cout << comline << std::endl;
     }
     if(verb)
-      std::cout << "done." << std::endl;
+      std::cout << "ElmerModuleDriver:MakeProject: done." << std::endl;
     if(verb)
-      std::cout << "Cleaning up ...";
+      std::cout << "ElmerModuleDriver:MakeProject: Cleaning up ...";
     ComStr.str("");
     ComStr << "rm -rf " << dirname << "/.svn";
     System.Execute(ComStr.str());
@@ -237,14 +238,14 @@ namespace ElmerModuleDriver
       }
     }
     if(verb)
-      std::cout << "done." << std::endl;
+      std::cout << "ElmerModuleDriver:MakeProject: done." << std::endl;
     if(verb > 1)
-      std::cout << "Done creating new project files." 
+      std::cout << "ElmerModuleDriver:MakeProject: Done creating new project files." 
                 << std::endl;
     if(verb)
-      std::cout << "Renaming project...";
+      std::cout << "ElmerModuleDriver:MakeProject: Renaming project...";
     if(IRAD::Sys::ChDir(dirname)){
-      std::cout << "Something went wrong, cannot find new project directory." 
+      std::cout << "ElmerModuleDriver:MakeProject: Something went wrong, cannot find new project directory." 
                 << std::endl;
       return(1);
     }
@@ -255,7 +256,7 @@ namespace ElmerModuleDriver
     System.Execute(ComStr.str());
     std::vector<std::string> filenames;
     if(verb > 1)
-      std::cout << "   Files to change:" << std::endl;
+      std::cout << "ElmerModuleDriver:MakeProject:    Files to change:" << std::endl;
     while(std::getline(System,comline)){
       if(!Excluded(comline)){
         filenames.push_back(comline);
@@ -265,15 +266,15 @@ namespace ElmerModuleDriver
     }
     std::vector<std::string>::iterator fni = filenames.begin();
     if(verb > 1)
-      std::cout << "   Processing files...."; 
+      std::cout << "ElmerModuleDriver:MakeProject:    Processing files...."; 
     while(fni != filenames.end()){
       std::string filename(*fni++);
       if(verb > 1)
-        std::cout << "     File: " << filename << std::endl;
+        std::cout << "ElmerModuleDriver:MakeProject:      File: " << filename << std::endl;
       ComStr.str("");
       ComStr << "sed -i 's/" << OriginalName << "/" << NewName << "/g' " << filename;
       if(verb > 1)
-        std::cout << "       " << ComStr.str() << std::endl;
+        std::cout << "ElmerModuleDriver:MakeProject:        " << ComStr.str() << std::endl;
       System.Execute(ComStr.str());
       int n = 0;
       while(std::getline(System,comline))
@@ -296,7 +297,7 @@ namespace ElmerModuleDriver
         n++;
     }
     if(verb > 1)
-      std::cout << "   Done processing file contents." << std::endl
+      std::cout << "ElmerModuleDriver:MakeProject:    Done processing file contents." << std::endl
                 << "   Renaming files..." << std::endl;
     ComStr.str("");
     // Now the inside of all files is fixed, need to fix filenames
@@ -306,7 +307,7 @@ namespace ElmerModuleDriver
     std::string::size_type nlen = NewName.length();
     while(std::getline(System,comline)){
       if(verb > 1) 
-        std::cout << "     Renaming " << comline << " to ";
+        std::cout << "ElmerModuleDriver:MakeProject:      Renaming " << comline << " to ";
       std::string newname(comline);
       std::string::size_type x = newname.find(OriginalName);
       while(x != std::string::npos){

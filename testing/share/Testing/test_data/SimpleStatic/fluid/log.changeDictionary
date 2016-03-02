@@ -1,0 +1,93 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     3.2                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  | For copyright notice see file Copyright         |
+\*---------------------------------------------------------------------------*/
+Build    : 3.2-d71febecea21
+Exec     : changeDictionary
+Date     : Mar 01 2016
+Time     : 11:06:57
+Host     : ilrocstar5
+PID      : 11684
+CtrlDict : "/home/woohyunkim/ElmerFoamFSI/testing/share/Testing/test_data/SimpleStatic/fluid/system/controlDict"
+Case     : /home/woohyunkim/ElmerFoamFSI/testing/share/Testing/test_data/SimpleStatic/fluid
+nProcs   : 1
+SigFpe   : Enabling floating point exception trapping (FOAM_SIGFPE).
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+Read dictionary changeDictionaryDict with replacements for dictionaries 
+1
+(
+boundary
+)
+
+Replacing entries in dictionary boundary
+Special handling of boundary as polyMesh/boundary file.
+Loaded dictionary boundary with entries 
+6
+(
+left
+right
+fsiFace
+top
+front
+back
+)
+
+Merging entries from 
+2
+(
+front
+back
+)
+
+fieldDict:
+{
+    left
+    {
+        type            wall;
+        nFaces          50;
+        startFace       4900;
+    }
+    right
+    {
+        type            wall;
+        nFaces          50;
+        startFace       4950;
+    }
+    fsiFace
+    {
+        type            wall;
+        nFaces          50;
+        startFace       5000;
+    }
+    top
+    {
+        type            wall;
+        nFaces          50;
+        startFace       5050;
+    }
+    front
+    {
+        type            empty;
+        nFaces          2500;
+        startFace       5100;
+    }
+    back
+    {
+        type            empty;
+        nFaces          2500;
+        startFace       7600;
+    }
+}
+
+Writing modified fieldDict boundary
+
+End
+

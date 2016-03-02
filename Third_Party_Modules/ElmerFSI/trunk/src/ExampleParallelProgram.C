@@ -35,11 +35,11 @@ namespace ElmerModuleDriver {
       // have to revert to using standard streams.
       std::ostringstream RepStr;
       if(verblevel > 1)
-        RepStr << "Running on " << nproc << " processors." << std::endl;
+        RepStr << "ParellelProgram:Run: "  << "Running on " << nproc << " processors." << std::endl;
       StdOut(RepStr.str());
       _communicator.Barrier();
       if(verblevel > 1)
-        StdOut("All procesors ready.\n");
+        StdOut("ParellelProgram:Run: All procesors ready.\n");
 
       // Open the specified output file for writing on rank 0
       if(use_file && !myid){
@@ -48,7 +48,7 @@ namespace ElmerModuleDriver {
           // If the output file failed to open, notify
           // to error stream and return non-zero
           std::ostringstream Ostr;
-          Ostr << "Error: Unable to open output file, " << output_name << ".";
+          Ostr << "ParellelProgram:Run: Error: Unable to open output file, " << output_name << ".";
           ErrOut(Ostr.str());
           // In parallel, we don't return right away since 
           // this part of the code is only done on proc 0.
@@ -117,7 +117,7 @@ namespace ElmerModuleDriver {
           my_tpi = ElmerModuleDriver::TrapezoidQuadrature(f,a,b,myn);
           FunctionExit("TrapezoidQuadrature");
         } catch (...){
-          StdOut("Numerical limits of ElmerModuleDriver::TrapezoidQuadrature exceeded.");
+          StdOut("ParellelProgram:Run: Numerical limits of ElmerModuleDriver::TrapezoidQuadrature exceeded.");
           my_tpi = 0.0;
         }
       }
@@ -138,7 +138,7 @@ namespace ElmerModuleDriver {
           my_mppi = ElmerModuleDriver::MidPointQuadrature(f,a,b,myn);
           FunctionExit("MidPointQuadrature");
         } catch (...){
-          StdOut("Numerical limits of ElmerModuleDriver::MidPointQuadrature exceeded.");
+          StdOut("ParellelProgram:Run: Numerical limits of ElmerModuleDriver::MidPointQuadrature exceeded.");
           my_mppi = 0.0;
         }
       }
@@ -163,7 +163,7 @@ namespace ElmerModuleDriver {
         }
         else if(verblevel) {
           std::ostringstream Ostr;
-          Ostr << "With " << ndiv << " divisions, PI was calculated:" << std::endl
+          Ostr << "ParellelProgram:Run: " << "With " << ndiv << " divisions, PI was calculated:" << std::endl
                << "MidPointQuadrature:  "
                << std::setprecision(16) << mppi << "\t\t" 
                << std::setprecision(4) << std::fabs(mppi - PIVAL) << std::endl

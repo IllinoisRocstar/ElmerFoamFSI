@@ -19,7 +19,7 @@
 COM_EXTERN_MODULE( SolverModule);
 
 void SolverModuleDriver::usage(char *exec){
-  std::cout << "Usage: " << std::endl
+  std::cout << "SolverModuleDriver:usage: Usage: " << std::endl
             << exec << " -com-mpi timeNext timeNext ... timeFinal" << std::endl
             << "where at least -com-mpi and timeFinal is required." << std::endl
             << "NOTES:" << std::endl
@@ -36,7 +36,7 @@ int SolverModuleDriver::init(int argc, char *argv[]){
 
   COM_init( &argc, &argv);
 
-  std::cout << "After COM_init" << std::endl;
+  std::cout << "SoverModuleDriver:init: After COM_init" << std::endl;
 
   isNum =  isFSI = changeLoads = false;
   Disp = NULL;
@@ -107,13 +107,13 @@ int SolverModuleDriver::run(){
     coord_handle = COM_get_dataitem_handle("Window1.nc");
     CoordSize=0;
     coordData = (coord_handle > 0);
-    std::cout << "coord_handle = " << coord_handle << std::endl;
+    std::cout << "SoverModuleDriver:run: coord_handle = " << coord_handle << std::endl;
     if(coordData){
       COM_get_size("Window1.nc",11,&CoordSize);
       // Get the FSI mesh from the structures solver and print
       // it out to check
       COM_get_array("Window1.nc",11,&Coord);
-      std::cout << "Coord: " << std::endl;
+      std::cout << "SoverModuleDriver:run: Coord: " << std::endl;
       for(int i=0; i < CoordSize; i++){
         for(int j=0; j < 3; j++){
           std::cout << Coord[i*3+j] << " ";
@@ -135,7 +135,7 @@ int SolverModuleDriver::run(){
       // Get the FSI mesh size from the structures solver
       COM_get_size("Window1.:b2:",11,&ConnSize);
       // check the values
-      std::cout << "Conn: " << std::endl;
+      std::cout << "SoverModuleDriver:run: Conn: " << std::endl;
       for(int i=0; i < ConnSize; i++){
         for(int j=0; j < 2; j++){
           std::cout << Conn[i*2+j] << " ";
@@ -147,7 +147,7 @@ int SolverModuleDriver::run(){
     }
 
     if(Conn && coordData){
-      std::cout << "WriteMeshToStream: " << std::endl;
+      std::cout << "SoverModuleDriver:run: WriteMeshToStream: " << std::endl;
       WriteMeshToStream(std::cout);
       std::cout << std::endl;
     }
@@ -157,7 +157,7 @@ int SolverModuleDriver::run(){
       // Get the FSI displacement size from the structures solver
       COM_get_size("Window1.Displacements",11,&DispSize);
 
-      std::cout << "Checking displacements" << std::endl;
+      std::cout << "SoverModuleDriver:run: Checking displacements" << std::endl;
       for(int i=0; i < DispSize; i++){
          for(int j=0; j < 3; j++){
             std::cout << Disp[i*3+j] << " ";
@@ -178,12 +178,12 @@ int SolverModuleDriver::run(){
   if(isFSI && changeLoads){
     COM_get_array("Window1.Loads",11,&Loads);
     if(Loads){
-      std::cout << "Loads not NULL" << std::endl;
+      std::cout << "SoverModuleDriver:run: Loads not NULL" << std::endl;
       // Get the FSI load size from the structures solver
       COM_get_size("Window1.Loads",11,&LoadsSize);
       // Check load data
 
-      std::cout << "Checking loads" << std::endl;
+      std::cout << "SoverModuleDriver:run: Checking loads" << std::endl;
       for(int i=0; i < LoadsSize; i++){
          for(int j=0; j < 3; j++){
             Loads[i*3 + j] = double(i*3 + j);
@@ -194,33 +194,33 @@ int SolverModuleDriver::run(){
       }
     }
   }
-  std::cout << "Line = " << __LINE__ << std::endl;
+  std::cout << "SoverModuleDriver:run: Line = " << __LINE__ << std::endl;
 
   //Put the displacements and loads in the Solution object
   //so we can use its utilities and write a vtk file
   if(Disp && isFSI){ 
     Solution().Meta().AddField("displacement",'n',3,8,"m");
-    std::cout << "WriteSolnMetaToStream:" << std::endl;
+    std::cout << "SoverModuleDriver:run: WriteSolnMetaToStream:" << std::endl;
     WriteSolnMetaToStream(std::cout);
     std::cout << std::endl;
   }
   if(Loads && isFSI){
     Solution().Meta().AddField("loads",'n',3,8,"");
-    std::cout << "WriteSolnMetaToStream:" << std::endl;
+    std::cout << "SoverModuleDriver:run: WriteSolnMetaToStream:" << std::endl;
     WriteSolnMetaToStream(std::cout);
     std::cout << std::endl;
   }
-  std::cout << "Line = " << __LINE__ << std::endl;
+  std::cout << "SoverModuleDriver:run: Line = " << __LINE__ << std::endl;
   if((Disp && isFSI) || Loads){
     CreateSoln();
   }
-  std::cout << "Line = " << __LINE__ << std::endl;
+  std::cout << "SoverModuleDriver:run: Line = " << __LINE__ << std::endl;
   if(Disp && isFSI)
     Solution().SetFieldBuffer("displacement",DispPass);
   if(Loads && isFSI)
     Solution().SetFieldBuffer("loads",LoadsPass);
 
-  std::cout << "Line = " << __LINE__ << std::endl;
+  std::cout << "SoverModuleDriver:run: Line = " << __LINE__ << std::endl;
 
   //Write vtk file for timestep 0
   if(isFSI && Conn && Coord){
@@ -229,11 +229,11 @@ int SolverModuleDriver::run(){
     filename = "fsi0.vtk";
     Ouf.open(filename.c_str());
     if(!Ouf){
-        std::cerr << "SolverModuleDriver::DumpSolution:Error: Could not open output file, "
+        std::cerr << "SoverModuleDriver:run: SolverModuleDriver::DumpSolution:Error: Could not open output file, "
                   << filename << "." << std::endl;
         return -1;
       }   
-      std::cout << "WriteVTKToStream time 0" << std::endl;
+      std::cout << "SoverModuleDriver:run: WriteVTKToStream time 0" << std::endl;
       SolverUtils::WriteVTKToStream("Window1",*this,Ouf);
       Ouf.close();
   }
@@ -248,7 +248,7 @@ int SolverModuleDriver::run(){
     for(int i=0; i < tNext.size(); i++){
       //Change the load values as a test
       if(Loads && isFSI){
-         std::cout << "Changing load values" << std::endl;
+         std::cout << "SoverModuleDriver:run: Changing load values" << std::endl;
          for(int k=0; k < LoadsSize; k++){
             for(int j=0; j < 3; j++){
                Loads[k*3 + j] = double(k*3 + j) + tNext[i];
@@ -259,12 +259,12 @@ int SolverModuleDriver::run(){
          }
       }
 
-      std::cout << "Calling run function from driver" << std::endl;
+      std::cout << "SoverModuleDriver:run: Calling run function from driver" << std::endl;
       COM_call_function(run_handle,&runs,&tNext[i]);
 
       //Update Solution's displacments for writing vtk file
       if(isFSI && Disp){
-        std::cout << "Checking displacements" << std::endl;
+        std::cout << "SoverModuleDriver:run: Checking displacements" << std::endl;
         for(int k=0; k < DispSize; k++){
            for(int j=0; j < 3; j++){
               std::cout << Disp[k*3+j] << " ";
@@ -309,7 +309,7 @@ int SolverModuleDriver::finalize(){
   COM_UNLOAD_MODULE_STATIC_DYNAMIC( SolverModule, "Window1");
 
   COM_finalize();
-  std::cout << "After COM_finalize" << std::endl;
+  std::cout << "SolverModuleDriver:finalize: After COM_finalize" << std::endl;
 
   return 0;
 
