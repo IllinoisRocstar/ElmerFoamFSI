@@ -1,0 +1,47 @@
+#!/bin/sh
+
+# Source tutorial clean functions
+cd ..
+
+. $WM_PROJECT_DIR/bin/tools/CleanFunctions
+
+cd fluid;
+cleanTimeDirectories;
+cleanCase;
+\rm -rf constant/polyMesh/sets constant/polyMesh/*Zones*
+\rm -rf VTK case.foam history
+\rm *.vtu
+\rm *.hdf
+
+cd ../solid;
+cleanTimeDirectories;
+cleanCase;
+\rm -rf constant/polyMesh/sets constant/polyMesh/*Zones*
+\rm -rf VTK case.foam history
+
+cd ..
+./removeSerialLinks fluid solid
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+# Get application name from directory
+application="icoFsiElasticNonLinULSolidFoam"
+
+cd fluid
+runApplication blockMesh
+runApplication changeDictionary
+runApplication setSet -batch batch.setSet
+runApplication setsToZones -noFlipMap
+cd ..
+
+cd solid
+runApplication blockMesh
+runApplication changeDictionary
+runApplication setSet -batch batch.setSet
+runApplication setsToZones -noFlipMap
+cd ..
+
+./makeSerialLinks fluid solid
+
+cd fluid

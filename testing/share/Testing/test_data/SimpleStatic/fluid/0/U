@@ -1,0 +1,72 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     3.0                                |
+|   \\  /    A nd           | Web:         http://www.extend-project.de       |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    location    "0";
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   uniform (0 0 0);
+
+boundaryField
+{
+    fsiFace
+    {
+        type            fixedValue; //movingWallVelocity;
+        value           uniform (0 0 0);
+    }
+
+    top
+    {
+        type            fixedValue;
+        value           uniform (0 0 0);
+    }
+
+    right
+    {
+        //type            zeroGradient;
+        type            fixedValue;
+        value           uniform (0 0 0);
+    }
+
+//    left
+//    {
+//        type            transitionalParabolicVelocity;
+//        maxValue        1.5;
+//        n               ( 1 0 0 );
+//        y               ( 0 1 0 );
+//        transitionPeriod 0.1;
+//        boundBoxMin     ( 0 0.1 0.0 );
+//        boundBoxMax     ( 0 1.0 0.1 );
+//        value           uniform (0 0 0);
+//    }
+
+    left
+    {
+       type            fixedValue;
+       value           uniform (0 0 0);
+    }
+
+    front
+    {
+        type            empty;
+    }
+
+    back
+    {
+        type            empty;
+    }
+}
+
+// ************************************************************************* //

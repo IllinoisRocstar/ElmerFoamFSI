@@ -12,7 +12,7 @@
 namespace ElmerModuleDriver {
 
   namespace ExampleProgram {
-
+ 
     int SerialProgram::Run()
     {
       // FunctionEntry("NAME"): Updates the user-defined stack and 
@@ -32,7 +32,7 @@ namespace ElmerModuleDriver {
         // If the input file failed to open, notify to
         // the error stream and return non-zero
         std::ostringstream Ostr;
-        Ostr << "Error: Could not output input file, " 
+        Ostr << "SerialProgram:Run: Error: Could not output input file, " 
              << input_name << ".";
         ErrOut(Ostr.str());
         // don't forget to tell the profiler/stacker the
@@ -50,7 +50,7 @@ namespace ElmerModuleDriver {
           // If the output file failed to open, notify
           // to error stream and return non-zero
           std::ostringstream Ostr;
-          Ostr << "Error: Unable to open output file, " << output_name << ".";
+          Ostr << "SerialProgram:Run: Error: Unable to open output file, " << output_name << ".";
           ErrOut(Ostr.str());
           // don't forget to tell the profiler/stacker the
           // function is exiting.
