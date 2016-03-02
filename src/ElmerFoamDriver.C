@@ -15,9 +15,12 @@
 
 typedef SolverUtils::TransferObject transferagent;
 typedef openfoamagent fluidagent;
-typedef elmeragent    solidagent;    
+typedef elmeragent    solidagent;   
+typedef IRAD::Profiler::ProfilerObj ProfilerType;
+typedef std::string                 StackType;
+typedef IRAD::Global::GlobalObj<StackType,int,ProfilerType> GlobalType;
 
-class fsicoupling : public impact::orchestrator::couplingbase
+class fsicoupling : public impact::orchestrator::couplingbase, public GlobalType 
 {
 protected:
   fluidagent *fluidsAgent;
@@ -39,7 +42,9 @@ protected:
   bool writeVTK;
 
 public:
-  fsicoupling() : fluidsAgent(NULL), structuresAgent(NULL), transferAgent(NULL), 
+  fsicoupling() : GlobalType("fsicoupling"), fluidsAgent(NULL), structuresAgent(NULL), transferAgent(NULL), 
+                  runMode(0), writeHDF(true), writeVTK(true) {};
+  fsicoupling(GlobalType &globin) : GlobalType(globin), fluidsAgent(NULL), structuresAgent(NULL), transferAgent(NULL), 
                   runMode(0), writeHDF(true), writeVTK(true) {};
   int TransferDisplacementsToFluid(solidagent *solidAgent,fluidagent *fluidAgent)
   {
@@ -372,12 +377,17 @@ public:
   }
   virtual int Initialize(std::vector<std::string> &componentInterfaceNames, 
           double finalTime, double timeStep){
-    
+ 
+    FunctionEntry("Initialize"); 
+    //SetName("Initialize"); 
+    std::stringstream outString; 
     //Masoud 
-    std::cout << "ElmerFoamDriver:Initialize: Final Time = " << finalTime << std::endl;
-    std::cout << "ElmerFoamDriver:Initialize: Time Step  = " << timeStep << std::endl;
+    outString << "ElmerFoamDriver:Initialize: Final Time = " << finalTime << std::endl;
+    outString << "ElmerFoamDriver:Initialize: Time Step  = " << timeStep << std::endl;
     //Masoud: End
-
+    StdOut(outString.str(),0,true);
+    outString.clear();
+    outString.str("");
     
     if(componentInterfaceNames.size() < 2)
       return(1);
@@ -417,23 +427,30 @@ public:
 
     //DumpSolution();
 
+    FunctionExit("Initialize"); 
     return(0);
+ 
   };
   virtual int Run(){
+    FunctionEntry("Run");
     // Enter timestepping
     int innerCount = 0;
     int maxSubSteps = 1000;
     int dumpinterval = 1;
     int systemStep = 0;
-    std::cout << std::endl << std::endl 
+    std::stringstream outString;
+    outString << std::endl << std::endl 
               << "***************************************** " << std::endl;
-    std::cout << "       Starting Stepping in Time          " << std::endl;
-    std::cout << "***************************************** " << std::endl << std::endl;
-    std::cout << "ElmerFoamDriver:Run: Summary of the simulation " << std::endl;
-    std::cout << "     Simulation Type       = ElmerFoamFSI" << std::endl;
-    std::cout << "     Simulation final time = " << simulationFinalTime << std::endl;
-    std::cout << "     Simulation time step  = " << simulationTimeStep << std::endl;
-    std::cout << std::endl;
+    outString << "       Starting Stepping in Time          " << std::endl;
+    outString << "***************************************** " << std::endl << std::endl;
+    outString << "ElmerFoamDriver:Run: Summary of the simulation " << std::endl;
+    outString << "     Simulation Type       = ElmerFoamFSI" << std::endl;
+    outString << "     Simulation final time = " << simulationFinalTime << std::endl;
+    outString << "     Simulation time step  = " << simulationTimeStep << std::endl;
+    outString << std::endl;
+    StdOut(outString.str(),0,true);
+    outString.clear();
+    outString.str("");
     while(simulationTime < simulationFinalTime){
       
       // if(!(time%screenInterval) && (innerCount == 0)){
@@ -506,6 +523,7 @@ public:
         //DumpSolution();
       }
     }
+    FunctionExit("Run");
     return(0);
   };
   virtual int Finalize(){
