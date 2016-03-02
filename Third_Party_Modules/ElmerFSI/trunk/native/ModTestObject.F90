@@ -12,6 +12,7 @@ MODULE TESTOBJECT
      DOUBLE PRECISION, POINTER :: NodeDisplacements(:), Coords(:)
      !Masoud: Registering global variables in the Elmer memory
      DOUBLE PRECISION, POINTER :: PreviousNodeDisplacements(:)
+     LOGICAL, POINTER :: IsLoadFreeNode(:)
      !Masoud End
      DOUBLE PRECISION, POINTER :: NodeLoads(:), PreviousLoads(:,:)
      DOUBLE PRECISION, POINTER :: FacePressures(:), FaceLoads(:)

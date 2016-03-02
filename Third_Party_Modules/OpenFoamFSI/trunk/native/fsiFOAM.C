@@ -222,7 +222,7 @@ int fsifoam_module::ReadCouplingProperties(){
   if (solidPatchID < 0)
     {
       FatalErrorIn(args.executable())
-        << "FsiFoam:ReadCouplingProperties: Problem with finding solid patch"
+        << "Problem with finding solid patch"
         << abort(FatalError);
     }
   
@@ -235,7 +235,7 @@ int fsifoam_module::ReadCouplingProperties(){
   if (solidZoneID < 0)
     {
       FatalErrorIn(args.executable())
-        << "FsiFoam:ReadCouplingProperties: Problem with finding solid zone"
+        << "Problem with finding solid zone"
         << abort(FatalError);
     }
   
@@ -246,7 +246,7 @@ int fsifoam_module::ReadCouplingProperties(){
   if (fluidPatchID < 0)
     {
       FatalErrorIn(args.executable())
-        << "FsiFoam:ReadCouplingProperties: Problem with finding fluid patch"
+        << "Problem with finding fluid patch"
         << abort(FatalError);
     }
   
@@ -255,7 +255,7 @@ int fsifoam_module::ReadCouplingProperties(){
   if (fluidZoneID < 0)
     {
       FatalErrorIn(args.executable())
-        << "FsiFoam:ReadCouplingProperties: Problem with finding fluid zone"
+        << "Problem with finding fluid zone"
         << abort(FatalError);
     }
   
@@ -268,7 +268,7 @@ int fsifoam_module::ReadCouplingProperties(){
   
   
   // Grab solid patch field
-  Info << "FsiFoam:ReadCouplingProperties: Solid patch ID: " << solidPatchID << endl;
+  Info << "FsiFoam:ReadCouplingProperties:Solid patch ID: " << solidPatchID << endl;
   volVectorField &DURef(*DUPtr);
   if
     (
@@ -278,7 +278,7 @@ int fsifoam_module::ReadCouplingProperties(){
      )
     {
       FatalErrorIn(args.executable())
-        << "FsiFoam:ReadCouplingProperties: Boundary condition on " << DURef.name()
+        << "Boundary condition on " << DURef.name()
         <<  " is "
         << DURef.boundaryField()[solidPatchID].type()
         << "for fluid -solid interface patch, instead "
@@ -303,7 +303,7 @@ int fsifoam_module::ReadCouplingProperties(){
   
   if(accumulatedFluidInterfaceDisplacementHeader.headerOk())
     {
-      Pout << "FsiFoam:ReadCouplingProperties: Reading accumulated fluid interface displacement" << endl;
+      Pout << "Reading accumulated fluid interface displacement" << endl;
       
       accumulatedFluidInterfaceDisplacementPtr =
         new vectorIOField
@@ -620,7 +620,7 @@ int fsifoam_module::FindGlobalFaceZones()
           if (curMap[globalPointI] == -1)
             {
               FatalErrorIn(args.executable())
-                << "FsiFoam:FindGlobalFaceZones:local to global face zone point map is not correct"
+                << "local to global face zone point map is not correct"
                 << abort(FatalError);
             }
         }
@@ -659,13 +659,13 @@ int fsifoam_module::ReadFSIControls()
          || (couplingScheme == "NonIterative")
          )
         {
-          Info<< "FsiFoam:ReadFSIControls: Selecting coupling scheme " << couplingScheme << endl;
+          Info<< "FsiFoam:ReadFSIControl: Selecting coupling scheme " << couplingScheme << endl;
         }
       else
         {
           FatalErrorIn
             (
-             "FsiFoam:ReadFSI:Controls:readFsiProperties"
+             "readFsiProperties"
              )   << "couplingScheme: " << couplingScheme
                  << " is not a valid choice. "
                  << "Options are: IQN-ILS, Aitken, FixedRelaxation"
@@ -751,7 +751,7 @@ int fsifoam_module::Step(){
   bool fvMotionSolver(this->FVMotion());
   vectorField &accumulatedFluidInterfaceDisplacement(this->AccumulatedFluidInterfaceDisplacements());
   // Masoud:
-  Info << "FsiFoam:Step:accumulatedFluidInterfaceDisplacement = " << endl;
+  Info << "accumulatedFluidInterfaceDisplacement = " << endl;
   Info << accumulatedFluidInterfaceDisplacement << endl;
   // Masoud: End
   solidTractionFvPatchVectorField &tForce(this->tForce());
@@ -768,7 +768,7 @@ int fsifoam_module::Step(){
   runTime++;
   if(!runTime.end()){
     //    for (runTime++; !runTime.end(); runTime++)
-    //     {
+    //      {
     // Info << "Time = " << runTime.timeName() << nl << endl;
       
     //#       include "readPISOControls.H"
@@ -888,7 +888,7 @@ int fsifoam_module::Step(){
               
         if (outerCorr < 3 || couplingScheme == "FixedRelaxation")
           {
-            Info << "FsiFoam:Step:Current fsi under-relaxation factor: "
+            Info << "Current fsi under-relaxation factor: "
                  << fsiRelaxationFactor << endl;
                   
             fluidPatchPointsDisplOld = fluidPatchPointsDispl;
@@ -918,7 +918,7 @@ int fsifoam_module::Step(){
                       
                 fsiRelaxationFactor = mag(fsiRelaxationFactor);
                       
-                Info << "FsiFoam:Step:Current fsi under-relaxation factor (Aitken): "
+                Info << "Current fsi under-relaxation factor (Aitken): "
                      << fsiRelaxationFactor << endl;
                       
                 fluidPatchPointsDisplOld = fluidPatchPointsDispl;
@@ -971,7 +971,7 @@ int fsifoam_module::Step(){
             {
               // Move only interface points
               // Masoud
-              Info << "FsiFoam:Step:Moving only interface points..." << endl;
+              Info << "Moving only interface points..." << endl;
               // Masoud: End
               pointField newPoints = fluidsMesh.allPoints();
                       
@@ -1002,7 +1002,7 @@ int fsifoam_module::Step(){
             {
               // Move whole fluid mesh
               // Masoud
-              Info << "FsiFoam:Step:Moving the whole mesh .... " << endl;
+              Info << "Moving the whole mesh .... " << endl;
               // Masoud: End
               pointField newPoints = fluidsMesh.allPoints();
                       
@@ -1083,7 +1083,7 @@ int fsifoam_module::Step(){
               else
                 {
                   FatalErrorIn(args.executable())
-                    << "FsiFoam:Step: Problem with mesh motion solver selection"
+                    << "Problem with mesh motion solver selection"
                     << abort(FatalError);
                 }
                       
@@ -1124,7 +1124,7 @@ int fsifoam_module::Step(){
             velMag = max(magPhi/fluidsMesh.magSf()).value();
           }
                     
-        Info<< "FsiFoam:Step:Courant Number mean: " << meanCoNum
+        Info<< "Courant Number mean: " << meanCoNum
             << " max: " << CoNum
             << " velocity magnitude: " << velMag
             << endl;
@@ -1177,7 +1177,7 @@ int fsifoam_module::Step(){
                         
               cumulativeContErr += globalContErr;
                         
-              Info<< "FsiFoam:Step:time step continuity errors : sum local = " << sumLocalContErr
+              Info<< "time step continuity errors : sum local = " << sumLocalContErr
                   << ", global = " << globalContErr
                   << ", cumulative = " << cumulativeContErr
                   << endl;
@@ -1191,7 +1191,7 @@ int fsifoam_module::Step(){
                   
         //#           include "setInterfaceForce.H"
         {
-          Info << "FsiFoam:Step:Setting traction on solid patch" << endl;
+          Info << "Setting traction on solid patch" << endl;
                       
           //     vectorField fluidPatchTraction =
           //        -rhoFluid.value()*nu.value()
@@ -1304,7 +1304,7 @@ int fsifoam_module::Step(){
              *structuresMesh.magSf().boundaryField()[solidPatchID]
              );
                       
-          Info << "FsiFoam:Step:Total traction force = "
+          Info << "Total traction force = "
                << totalTractionForce << endl;
         }
                     
@@ -1313,7 +1313,7 @@ int fsifoam_module::Step(){
         //#           include "solveSolid.H"
         if (solidDdtScheme == fv::EulerDdtScheme<vector>::typeName)
           {
-            Info << "FsiFoam:Step:Solve Solid: Euler" << endl;
+            Info << "Solve Solid: Euler" << endl;
             //#   include "solveSolidEuler.H"
             {
               const dictionary& stressControl =
@@ -1383,7 +1383,7 @@ int fsifoam_module::Step(){
                  && ++iCorr < nCorrStruct
                  );
                               
-              Info << "FsiFoam:Step:Solving for " << DU.name()
+              Info << "Solving for " << DU.name()
                    << ", Initial residual = " << initialResidual
                    << ", Final residual = " << solverPerf.initialResidual()
                    << ", No outer iterations " << iCorr << endl;
@@ -1395,7 +1395,7 @@ int fsifoam_module::Step(){
           }
         else if (solidDdtScheme == fv::backwardDdtScheme<vector>::typeName)
           {
-            Info << "FsiFoam:Step:Solve Solid: Backward" << endl;
+            Info << "Solve Solid: Backward" << endl;
             //#   include "solveSolidBackward.H"
                             
             {
@@ -1508,7 +1508,7 @@ int fsifoam_module::Step(){
                  && ++iCorr < nCorrStruct
                  );
                               
-              Info << "FsiFoam:Step:Solving for " << DU.name()
+              Info << "Solving for " << DU.name()
                    << ", Initial residual = " << initialResidual
                    << ", Final residual = " << solverPerf.initialResidual()
                    << ", No outer iterations " << iCorr << endl;
@@ -1521,7 +1521,7 @@ int fsifoam_module::Step(){
         else
           {
             FatalErrorIn(args.executable())
-              << "FsiFoam:Step:Wrong temporal (ddt) scheme for solid solver. "
+              << "Wrong temporal (ddt) scheme for solid solver. "
               << "Possible schemes are: "
               << fv::EulerDdtScheme<vector>::typeName << " and "
               << fv::backwardDdtScheme<vector>::typeName
@@ -1595,9 +1595,9 @@ int fsifoam_module::Step(){
           fsiResidual = solidPatchPointsDispl - fluidPatchPointsDispl;
 
           // Masoud
-          Info << "FsiFoam:Step:solidPatchPointsDispl = " << endl;
+          Info << "solidPatchPointsDispl = " << endl;
           Info << solidPatchPointsDispl << endl;
-          Info << "FsiFoam:Step:fluidPatchPointsDispl = " << endl;
+          Info << "fluidPatchPointsDispl = " << endl;
           Info << fluidPatchPointsDispl << endl;
           // Masoud : End
                           
@@ -1619,7 +1619,7 @@ int fsifoam_module::Step(){
                           
           fsiResidualNorm /= initialFsiResidualNorm + SMALL;
                           
-          Info << "FsiFoam:Step:Current fsi residual norm: " << fsiResidualNorm << endl;
+          Info << "Current fsi residual norm: " << fsiResidualNorm << endl;
         }
       }
     while
@@ -1632,7 +1632,7 @@ int fsifoam_module::Step(){
         
     //#       include "rotateSolidFields.H"
     {
-      Info << "FsiFoam:Step:Rotating fields" << endl;
+      Info << "Rotating fields" << endl;
           
       F = I + DF;
           
@@ -1659,7 +1659,7 @@ int fsifoam_module::Step(){
     //--------------------------------------------------//
     if(min(J.internalField()) > 0)
       {
-        Info << "FsiFoam:Step:Moving mesh using least squares interpolation" << endl;
+        Info << "Moving mesh using least squares interpolation" << endl;
             
         leastSquaresVolPointInterpolation pointInterpolation(structuresMesh);
             
@@ -1820,7 +1820,7 @@ int fsifoam_module::Step(){
     else
       {
         FatalErrorIn(args.executable())
-          << "FsiFoam:Step:Negative Jacobian"
+          << "Negative Jacobian"
           << exit(FatalError);
       }
     //#       include "calculateStress.H"
@@ -1839,7 +1839,7 @@ int fsifoam_module::Step(){
            sqrt((3.0/2.0)*magSqr(dev(sigma)))
            );
               
-        Info<< "FsiFoam:Step:Max sigmaEq = " << max(sigmaEq).value()
+        Info<< "Max sigmaEq = " << max(sigmaEq).value()
             << endl;
               
         runTime.write();
@@ -1853,6 +1853,7 @@ int fsifoam_module::Step(){
   }
   return 0;
 };
+
 int fsifoam_module::StepFluidAlone(){
 
   Foam::argList &args(this->ArgList());
@@ -1876,7 +1877,7 @@ int fsifoam_module::StepFluidAlone(){
   bool fvMotionSolver(this->FVMotion());
   vectorField &accumulatedFluidInterfaceDisplacement(this->AccumulatedFluidInterfaceDisplacements());
   // Masoud : Checking AccumulatedFluidInterfaceDisplacement
-  Info << "FsiFoam:StepFluidAlone:Checking AccumulatedFluidInterfaceDisplacementi = " << endl;
+  Info << "Checking AccumulatedFluidInterfaceDisplacementi = " << endl;
   Info << accumulatedFluidInterfaceDisplacement;
   // Masoud: End
   solidTractionFvPatchVectorField &tForce(this->tForce());
@@ -1944,15 +1945,15 @@ int fsifoam_module::StepFluidAlone(){
     do
       {
         outerCorr++;
-        Info << "FsiFoam:StepFluidAlone: outerCorr = " << outerCorr << endl;
+        Info << "outerCorr = " << outerCorr << endl;
         
         //#           include "setInterfaceDisplacement.H"
-        Info << "FsiFoam:StepFluidAlone: \nTime = " << runTime.timeName()
+        Info << "\nTime = " << runTime.timeName()
              << ", iteration: " << outerCorr << endl;
         
         if (outerCorr < 3 || couplingScheme == "FixedRelaxation")
           {
-            Info << "FsiFoam:StepFluidAlone: Current fsi under-relaxation factor: "
+            Info << "Current fsi under-relaxation factor: "
                  << fsiRelaxationFactor << endl;
             
             fluidPatchPointsDisplOld = fluidPatchPointsDispl;
@@ -1982,7 +1983,7 @@ int fsifoam_module::StepFluidAlone(){
                       
                 fsiRelaxationFactor = mag(fsiRelaxationFactor);
                       
-                Info << "FsiFoam:StepFluidAlone: Current fsi under-relaxation factor (Aitken): "
+                Info << "Current fsi under-relaxation factor (Aitken): "
                      << fsiRelaxationFactor << endl;
                       
                 fluidPatchPointsDisplOld = fluidPatchPointsDispl;
@@ -2023,14 +2024,14 @@ int fsifoam_module::StepFluidAlone(){
              *pointDeltaCoeffs
              );
                   
-          Info << "FsiFoam:StepFluidAlone: Maximal accumulated displacement of interface points: "
+          Info << "Maximal accumulated displacement of interface points: "
                << delta << endl;
                   
           if(delta < interfaceDeformationLimit)
             {
               // Move only interface points
               // Masoud
-              Info << "FsiFoam:StepFluidAlone: Moving only interface...";
+              Info << "Moving only interface...";
               // Masoud : End
               pointField newPoints = fluidsMesh.allPoints();
                       
@@ -2062,7 +2063,7 @@ int fsifoam_module::StepFluidAlone(){
             {
               // Move whole fluid mesh
               // Masoud
-              Info << "FsiFoam:StepFluidAlone: Moving the whole mesh...";
+              Info << "Moving the whole mesh...";
               // Masoud: End
               pointField newPoints = fluidsMesh.allPoints();
                       
@@ -2143,7 +2144,7 @@ int fsifoam_module::StepFluidAlone(){
               else
                 {
                   FatalErrorIn(args.executable())
-                    << "FsiFoam:StepFluidAlone: Problem with mesh motion solver selection"
+                    << "Problem with mesh motion solver selection"
                     << abort(FatalError);
                 }
                       
@@ -2180,7 +2181,7 @@ int fsifoam_module::StepFluidAlone(){
             velMag = max(magPhi/fluidsMesh.magSf()).value();
           }
                     
-        Info<< "FsiFoam:StepFluidAlone: Courant Number mean: " << meanCoNum
+        Info<< "Courant Number mean: " << meanCoNum
             << " max: " << CoNum
             << " velocity magnitude: " << velMag
             << endl;
@@ -2197,7 +2198,7 @@ int fsifoam_module::StepFluidAlone(){
         // --- PISO loop
         volScalarField rUA = 1.0/UEqn.A();
         // Masoud
-        Info << "FsiFoam:StepFluidAlone: Performing " << nCorrPISO << " Pressure corrections." << endl;
+        Info << "Performing " << nCorrPISO << " Pressure corrections." << endl;
         // Masoud End
                   
         for (int corr=0; corr<nCorrPISO; corr++)
@@ -2238,7 +2239,7 @@ int fsifoam_module::StepFluidAlone(){
                         
               cumulativeContErr += globalContErr;
                         
-              Info<< "FsiFoam:StepFluidAlone: time step continuity errors : sum local = " << sumLocalContErr
+              Info<< "time step continuity errors : sum local = " << sumLocalContErr
                   << ", global = " << globalContErr
                   << ", cumulative = " << cumulativeContErr
                   << endl;
@@ -2249,7 +2250,7 @@ int fsifoam_module::StepFluidAlone(){
           }
                
         {
-          Info << "FsiFoam:StepFluidAlone: Not Setting traction on solid patch" << endl;
+          Info << "Not Setting traction on solid patch" << endl;
                       
           {
                           
@@ -2271,7 +2272,7 @@ int fsifoam_module::StepFluidAlone(){
             // Masoud : End
             
  	    // Masoud
-            Info << "FsiFoam:StepFluidAlone: solidPatchPointsDispl = " << solidPatchPointsDispl << endl;
+            Info << "solidPatchPointsDispl = " << solidPatchPointsDispl << endl;
             //Masoud end
             
             // Original (solidPatchPointsDispl won't change by iteration
@@ -2289,7 +2290,7 @@ int fsifoam_module::StepFluidAlone(){
                           
             fsiResidualNorm /= initialFsiResidualNorm + SMALL;
                           
-            Info << "FsiFoam:StepFluidAlone: Current fsi residual norm: " << fsiResidualNorm << endl;
+            Info << "Current fsi residual norm: " << fsiResidualNorm << endl;
           }
         }
       }
@@ -2307,8 +2308,10 @@ int fsifoam_module::StepFluidAlone(){
   }
   return(0);  
 }
+
 // Masoud: This is simple iteration-less scheme
 int fsifoam_module::StepFluidNonItr(){
+
   Foam::argList &args(this->ArgList());
   Foam::Time &runTime(this->RunTime());
   dynamicFvMesh &fluidsMesh(this->FluidMesh());
@@ -2565,7 +2568,7 @@ int fsifoam_module::StepFluidNonItr(){
         if(fluidsMesh.moving())
           {
             // Make the fluxes relative
-            Info << "FsiFoam:StepFluidNonItr: Compensating for mesh movment !" << endl;
+            Info << "Compensating for mesh movment !" << endl;
             phi -= fvc::meshPhi(U);
           }
                   
@@ -2880,7 +2883,7 @@ int fsifoam_module::StepFluidItr(){
             {
               // Move whole fluid mesh
               // Masoud
-              Info << "FsiFoam:StepFluidNonItr: Moving the whole mesh...";
+              Info << "Moving the whole mesh...";
               // Masoud: End
               pointField newPoints = fluidsMesh.allPoints();
                       
@@ -2961,7 +2964,7 @@ int fsifoam_module::StepFluidItr(){
               else
                 {
                   FatalErrorIn(args.executable())
-                    << "FsiFoam:StepFluidNonItr: Problem with mesh motion solver selection"
+                    << "Problem with mesh motion solver selection"
                     << abort(FatalError);
                 }
                       
@@ -2998,7 +3001,7 @@ int fsifoam_module::StepFluidItr(){
             velMag = max(magPhi/fluidsMesh.magSf()).value();
           }
                     
-        Info<< "FsiFoam:StepFluidNonItr: Courant Number mean: " << meanCoNum
+        Info<< "Courant Number mean: " << meanCoNum
             << " max: " << CoNum
             << " velocity magnitude: " << velMag
             << endl;
@@ -3015,7 +3018,7 @@ int fsifoam_module::StepFluidItr(){
         // --- PISO loop
         volScalarField rUA = 1.0/UEqn.A();
         // Masoud
-        Info << "FsiFoam:StepFluidNonItr: Performing " << nCorrPISO << " Pressure corrections." << endl;
+        Info << "Performing " << nCorrPISO << " Pressure corrections." << endl;
         // Masoud End
                   
         for (int corr=0; corr<nCorrPISO; corr++)
@@ -3056,7 +3059,7 @@ int fsifoam_module::StepFluidItr(){
                         
               cumulativeContErr += globalContErr;
                         
-              Info<< "FsiFoam:StepFluidNonItr: time step continuity errors : sum local = " << sumLocalContErr
+              Info<< "time step continuity errors : sum local = " << sumLocalContErr
                   << ", global = " << globalContErr
                   << ", cumulative = " << cumulativeContErr
                   << endl;
@@ -3067,13 +3070,13 @@ int fsifoam_module::StepFluidItr(){
           }
                
         {
-          Info << "FsiFoam:StepFluidNonItr: Setting tractionis on solid patch" << endl;
+          Info << "Setting tractionis on solid patch" << endl;
                       
           {
                            
             fsiResidualOld = fsiResidual;
             this->UpdateFSISurface(solidPatchPointsDispl);
-            Info << "FsiFoam:StepFluidNonItr: solidPatchPointsDispl = " << solidPatchPointsDispl << endl;
+            Info << "solidPatchPointsDispl = " << solidPatchPointsDispl << endl;
             
             fsiResidual = (solidPatchPointsDispl - fluidPatchPointsDispl);                          
             fsiResidualNorm = ::sqrt(gSum(magSqr(fsiResidual)));
@@ -3085,7 +3088,7 @@ int fsifoam_module::StepFluidItr(){
                           
             fsiResidualNorm /= initialFsiResidualNorm + SMALL;
                           
-            Info << "FsiFoam:StepFluidNonItr: Current fsi residual norm: " << fsiResidualNorm << endl;
+            Info << "Current fsi residual norm: " << fsiResidualNorm << endl;
           }
         }
       }
@@ -3104,7 +3107,7 @@ int fsifoam_module::StepFluidItr(){
   return(0);  
 }
 //Masoud End StepFluidItr
- 
+
 int fsifoam_module::Dump(){
   Foam::Time &runTime(this->RunTime());
   fvMesh &structuresMesh(this->StructuresMesh());
@@ -3122,20 +3125,20 @@ int fsifoam_module::Dump(){
      sqrt((3.0/2.0)*magSqr(dev(sigma)))
      );
     
-  Info<< "FsiFoam:Dump: Max sigmaEq = " << max(sigmaEq).value()
+  Info<< "Max sigmaEq = " << max(sigmaEq).value()
       << endl;
     
   runTime.write();
   return 0;
 };
- 
+
 ///
 /// @brief "Loads" IcoFoamModule
 ///
 ///
 //static void fsifoam_module::Load(const std::string &name){
 void fsifoam_module::Load(const std::string &name){
-  std::cout << "FsiFoam:Load: Loading FsiFoamModule with name " << name 
+  std::cout << "Loading FsiFoamModule with name " << name 
             << "." << std::endl;
 
   /// Register module with COM
@@ -3252,7 +3255,7 @@ void fsifoam_module::InitFoam(int *pargc, void **pargv)
 ///
 //static void fsifoam_module::Unload(const std::string &name){
 void fsifoam_module::Unload(const std::string &name){
-  std::cout << "FsiFoam:Unload: Unloading FsiFoamModule with name " << name 
+  std::cout << "Unloading FsiFoamModule with name " << name 
             << "." << std::endl;
   fsifoam_module *module_pointer = NULL;
   std::string global_name(name+".global");
@@ -3270,19 +3273,19 @@ void fsifoam_module::RunFoam(){
 
   Foam::Time &runTime(RunTime());
 
-  Info << "FsiFoam:RunFoam: \nStarting time loop\n" << endl;
+  Info << "\nStarting time loop\n" << endl;
 
   while(!runTime.end()){
-    Info << "FsiFoam:RunFoam: Time = " << runTime.timeName() << nl << endl;
+    Info << "Time = " << runTime.timeName() << nl << endl;
     Step();
-    Info<< "FsiFoam:RunFoam: ExecutionTime = " << runTime.elapsedCpuTime() << " s"
+    Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
         << "  ClockTime = " << runTime.elapsedClockTime() << " s"
         << endl << endl;
     if (runTime.outputTime())
       Dump();
   }
 
-  Info<< "FsiFoam:RunFoam: End\n" << endl;
+  Info<< "End\n" << endl;
   runStatus[0] = 0;
 
   return;
@@ -3296,14 +3299,14 @@ void fsifoam_module::StepFoam(){
 
   Foam::Time &runTime(RunTime());
 
-  Info << "FsiFoam:StepFoam: \nStepping time loop\n" << endl;
+  Info << "\nStepping time loop\n" << endl;
 
   //  while(!runTime.end()){
   if(!runTime.end()){
-    Info << "FsiFoam:StepFoam: Time = " << runTime.timeName() << nl << endl;
+    Info << "Time = " << runTime.timeName() << nl << endl;
     Step();
-    Info<< "FsiFoam:StepFoam: ExecutionTime = " << runTime.elapsedCpuTime() << " s"
-        << "  FsiFoam:StepFoam: ClockTime = " << runTime.elapsedClockTime() << " s"
+    Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
+        << "  ClockTime = " << runTime.elapsedClockTime() << " s"
         << endl << endl;
     if (runTime.outputTime())
       Dump();
@@ -3313,12 +3316,12 @@ void fsifoam_module::StepFoam(){
     UpdateFSISurfaceData();
     //Masoud
     UpdateFSISurfaceMesh();
-    //Masoud : End 
-    
+    //Masoud : End
+
     // Masoud : cheking impact data
-    Info << "FsiFoam:StepFoam: numPointSurface = " << numPointsSurface << endl;
-    Info << "FsiFoam:StepFoam: numElementSurface = " << numElementsSurface << endl;
-    Info << "FsiFoam:StepFoam: SurfaceCoordinates = " << endl;
+    Info << "numPointSurface = " << numPointsSurface << endl;
+    Info << "numElementSurface = " << numElementsSurface << endl;
+    Info << "SurfaceCoordinates = " << endl;
     for (int i = 0; i < numPointsSurface; i++)
     {
 	Info << surfaceCoordinates[i*3] << " "
@@ -3329,7 +3332,7 @@ void fsifoam_module::StepFoam(){
     // Masoud : end
   }
   if(runTime.end()){
-    Info<< "FsiFoam:StepFoam: End\n" << endl;
+    Info<< "End\n" << endl;
   }
   runStatus[0] = 0;
   return;

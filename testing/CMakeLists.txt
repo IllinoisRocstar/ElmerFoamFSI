@@ -47,6 +47,8 @@ ADD_TEST(RunTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_s
 ADD_TEST(RunPlatformSpecificTests ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/platforms -s ${PROJECT_SOURCE_DIR} -b ${PROJECT_BINARY_DIR}/bin -o elmerfoamfsi_testresults.txt)
 ADD_TEST(RunSpecificTestScript    ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Platforms/test_stub.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -o elmerfoamfsi_testresults.txt)
 ADD_TEST(SimpleStaticRegressionTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regression.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt )
+#Uncomment test below if you have edited and used the regression test script
+ADD_TEST(RegressionTestHTFSI3:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regHTFSI3.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt)
 
 # Simple test of return code of a program
 ADD_TEST(ExampleProgram:Runs ${EXECUTABLE_OUTPUT_PATH}/sep ${CMAKE_BINARY_DIR}/CMakeCache.txt)
@@ -62,6 +64,10 @@ ADD_TEST(MidPointQuadrature:Runs ${TESTRESULT} MidPointQuadrature:Runs elmerfoam
 ADD_TEST(MidPointQuadrature:Accurate ${TESTRESULT} MidPointQuadrature:Accurate elmerfoamfsi_testresults.txt)
 ADD_TEST(MidPointQuadrature:Order ${TESTRESULT} MidPointQuadrature:Order2 elmerfoamfsi_testresults.txt)
 ADD_TEST(SimpleStaticRegressionTest:Works ${TESTRESULT} SimpleStaticRegressionTest elmerfoamfsi_testresults.txt)
+#Uncomment test below and add your Regression test name in the appropriate
+#spot if you have edited and used the regression test script
+ADD_TEST(RegressionTestHTFSI3:Works ${TESTRESULT} Hron-Turek-FSI3 elmerfoamfsi_testresults.txt)
+
 
 IF(MPI_CXX_COMPILER)
 
