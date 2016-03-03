@@ -40,12 +40,17 @@ protected:
   int runMode;
   bool writeHDF;
   bool writeVTK;
+  int verblevel;
 
 public:
   fsicoupling() : GlobalType("fsicoupling"), fluidsAgent(NULL), structuresAgent(NULL), transferAgent(NULL), 
                   runMode(0), writeHDF(true), writeVTK(true) {};
   fsicoupling(GlobalType &globin) : GlobalType(globin), fluidsAgent(NULL), structuresAgent(NULL), transferAgent(NULL), 
                   runMode(0), writeHDF(true), writeVTK(true) {};
+  // JK: Making stuff for verblevel in fsicoupling functions
+  void SetVerbLevel(int verb){ verblevel = verb;};
+  int VerbLevel() const { return verblevel;}; 
+  // JK: End verblevel
   int TransferDisplacementsToFluid(solidagent *solidAgent,fluidagent *fluidAgent)
   {
     // Masoud: Checking quality of coordinate transfer
@@ -384,8 +389,8 @@ public:
     //SetName("Initialize"); 
     std::stringstream outString; 
     //Masoud 
-    outString << "ElmerFoamDriver:Initialize: Final Time = " << finalTime << std::endl;
-    outString << "ElmerFoamDriver:Initialize: Time Step  = " << timeStep << std::endl;
+    outString << "Final Time = " << finalTime << std::endl;
+    outString << "Time Step  = " << timeStep << std::endl;
     //Masoud: End
     StdOut(outString.str(),0,true);
     outString.clear();
@@ -418,6 +423,18 @@ public:
       //      TestTransfer();
     }
     //    exit(1);
+
+    //JK: Setting the verbosity with the modules
+    int *fluidsVerb = NULL;
+    int *solidsVerb = NULL;
+    std::string fluidsVerbName(fluidsInterfaceName + ".verbosity");
+    std::string solidsVerbName(structuresInterfaceName + ".verbosity");
+    COM_get_array(fluidsVerbName.c_str(),fluidsAgent->PaneID(),&fluidsVerb);
+    COM_get_array(solidsVerbName.c_str(),structuresAgent->PaneID(),&solidsVerb);
+   
+    *fluidsVerb = verblevel;
+    *solidsVerb = verblevel;
+    //JK: End verbosity
 
     componentAgents.resize(2);
     componentAgents[0] = fluidsAgent;
@@ -610,6 +627,7 @@ namespace ElmerFoamFSI {
 
     fsicoupling fsiCoupler;
     fsiCoupler.SetRunMode(runMode);
+    fsiCoupler.SetVerbLevel(verblevel);
 
     std::vector<std::string> componentInterfaceNames;
     componentInterfaceNames.push_back("FluidsComponentInterface");
