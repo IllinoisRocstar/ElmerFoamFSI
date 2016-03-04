@@ -1,3 +1,0 @@
-./cleandocs
-doxygen OpenFoamModuleDriver.cfg
-tar zcvf elmermoduledriver_html_docs.tgz html

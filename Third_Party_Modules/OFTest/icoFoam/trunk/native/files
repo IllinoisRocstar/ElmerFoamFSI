@@ -1,3 +1,0 @@
-icoFoamModule.C
-
-LIB = $(FOAM_LIBBIN)/libIcoFoamModule

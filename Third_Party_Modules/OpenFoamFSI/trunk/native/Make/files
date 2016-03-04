@@ -1,3 +1,0 @@
-fsiFOAM.C
-
-LIB = $(FOAM_LIBBIN)/libOpenFoamFSI

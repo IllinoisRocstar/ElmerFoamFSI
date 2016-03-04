@@ -1,5 +1,0 @@
-calls        9, time   0.07 sec Combineimprove 2D
-calls       18, time   0.28 sec MeshSmoothing 2D
-calls       36, time   0.00 sec GetSurfaceElementsOfFace
-calls        9, time   0.03 sec EdgeSwapping 2D
-calls        1, time  13.16 sec total CPU time

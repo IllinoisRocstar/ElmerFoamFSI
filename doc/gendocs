@@ -1,3 +1,0 @@
-./cleandocs
-doxygen ElmerFoamFSI.cfg
-tar zcvf elmerfoamfsi_html_docs.tgz html
