@@ -116,7 +116,7 @@ ADD_TEST(PressureData:Registered ${TESTRESULT} PressureData:Registered testresul
 ADD_TEST(TractionData:Registered ${TESTRESULT} TractionData:Registered testresults.txt)
 ADD_TEST(PressureData:Correct ${TESTRESULT} PressureData:Correct testresults.txt)
 ADD_TEST(TractionData:Correct ${TESTRESULT} TractionData:Correct testresults.txt)
-ADD_TEST(RunFunction:Exists ${TESTRESULT} RunFunction:Exists testresults.txt)
+#ADD_TEST(RunFunction:Exists ${TESTRESULT} RunFunction:Exists testresults.txt)
 
 #
 #  all this stuff here is saved from the examples and can be deleted

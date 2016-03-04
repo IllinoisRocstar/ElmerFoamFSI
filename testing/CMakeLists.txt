@@ -63,6 +63,7 @@ ADD_TEST(TrapezoidQuadrature:Order ${TESTRESULT} TrapezoidQuadrature:Order2 elme
 ADD_TEST(MidPointQuadrature:Runs ${TESTRESULT} MidPointQuadrature:Runs elmerfoamfsi_testresults.txt)
 ADD_TEST(MidPointQuadrature:Accurate ${TESTRESULT} MidPointQuadrature:Accurate elmerfoamfsi_testresults.txt)
 ADD_TEST(MidPointQuadrature:Order ${TESTRESULT} MidPointQuadrature:Order2 elmerfoamfsi_testresults.txt)
+ADD_TEST(FluidsInitialize:Runs ${TESTRESULT} FluidsInitialize:Runs elmerfoamfsi_testresults.txt)
 ADD_TEST(SimpleStaticRegressionTest:Works ${TESTRESULT} SimpleStaticRegressionTest elmerfoamfsi_testresults.txt)
 #Uncomment test below and add your Regression test name in the appropriate
 #spot if you have edited and used the regression test script
