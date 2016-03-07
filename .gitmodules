@@ -1,6 +1,3 @@
-[submodule "IMPACT"]
-	path = IMPACT
-	url = https://github.com/IllinoisRocstar/IMPACT.git
 [submodule "elmerfem"]
 	path = elmerfem
 	url = https://github.com/ElmerCSC/elmerfem.git
@@ -10,3 +7,6 @@
 [submodule "foam/foam-extend-3.2"]
 	path = foam/foam-extend-3.2
 	url = git://git.code.sf.net/p/foam-extend/foam-extend-3.2
+[submodule "IMPACT"]
+	path = IMPACT
+	url = https://github.com/IllinoisRocstar/IMPACT.git

@@ -19,6 +19,12 @@
 #include "Profiler.H"
 #include <vector>
 #include <cmath>
+#include "Driver.H"
+#include "Parameters.H"
+#include "InterfaceLayer.H"
+#include "Orchestrator.H"
+#include "OpenFoamAgent.H"
+#include "ElmerAgent.H"
 
 namespace ElmerFoamFSI {
 
@@ -246,7 +252,27 @@ namespace ElmerFoamFSI {
       }
       result.UpdateResult("MidPointQuadrature:Order2",order2);
     }
-    
+   
+    virtual void Test__FluidsInitialize(ResultsType &result) {
+      bool runs = false;
+      int nargs_dupe = 2;
+      char **args_dupe;
+      args_dupe = new char * [3];
+      args_dupe[0] = const_cast<char *>("test");
+      args_dupe[1] = const_cast<char *>("-com-mpi");
+      args_dupe[2] = NULL;
+
+      COM_init(&nargs_dupe,&args_dupe);
+
+      COM_load_module("OpenFoamFSI","FluidsComponentInterface");
+      
+//      openfoamagent fluidsAgent;
+//      fluidsAgent.Initialize("FluidsComponentInterface");
+
+      COM_unload_module("OpenFoamFSI","FluidsComponentInterface");
+      result.UpdateResult("FluidsInitialize:Runs",runs);
+    }
+ 
     ///
     /// Runs all tests implemented by the ElmerFoamFSI::TestingObject.
     ///
@@ -257,6 +283,7 @@ namespace ElmerFoamFSI {
       Test__ExampleFunction(result);
       Test__TrapezoidQuadrature(result);
       Test__MidPointQuadrature(result);
+      Test__FluidsInitialize(result);
       Epilogue();
     }
     
@@ -275,6 +302,8 @@ namespace ElmerFoamFSI {
         Test__TrapezoidQuadrature(result);
       else if(name == "MidPointQuadrature")
         Test__MidPointQuadrature(result);
+      else if(name == "FluidsInitialize")
+        Test__FluidsInitialize(result);
       Epilogue();
     }
 

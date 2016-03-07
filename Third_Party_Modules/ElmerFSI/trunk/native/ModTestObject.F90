@@ -18,7 +18,7 @@ MODULE TESTOBJECT
      DOUBLE PRECISION, POINTER :: FacePressures(:), FaceLoads(:)
      DOUBLE PRECISION, POINTER :: NodePressures(:)
      INTEGER :: FSIbcId, nElem, nNodes, nConn, SolverId
-     INTEGER, POINTER :: Conn(:)!, NodeMap(:)
+     INTEGER, POINTER :: Conn(:), verbosity(:)!, NodeMap(:)
      CHARACTER(80) :: MeshType 
      INTEGER, POINTER :: MyToElmerNodes(:)
   END TYPE t_global

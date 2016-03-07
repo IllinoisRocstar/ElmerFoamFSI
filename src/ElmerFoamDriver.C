@@ -15,9 +15,12 @@
 
 typedef SolverUtils::TransferObject transferagent;
 typedef openfoamagent fluidagent;
-typedef elmeragent    solidagent;    
+typedef elmeragent    solidagent;   
+typedef IRAD::Profiler::ProfilerObj ProfilerType;
+typedef std::string                 StackType;
+typedef IRAD::Global::GlobalObj<StackType,int,ProfilerType> GlobalType;
 
-class fsicoupling : public impact::orchestrator::couplingbase
+class fsicoupling : public impact::orchestrator::couplingbase, public GlobalType 
 {
 protected:
   fluidagent *fluidsAgent;
@@ -37,10 +40,17 @@ protected:
   int runMode;
   bool writeHDF;
   bool writeVTK;
+  int verblevel;
 
 public:
-  fsicoupling() : fluidsAgent(NULL), structuresAgent(NULL), transferAgent(NULL), 
+  fsicoupling() : GlobalType("fsicoupling"), fluidsAgent(NULL), structuresAgent(NULL), transferAgent(NULL), 
                   runMode(0), writeHDF(true), writeVTK(true) {};
+  fsicoupling(GlobalType &globin) : GlobalType(globin), fluidsAgent(NULL), structuresAgent(NULL), transferAgent(NULL), 
+                  runMode(0), writeHDF(true), writeVTK(true) {};
+  // JK: Making stuff for verblevel in fsicoupling functions
+  void SetVerbLevel(int verb){ verblevel = verb;};
+  int VerbLevel() const { return verblevel;}; 
+  // JK: End verblevel
   int TransferDisplacementsToFluid(solidagent *solidAgent,fluidagent *fluidAgent)
   {
     // Masoud: Checking quality of coordinate transfer
@@ -374,12 +384,17 @@ public:
   }
   virtual int Initialize(std::vector<std::string> &componentInterfaceNames, 
           double finalTime, double timeStep){
-    
+ 
+    FunctionEntry("Initialize"); 
+    //SetName("Initialize"); 
+    std::stringstream outString; 
     //Masoud 
-    std::cout << "ElmerFoamDriver:Initialize: Final Time = " << finalTime << std::endl;
-    std::cout << "ElmerFoamDriver:Initialize: Time Step  = " << timeStep << std::endl;
+    outString << "Final Time = " << finalTime << std::endl;
+    outString << "Time Step  = " << timeStep << std::endl;
     //Masoud: End
-
+    StdOut(outString.str(),0,true);
+    outString.clear();
+    outString.str("");
     
     if(componentInterfaceNames.size() < 2)
       return(1);
@@ -409,6 +424,18 @@ public:
     }
     //    exit(1);
 
+    //JK: Setting the verbosity with the modules
+    int *fluidsVerb = NULL;
+    int *solidsVerb = NULL;
+    std::string fluidsVerbName(fluidsInterfaceName + ".verbosity");
+    std::string solidsVerbName(structuresInterfaceName + ".verbosity");
+    COM_get_array(fluidsVerbName.c_str(),fluidsAgent->PaneID(),&fluidsVerb);
+    COM_get_array(solidsVerbName.c_str(),structuresAgent->PaneID(),&solidsVerb);
+   
+    *fluidsVerb = verblevel;
+    *solidsVerb = verblevel;
+    //JK: End verbosity
+
     componentAgents.resize(2);
     componentAgents[0] = fluidsAgent;
     componentAgents[1] = structuresAgent;
@@ -419,23 +446,30 @@ public:
 
     //DumpSolution();
 
+    FunctionExit("Initialize"); 
     return(0);
+ 
   };
   virtual int Run(){
+    FunctionEntry("Run");
     // Enter timestepping
     int innerCount = 0;
     int maxSubSteps = 1000;
     int dumpinterval = 1;
     int systemStep = 0;
-    std::cout << std::endl << std::endl 
+    std::stringstream outString;
+    outString << std::endl << std::endl 
               << "***************************************** " << std::endl;
-    std::cout << "       Starting Stepping in Time          " << std::endl;
-    std::cout << "***************************************** " << std::endl << std::endl;
-    std::cout << "ElmerFoamDriver:Run: Summary of the simulation " << std::endl;
-    std::cout << "     Simulation Type       = ElmerFoamFSI" << std::endl;
-    std::cout << "     Simulation final time = " << simulationFinalTime << std::endl;
-    std::cout << "     Simulation time step  = " << simulationTimeStep << std::endl;
-    std::cout << std::endl;
+    outString << "       Starting Stepping in Time          " << std::endl;
+    outString << "***************************************** " << std::endl << std::endl;
+    outString << "ElmerFoamDriver:Run: Summary of the simulation " << std::endl;
+    outString << "     Simulation Type       = ElmerFoamFSI" << std::endl;
+    outString << "     Simulation final time = " << simulationFinalTime << std::endl;
+    outString << "     Simulation time step  = " << simulationTimeStep << std::endl;
+    outString << std::endl;
+    StdOut(outString.str(),0,true);
+    outString.clear();
+    outString.str("");
     while(simulationTime < simulationFinalTime){
       
       // if(!(time%screenInterval) && (innerCount == 0)){
@@ -508,6 +542,7 @@ public:
         //DumpSolution();
       }
     }
+    FunctionExit("Run");
     return(0);
   };
   virtual int Finalize(){
@@ -592,6 +627,7 @@ namespace ElmerFoamFSI {
 
     fsicoupling fsiCoupler;
     fsiCoupler.SetRunMode(runMode);
+    fsiCoupler.SetVerbLevel(verblevel);
 
     std::vector<std::string> componentInterfaceNames;
     componentInterfaceNames.push_back("FluidsComponentInterface");

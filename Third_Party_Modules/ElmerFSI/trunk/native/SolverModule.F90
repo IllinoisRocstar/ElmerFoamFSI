@@ -216,6 +216,10 @@ SUBROUTINE Initializer(global, runs)
    ALLOCATE(global%PreviousLoads(3,global%nNodes))
    !Allocate the NodeLoads that gets passed to the user defined function
    ALLOCATE(CurrentModel%NodeLoadsPass(3,global%nNodes))
+   !JK 3/3/16: Adding verbosity that is registered with COM so we can
+   !get verbosity from the driver
+   ALLOCATE(global%verbosity(1))
+   global%verbosity=1
    IF( MyVerbosity > 3) WRITE(*,*) 'SIZE(NodeLoads)=',SIZE(global%NodeLoads)
    !Initialize the loads to 0.0
    DO t = 1, global%nNodes
@@ -425,6 +429,11 @@ SUBROUTINE Initializer(global, runs)
                          COM_DOUBLE_PRECISION, 3, '')
    CALL COM_SET_ARRAY(TRIM(global%window_name)//'.FaceLoads',11,&
                       global%FaceLoads,3)
+   !JK 3/3/16: Adding new verbosity data to get verbosity from driver
+   CALL COM_NEW_DATAITEM(TRIM(global%window_name)//'.verbosity', 'w',&
+                         COM_INTEGER, 1, '')
+   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.verbosity',11,&
+                      global%verbosity,1)
 
    PreviousTime = 0.0
 
@@ -493,6 +502,8 @@ SUBROUTINE RUN(global, runs, tFinal)
      CALL Fatal( ' ', 'Next time step passed to RUN is greater than &
                   previous time step!')
    END IF
+
+   WRITE(*,*) 'Solids RUN verbosity = ',global%verbosity
 
    IF (MyVerbosity > 3) WRITE(*,*) 'In RUN function'
      

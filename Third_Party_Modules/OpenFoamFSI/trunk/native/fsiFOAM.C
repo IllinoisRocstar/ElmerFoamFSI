@@ -3201,6 +3201,8 @@ void fsifoam_module::InitFoam(int *pargc, void **pargv)
   /// Register the Data Items
 
   // set up solution meta data
+  //JK 3/3/16: Adding new verbosity data to get verbosity from driver
+  Solution().Meta().AddField("verbosity", 's', 1, 4, "");
   Solution().Meta().AddField("time", 's', 1, 8, "s");
   Solution().Meta().AddField("endTime", 's', 1, 8, "s");
   Solution().Meta().AddField("initStatus", 's', 1, 4, "");
@@ -3228,6 +3230,7 @@ void fsifoam_module::InitFoam(int *pargc, void **pargv)
 
   initStatus.resize(1, -1000);
   runStatus.resize(1, -1000);
+  verbosity.resize(1, 1);
 
   surfacePressure.resize(numElementsSurface, -1);
   surfaceTraction.resize(3*numElementsSurface, -1);
@@ -3236,6 +3239,7 @@ void fsifoam_module::InitFoam(int *pargc, void **pargv)
   // reset the buffers to be our own local buffers
   Solution().SetFieldBuffer("initStatus", initStatus);
   Solution().SetFieldBuffer("runStatus", runStatus);
+  Solution().SetFieldBuffer("verbosity", verbosity);
   Solution().SetFieldBuffer("time", time);
   Solution().SetFieldBuffer("endTime", endTime);
   Solution().SetFieldBuffer("pressure", surfacePressure);
