@@ -16,7 +16,7 @@
 #include "primitive_utilities.H"
 #include "SolverModuleDriver.H"
 
-COM_EXTERN_MODULE( SolverModule);
+COM_EXTERN_MODULE( ElmerCSC);
 
 void SolverModuleDriver::usage(char *exec){
   std::cout << "SolverModuleDriver:usage: Usage: " << std::endl
@@ -86,7 +86,7 @@ int SolverModuleDriver::init(int argc, char *argv[]){
       usage(argv[0]);
   }
 
-  COM_LOAD_MODULE_STATIC_DYNAMIC( SolverModule, "Window1");
+  COM_LOAD_MODULE_STATIC_DYNAMIC( ElmerCSC, "Window1");
 
   /// Get the handle for the initialize function and call it
   int init_handle = COM_get_function_handle("Window1.Initialize");
@@ -306,7 +306,7 @@ int SolverModuleDriver::finalize(){
     COM_call_function(final_handle,&runs);
   }
 
-  COM_UNLOAD_MODULE_STATIC_DYNAMIC( SolverModule, "Window1");
+  COM_UNLOAD_MODULE_STATIC_DYNAMIC( ElmerCSC, "Window1");
 
   COM_finalize();
   std::cout << "SolverModuleDriver:finalize: After COM_finalize" << std::endl;

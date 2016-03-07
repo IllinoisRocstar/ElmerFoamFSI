@@ -92,5 +92,5 @@ Boundary Condition 2
   Fsi BC = True
 !  Force 2 = -4.0e5
   Force 2 = Variable Time
-    Real Procedure "MyLibrary" "MyFunction2"
+    Real Procedure "LoadFunctionLibrary" "LoadYDirection"
 End

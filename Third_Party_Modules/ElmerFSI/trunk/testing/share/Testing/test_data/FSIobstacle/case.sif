@@ -184,9 +184,9 @@ Boundary Condition 5
 !  Force 2 = 0.0
 !  Force 3 = 0.0
   Force 1 = Variable Time
-    Real Procedure "MyLibrary" "MyFunction1"
+    Real Procedure "LoadFunctionLibrary" "LoadXDirection"
   Force 2 = Variable Time
-    Real Procedure "MyLibrary" "MyFunction2"
+    Real Procedure "LoadFunctionLibrary" "LoadYDirection"
   Force 3 = Variable Time
-    Real Procedure "MyLibrary" "MyFunction3"
+    Real Procedure "LoadFunctionLibrary" "LoadZDirection"
 End

@@ -23,7 +23,7 @@
 #include "com_devel.hpp"
 #include "UnixUtils.H"
 
-COM_EXTERN_MODULE( SolverModule );
+COM_EXTERN_MODULE( ElmerCSC );
 
 namespace ElmerModuleDriver {
 
@@ -467,7 +467,7 @@ namespace ElmerModuleDriver {
 
       //load Elmer module**********************************************************
       //***************************************************************************
-      COM_LOAD_MODULE_STATIC_DYNAMIC( SolverModule, "Window1");
+      COM_LOAD_MODULE_STATIC_DYNAMIC( ElmerCSC, "Window1");
    
       bool load_unload = true;
 
@@ -814,7 +814,7 @@ namespace ElmerModuleDriver {
 
       //Unload Elmer module********************************************************
       //***************************************************************************
-      COM_UNLOAD_MODULE_STATIC_DYNAMIC( SolverModule, "Window1");
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC( ElmerCSC, "Window1");
 
       //Make sure module unloaded
       h=COM_get_window_handle("Window1");
@@ -899,7 +899,7 @@ namespace ElmerModuleDriver {
 
       //load Elmer module**********************************************************
       //***************************************************************************
-      COM_LOAD_MODULE_STATIC_DYNAMIC( SolverModule, "Window1");
+      COM_LOAD_MODULE_STATIC_DYNAMIC( ElmerCSC, "Window1");
    
       bool load_unload = true;
 
@@ -1047,7 +1047,7 @@ namespace ElmerModuleDriver {
 
       //Unload Elmer module********************************************************
       //***************************************************************************
-      COM_UNLOAD_MODULE_STATIC_DYNAMIC( SolverModule, "Window1");
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC( ElmerCSC , "Window1");
 
       //Make sure module unloaded
       h=COM_get_window_handle("Window1");
