@@ -16,3 +16,5 @@ export IRMULTIPHYSICS=$OFSupport
 ## set LD_LIBRARY_PATH with path to elmer libraries for running the elmer module
 ElmerSupport="$ElmerFoamTop/support_install/lib:$LD_LIBRARY_PATH"
 export LD_LIBRARY_PATH=$ElmerSupport
+## Masoud added
+export CMAKE_PREFIX_PATH=/opt/HDF/
