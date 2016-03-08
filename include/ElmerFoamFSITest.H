@@ -26,6 +26,10 @@
 #include "OpenFoamAgent.H"
 #include "ElmerAgent.H"
 
+// Loading native modules
+COM_EXTERN_MODULE(OpenFoamFSI);
+COM_EXTERN_MODULE(SolverModule);
+
 namespace ElmerFoamFSI {
 
   ///
