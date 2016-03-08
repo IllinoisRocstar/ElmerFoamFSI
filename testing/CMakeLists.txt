@@ -65,6 +65,11 @@ ADD_TEST(MidPointQuadrature:Accurate ${TESTRESULT} MidPointQuadrature:Accurate e
 ADD_TEST(MidPointQuadrature:Order ${TESTRESULT} MidPointQuadrature:Order2 elmerfoamfsi_testresults.txt)
 ADD_TEST(FluidsInitialize:Runs ${TESTRESULT} FluidsInitialize:Runs elmerfoamfsi_testresults.txt)
 ADD_TEST(SimpleStaticRegressionTest:Works ${TESTRESULT} SimpleStaticRegressionTest elmerfoamfsi_testresults.txt)
+ADD_TEST(ScaffoldUnitTestFun:Runs ${TESTRESULT} ScaffoldUnitTestFun:Runs elmerfoamfsi_testresults.txt)
+ADD_TEST(LoadElmerModule:Works ${TESTRESULT} LoadElmerModule:Works elmerfoamfsi_testresults.txt)
+ADD_TEST(UnloadElmerModule:Works ${TESTRESULT} UnloadElmerModule:Works elmerfoamfsi_testresults.txt)
+ADD_TEST(LoadOpenFoamModule:Works ${TESTRESULT} LoadOpenFoamModule:Works elmerfoamfsi_testresults.txt)
+ADD_TEST(UnloadOpenFoamModule:Works ${TESTRESULT} UnloadOpenFoamModule:Works elmerfoamfsi_testresults.txt)
 #Uncomment test below and add your Regression test name in the appropriate
 #spot if you have edited and used the regression test script
 ADD_TEST(RegressionTestHTFSI3:Works ${TESTRESULT} Hron-Turek-FSI3 elmerfoamfsi_testresults.txt)
