@@ -12,6 +12,7 @@
 #include "Orchestrator.H"
 #include "OpenFoamAgent.H"
 #include "ElmerAgent.H"
+#include "Global.H"
 
 typedef SolverUtils::TransferObject transferagent;
 typedef openfoamagent fluidagent;
@@ -474,20 +475,29 @@ public:
       
       // if(!(time%screenInterval) && (innerCount == 0)){
       // Write some stuff to screen
+      /* WK
       std::cout << "ElmerFoamDriver:Run: System timestep " << ++systemStep 
+                << " @ Time = " << simulationTime << std::endl;*/
+      outString << "ElmerFoamDriver:Run: System timestep " << ++systemStep
                 << " @ Time = " << simulationTime << std::endl;
       // }
           
       if(!runMode){
         // Transfer displacements @ Tn to fluids
+       /* WK
         std::cout << "ElmerFoamDriver:Run: Transferring displacements from structures to fluids @ time(" 
-                  << simulationTime << ")" << std::endl;
+                  << simulationTime << ")" << std::endl; */
+        outString << "ElmerFoamDriver:Run: Transferring displacements from structures to fluids @ time("
+                  << simulationTime << ")" << std::endl; 
         TransferDisplacementsToFluid(structuresAgent,fluidsAgent);
       }
       if(runMode < 2){
         fluidsAgent->InitializeTimeStep(simulationTime);
         // Step fluids to get loads @ T(n+1)
+        /* WK
         std::cout << "ElmerFoamDriver:Run: Stepping fluids to time(" 
+                  << simulationTime+simulationTimeStep << ")" << std::endl; */
+        outString << "ElmerFoamDriver:Run: Stepping fluids to time("
                   << simulationTime+simulationTimeStep << ")" << std::endl;
         fluidsAgent->Run(simulationTime+simulationTimeStep);
       }
@@ -513,7 +523,10 @@ public:
       if(!(runMode==1)){
         structuresAgent->InitializeTimeStep(simulationTime);
         // Step structures to get displacements @ T(n+1)
+        /* WK
         std::cout << "ElmerFoamDriver:Run: Stepping structures to time(" 
+                  << simulationTime+simulationTimeStep << ")" << std::endl; */
+        outString << "ElmerFoamDriver:Run: Stepping structures to time("
                   << simulationTime+simulationTimeStep << ")" << std::endl;
         structuresAgent->Run(simulationTime+simulationTimeStep);
       }
@@ -522,7 +535,10 @@ public:
       bool converged = true;
       if(converged){
         simulationTime += simulationTimeStep;
+      /* WK
         std::cout << "ElmerFoamDriver:Run: Converged at time(" 
+                  << simulationTime << ")" << std::endl; */
+        outString << "ElmerFoamDriver:Run: Converged at time("
                   << simulationTime << ")" << std::endl;
         if(runMode < 2)
           fluidsAgent->FinalizeTimeStep(simulationTime+simulationTimeStep);
@@ -532,15 +548,23 @@ public:
       } else {
         innerCount++;
         if(innerCount > maxSubSteps){
+         /* WK
           std::cout << "ElmerFoamDriver:Run: Failed to converge after "
+                    << maxSubSteps << ", giving up." << std::endl; */
+          outString << "ElmerFoamDriver:Run: Failed to converge after "
                     << maxSubSteps << ", giving up." << std::endl;
           return(1);
         }
       }
-      
+
+     StdOut(outString.str(),0,true);
+     outString.clear();
+     outString.str("");
+
       if(!(systemStep%dumpinterval)){
         //DumpSolution();
       }
+      
     }
     FunctionExit("Run");
     return(0);

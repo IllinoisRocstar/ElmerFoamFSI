@@ -25,7 +25,7 @@ COM_EXTERN_MODULE(OpenFoamFSI);
 int main(int argc, char *argv[]){
   COM_init( &argc, &argv);
 
-
+ 
   // flags for operation modes
   // default mode of operation, runs the original OpenFOAM functionality
   bool regression = true;  
@@ -60,7 +60,7 @@ int main(int argc, char *argv[]){
   /// Get the handle for the initialize function and call it
   int init_handle = COM_get_function_handle("OFModule.InitFoam");
   if(init_handle <= 0) { // fail
-    std::cout << "Could not get handle for init function." << std::endl;
+    std::cout << "OFModuleDriver:main: Could not get handle for init function." << std::endl;
     exit(-1);
   }
 
@@ -84,16 +84,16 @@ int main(int argc, char *argv[]){
     std::string name;
     Istr >> name;
     dataItemNames.push_back(name);
-    std::cout << "DataItem # " << i << ": " << name << std::endl;
+    std::cout << "OFModuleDriver:main: DataItem # " << i << ": " << name << std::endl;
   }
 
   // list of panes in this window
   int numPanes;
   int* paneList;
   COM_get_panes("OFModule", &numPanes, &paneList);
-  std::cout << "Number of Panes " << numPanes << std::endl;
+  std::cout << "OFModuleDriver:main: Number of Panes " << numPanes << std::endl;
   for (int i=0; i<numPanes; ++i) 
-    std::cout << "Pane ID # " << i+1 << "=" << paneList[i] << std::endl;
+    std::cout << "OFModuleDriver:main: Pane ID # " << i+1 << "=" << paneList[i] << std::endl;
 
   // only one pane for serial runs
   int pane = paneList[0];
@@ -116,7 +116,7 @@ int main(int argc, char *argv[]){
     std::string name;
     ConnISS >> name;
     connNames.push_back(name);
-    std::cout << "Connectivity Table # " << i+1 << ": " << name << std::endl;
+    std::cout << "OFModuleDriver:main: Connectivity Table # " << i+1 << ": " << name << std::endl;
   }
 
   // number of nodes per element
@@ -128,10 +128,10 @@ int main(int argc, char *argv[]){
   COM_get_dataitem(fullConnName, &getDataItemLoc, &getDataItemType, 
                    &numElementNodes, &getDataItemUnits);
 
-  std::cout << "getDataItemLoc " << getDataItemLoc << std::endl;
-  std::cout << "getDataItemType " << getDataItemType << std::endl;
-  std::cout << "numElementNodes " << numElementNodes << std::endl;
-  std::cout << "getDataItemUnits " << getDataItemUnits << std::endl;
+  std::cout << "OFModuleDriver:main: getDataItemLoc " << getDataItemLoc << std::endl;
+  std::cout << "OFModuleDriver:main: getDataItemType " << getDataItemType << std::endl;
+  std::cout << "OFModuleDriver:main: numElementNodes " << numElementNodes << std::endl;
+  std::cout << "OFModuleDriver:main: getDataItemUnits " << getDataItemUnits << std::endl;
 
   int* Conn;
   int numElem;
@@ -184,18 +184,18 @@ int main(int argc, char *argv[]){
   COM_get_dataitem(name, &getDataItemLoc, &getDataItemType,
                     &arrayLength, &getDataItemUnits);
 
-  std::cout << "Pressure Get DataItem" << std::endl;
-  std::cout << "getDataItemLoc: " << getDataItemLoc << std::endl;
-  std::cout << "getDataItemType: " << getDataItemType << std::endl;
-  std::cout << "arrayLength: " << arrayLength << std::endl;
-  std::cout << "getDataItemUnits: " << getDataItemUnits << std::endl;
+  std::cout << "OFModuleDriver:main: Pressure Get DataItem" << std::endl;
+  std::cout << "OFModuleDriver:main: getDataItemLoc: " << getDataItemLoc << std::endl;
+  std::cout << "OFModuleDriver:main: getDataItemType: " << getDataItemType << std::endl;
+  std::cout << "OFModuleDriver:main: arrayLength: " << arrayLength << std::endl;
+  std::cout << "OFModuleDriver:main: getDataItemUnits: " << getDataItemUnits << std::endl;
 
   char myDataItemLoc;
   // translate element (e) to cell (c)
   if (getDataItemLoc == 'e' || getDataItemLoc == 'E') {
     myDataItemLoc = 'c';
   } else {
-    std::cout << "Unknown Data Item Location" << std::endl;
+    std::cout << "OFModuleDriver:main: Unknown Data Item Location" << std::endl;
     exit(1);
   }
 
@@ -203,7 +203,7 @@ int main(int argc, char *argv[]){
   if (getDataItemType == COM_DOUBLE) {
     myDataItemType = 8;
   } else {
-    std::cout << "Unknown Data Item Type" << std::endl;
+    std::cout << "OFModuleDriver:main: Unknown Data Item Type" << std::endl;
     exit(1);
   }
 
@@ -216,24 +216,24 @@ int main(int argc, char *argv[]){
   COM_get_dataitem(name, &getDataItemLoc, &getDataItemType,
                     &arrayLength, &getDataItemUnits);
 
-  std::cout << "Traction Get DataItem" << std::endl;
-  std::cout << "getDataItemLoc: " << getDataItemLoc << std::endl;
-  std::cout << "getDataItemType: " << getDataItemType << std::endl;
-  std::cout << "arrayLength: " << arrayLength << std::endl;
-  std::cout << "getDataItemUnits: " << getDataItemUnits << std::endl;
+  std::cout << "OFModuleDriver:main: Traction Get DataItem" << std::endl;
+  std::cout << "OFModuleDriver:main: getDataItemLoc: " << getDataItemLoc << std::endl;
+  std::cout << "OFModuleDriver:main: getDataItemType: " << getDataItemType << std::endl;
+  std::cout << "OFModuleDriver:main: arrayLength: " << arrayLength << std::endl;
+  std::cout << "OFModuleDriver:main: getDataItemUnits: " << getDataItemUnits << std::endl;
 
   // translate element (e) to cell (c)
   if (getDataItemLoc == 'e' || getDataItemLoc == 'E') {
     myDataItemLoc = 'c';
   } else {
-    std::cout << "Unknown Data Item Location" << std::endl;
+    std::cout << "OFModuleDriver:main: Unknown Data Item Location" << std::endl;
     exit(1);
   }
 
   if (getDataItemType == COM_DOUBLE) {
     myDataItemType = 8;
   } else {
-    std::cout << "Unknown Data Item Type" << std::endl;
+    std::cout << "OFModuleDriver:main: Unknown Data Item Type" << std::endl;
     exit(1);
   }
 
@@ -246,11 +246,11 @@ int main(int argc, char *argv[]){
   COM_get_dataitem(name, &getDataItemLoc, &getDataItemType,
                     &arrayLength, &getDataItemUnits);
 
-  std::cout << "Solid Displacement Get DataItem" << std::endl;
-  std::cout << "getDataItemLoc: " << getDataItemLoc << std::endl;
-  std::cout << "getDataItemType: " << getDataItemType << std::endl;
-  std::cout << "arrayLength: " << arrayLength << std::endl;
-  std::cout << "getDataItemUnits: " << getDataItemUnits << std::endl;
+  std::cout << "OFModuleDriver:main: Solid Displacement Get DataItem" << std::endl;
+  std::cout << "OFModuleDriver:main: getDataItemLoc: " << getDataItemLoc << std::endl;
+  std::cout << "OFModuleDriver:main: getDataItemType: " << getDataItemType << std::endl;
+  std::cout << "OFModuleDriver:main: arrayLength: " << arrayLength << std::endl;
+  std::cout << "OFModuleDriver:main: getDataItemUnits: " << getDataItemUnits << std::endl;
 
   // translate element (e) to cell (c)
   if (getDataItemLoc == 'e' || getDataItemLoc == 'E') {
@@ -258,14 +258,14 @@ int main(int argc, char *argv[]){
   } else if (getDataItemLoc == 'n' || getDataItemLoc == 'N') {
     myDataItemLoc = 'n';
   } else {
-    std::cout << "Unknown Data Item Location" << std::endl;
+    std::cout << "OFModuleDriver:main: Unknown Data Item Location" << std::endl;
     exit(1);
   }
 
   if (getDataItemType == COM_DOUBLE) {
     myDataItemType = 8;
   } else {
-    std::cout << "Unknown Data Item Type" << std::endl;
+    std::cout << "OFModuleDriver:main: Unknown Data Item Type" << std::endl;
     exit(1);
   }
 
@@ -290,7 +290,7 @@ int main(int argc, char *argv[]){
   /// Get the handle for the run function and call it
   int run_handle = COM_get_function_handle("OFModule.RunFoam");
   if(run_handle <= 0) { // fail
-    std::cout << "Could not get handle for run function." << std::endl;
+    std::cout << "OFModuleDriver:main: Could not get handle for run function." << std::endl;
     exit(-1);
   }
 
@@ -298,16 +298,16 @@ int main(int argc, char *argv[]){
   /// Get the handle for the step function
   if (regression) {
     step_handle = COM_get_function_handle("OFModule.StepFoam");
-    std::cout << "StepFoam will be running shortly." << std::endl;
+    std::cout << "OFModuleDriver:main: StepFoam will be running shortly." << std::endl;
     if(step_handle <= 0) { // fail
-      std::cout << "Could not get handle for step function." << std::endl;
+      std::cout << "OFModuleDriver:main: Could not get handle for step function." << std::endl;
       exit(-1);
     }
   } else if (prescribedDisplacement) {
     step_handle = COM_get_function_handle("OFModule.StepFluid");
-    std::cout << "StepFluid will be running shortly." << std::endl;
+    std::cout << "OFModuleDriver:main: StepFluid will be running shortly." << std::endl;
     if(step_handle <= 0) { // fail
-      std::cout << "Could not get handle for step fluid alone function." << std::endl;
+      std::cout << "OFModuleDriver:main: Could not get handle for step fluid alone function." << std::endl;
       exit(-1);
     }
   }
@@ -321,15 +321,15 @@ int main(int argc, char *argv[]){
   filename = "fsi" + ss.str() +".vtk";
   Ouf.open(filename.c_str());
   if(!Ouf){
-      std::cerr << "OFModuleDriver::DumpSolution:Error: Could not open output file, "
+      std::cerr << "OFModuleDriver:main: OFModuleDriver::DumpSolution:Error: Could not open output file, "
                 << filename << "." << std::endl;
       return -1;
   }
-  std::cout << "WriteVTKToStream time " << time[0] << std::endl;
+  std::cout << "OFModuleDriver:main: WriteVTKToStream time " << time[0] << std::endl;
   SolverUtils::WriteVTKToStream("OFModule", myAgent, Ouf);
   Ouf.close();
 
-  std::cout << "In Driver:" << "  time=" << time[0] << " endTime=" << endTime[0] << std::endl;
+  std::cout << "OFModuleDriver:main: In Driver:" << "  time=" << time[0] << " endTime=" << endTime[0] << std::endl;
   while(time[0] <= endTime[0]) {
   //COM_call_function(run_handle);
     // step solution
@@ -361,7 +361,7 @@ int main(int argc, char *argv[]){
                   << filename << "." << std::endl;
         return -1;
     }
-    std::cout << "WriteVTKToStream time " << time[0] << std::endl;
+    std::cout << "OFModuleDriver:main: WriteVTKToStream time " << time[0] << std::endl;
     SolverUtils::WriteVTKToStream("OFModule", myAgent, Ouf);
     Ouf.close();
   }
@@ -375,7 +375,7 @@ int main(int argc, char *argv[]){
 void Usage(char *exec) {
   std::cout << "Usage: " << std::endl;
   std::cout << exec << "<flags>" << std::endl
-    << "Where flags is either --driverRegression or --driverPrescribedDisplacement" << std::endl
+    << "OFModuleDriver:Usage: Where flags is either --driverRegression or --driverPrescribedDisplacement" << std::endl
     << "--driver Regresion runs a standard openFoam simulation" << std::endl
     << "--driverPrescribedMotion runs openFoam with a fluid only solver and applies" 
     << "a prescribed displacement to the solid/fluid boundary" << std::endl;
