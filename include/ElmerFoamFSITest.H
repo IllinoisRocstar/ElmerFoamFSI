@@ -103,7 +103,8 @@ namespace ElmerFoamFSI {
     ///
     /// Tears down the testing fixtures if needed.
     ///
-    virtual void Epilogue() {};
+    virtual void Epilogue() {
+      COM_finalize();};
 
     ///
     /// Sets up the data fixtures for the tests.
@@ -115,6 +116,15 @@ namespace ElmerFoamFSI {
     virtual void  Prologue(){
       ExampleTestFixture.assign("ExampleTestData");
       for(int i = 10;i < 10000000;i*=10) N.push_back(i);
+      // initializing COM
+      bool runs = false;
+      int nargs_dupe = 2;
+      char **args_dupe;
+      args_dupe = new char * [3];
+      args_dupe[0] = const_cast<char *>("test");
+      args_dupe[1] = const_cast<char *>("-com-mpi");
+      args_dupe[2] = NULL;
+      COM_init(&nargs_dupe,&args_dupe);
     }
     ///
     /// Simple test function fixture returns \f$2x\f$.
@@ -259,22 +269,12 @@ namespace ElmerFoamFSI {
    
     virtual void Test__FluidsInitialize(ResultsType &result) {
       bool runs = false;
-      int nargs_dupe = 2;
-      char **args_dupe;
-      args_dupe = new char * [3];
-      args_dupe[0] = const_cast<char *>("test");
-      args_dupe[1] = const_cast<char *>("-com-mpi");
-      args_dupe[2] = NULL;
-
-      COM_init(&nargs_dupe,&args_dupe);
-
       COM_load_module("OpenFoamFSI","FluidsComponentInterface");
       
 //      openfoamagent fluidsAgent;
 //      fluidsAgent.Initialize("FluidsComponentInterface");
 
       COM_unload_module("OpenFoamFSI","FluidsComponentInterface");
-      COM_finalize();
       result.UpdateResult("FluidsInitialize:Runs",runs);
     }
     // MS: Start
@@ -294,14 +294,6 @@ namespace ElmerFoamFSI {
 
   // MS: Test elmerModule load/unloads properly
     virtual void Test__ElmerModuleLoad(ResultsType &result) {
-      int nargs_dupe = 2;
-      char **args_dupe;
-      args_dupe = new char * [3];
-      args_dupe[0] = const_cast<char *>("test");
-      args_dupe[1] = const_cast<char *>("-com-mpi");
-      args_dupe[2] = NULL;
-
-      COM_init(&nargs_dupe,&args_dupe);
       std::cout << "Running Test__ElmerModuleLoad" << std::endl;
 
       // load Elmer module
@@ -342,7 +334,6 @@ namespace ElmerFoamFSI {
       }
 
       result.UpdateResult("UnloadElmerModule:Works",works);
-      COM_finalize();
 
       return;
     }
@@ -350,14 +341,6 @@ namespace ElmerFoamFSI {
 
     // MS: Test OpenFoamModule load/unloads properly
     virtual void Test__OFModuleLoad(ResultsType &result) {
-      int nargs_dupe = 2;
-      char **args_dupe;
-      args_dupe = new char * [3];
-      args_dupe[0] = const_cast<char *>("test");
-      args_dupe[1] = const_cast<char *>("-com-mpi");
-      args_dupe[2] = NULL;
-
-      //COM_init(&nargs_dupe,&args_dupe);
       std::cout << "Running Test__OFModuleLoad" << std::endl;
 
       // load Elmer module
@@ -398,7 +381,6 @@ namespace ElmerFoamFSI {
       }
 
       result.UpdateResult("UnloadOpenFoamModule:Works",works);
-      COM_finalize();
       return;
     }
     // MS: End
