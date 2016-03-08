@@ -272,7 +272,129 @@ namespace ElmerFoamFSI {
       COM_unload_module("OpenFoamFSI","FluidsComponentInterface");
       result.UpdateResult("FluidsInitialize:Runs",runs);
     }
- 
+    // MS: Start
+    /// Test for ElmerFoamFSI::ScaffoldUnitTestFun
+    ///
+    /// @param result ElmerFoamFSI::TestResults object to store test results.
+    ///
+    /// This function implements a simple empty test functions which can be used
+    //  a scaffold to develop unit tests. 
+    ///
+    virtual void Test__ScaffoldUnitTestFun(ResultsType &result) {
+      bool runs = true;
+      std::cout << "This line is added by scafoldTestFun unit test" << std::endl;
+      result.UpdateResult("ScaffoldUnitTestFun:Runs",runs);
+    }
+    // MS: End
+
+  // MS: Test elmerModule load/unloads properly
+    virtual void Test__ElmerModuleLoad(ResultsType &result) {
+      int nargs_dupe = 2;
+      char **args_dupe;
+      args_dupe = new char * [3];
+      args_dupe[0] = const_cast<char *>("test");
+      args_dupe[1] = const_cast<char *>("-com-mpi");
+      args_dupe[2] = NULL;
+
+      COM_init(&nargs_dupe,&args_dupe);
+      std::cout << "Running Test__ElmerModuleLoad" << std::endl;
+
+      // load Elmer module
+      std::cout << "Loading Elmer Module" << std::endl;
+      COM_LOAD_MODULE_STATIC_DYNAMIC(SolverModule, "ElmerModule");
+      bool works = false;
+
+      // get window handle
+      int h=COM_get_window_handle("ElmerModule");
+      if(h <= 0){
+        std::cout << " After loading, COM_get_window_handle(\"ElmerModule\") returns "
+                  << h << std::endl;
+        std::cout << "ModuleLoadUnload Error: Could not get window handle."
+                  << std::endl;
+      }
+      else{
+        works=true;
+        std::cout << "Elmer Module Loaded" << std::endl;
+      }
+      result.UpdateResult("LoadElmerModule:Works",works);
+
+      // unload Elmer Module
+      std::cout << "Unloading Elmer Module" << std::endl;
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC(SolverModule, "ElmerModule");
+      works=false;
+
+      // make sure module unloaded
+      h=COM_get_window_handle("ElmerModule");
+      if(h > 0){
+        std::cout << "After unloading, COM_get_window_handle(\"ElmerModule\") returns "
+                  << h << std::endl;
+        std::cout << "ModuleLoadUnload Error: Did not properly unload module."
+                  << std::endl;
+      }
+      else{
+        works=true;
+        std::cout << "Elmer Module Unloaded" << std::endl;
+      }
+
+      result.UpdateResult("UnloadElmerModule:Works",works);
+      return;
+    }
+    // MS: End
+
+    // MS: Test OpenFoamModule load/unloads properly
+    virtual void Test__OFModuleLoad(ResultsType &result) {
+      int nargs_dupe = 2;
+      char **args_dupe;
+      args_dupe = new char * [3];
+      args_dupe[0] = const_cast<char *>("test");
+      args_dupe[1] = const_cast<char *>("-com-mpi");
+      args_dupe[2] = NULL;
+
+      //COM_init(&nargs_dupe,&args_dupe);
+      std::cout << "Running Test__OFModuleLoad" << std::endl;
+
+      // load Elmer module
+      std::cout << "Loading OpenFoam Module" << std::endl;
+      COM_LOAD_MODULE_STATIC_DYNAMIC(OpenFoamFSI, "OFModule");
+      bool works = false;
+
+      // get window handle
+      int h=COM_get_window_handle("OFModule");
+      if(h <= 0){
+        std::cout << " After loading, COM_get_window_handle(\"OFModule\") returns "
+                  << h << std::endl;
+        std::cout << "ModuleLoadUnload Error: Could not get window handle."
+                  << std::endl;
+      }
+      else{
+        works=true;
+        std::cout << "OpenFoam Module Loaded" << std::endl;
+      }
+      result.UpdateResult("LoadOpenFoamModule:Works",works);
+
+      // unload Elmer Module
+      std::cout << "Unloading OpenFoam Module" << std::endl;
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC(OpenFoamFSI, "OFModule");
+      works=false;
+
+      // make sure module unloaded
+      h=COM_get_window_handle("OFModule");
+      if(h > 0){
+        std::cout << "After unloading, COM_get_window_handle(\"OFModule\") returns "
+                  << h << std::endl;
+        std::cout << "ModuleLoadUnload Error: Did not properly unload module."
+                  << std::endl;
+      }
+      else{
+        works=true;
+        std::cout << "OpenFoam Module Unloaded" << std::endl;
+      }
+
+      result.UpdateResult("UnloadOpenFoamModule:Works",works);
+      return;
+    }
+    // MS: End
+
     ///
     /// Runs all tests implemented by the ElmerFoamFSI::TestingObject.
     ///
@@ -284,6 +406,11 @@ namespace ElmerFoamFSI {
       Test__TrapezoidQuadrature(result);
       Test__MidPointQuadrature(result);
       Test__FluidsInitialize(result);
+      // MS: Start
+      Test__ScaffoldUnitTestFun(result);
+      Test__ElmerModuleLoad(result);
+      Test__OFModuleLoad(result);
+      // MS: End
       Epilogue();
     }
     
@@ -304,6 +431,14 @@ namespace ElmerFoamFSI {
         Test__MidPointQuadrature(result);
       else if(name == "FluidsInitialize")
         Test__FluidsInitialize(result);
+      // MS: Start
+      else if(name == "ScaffoldUnitTestFun")
+        Test__ScaffoldUnitTestFun(result);
+      else if(name == "ElmerModuleLoad")
+        Test__ElmerModuleLoad(result);
+      else if(name == "OpenFoamModuleLoad")
+        Test__OFModuleLoad(result);
+      // ME: End
       Epilogue();
     }
 
