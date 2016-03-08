@@ -560,7 +560,10 @@ public:
 //   }
 // }
 
-COM_EXTERN_MODULE(SolverModule);
+
+
+
+COM_EXTERN_MODULE(ElmerCSC);
 COM_EXTERN_MODULE(OpenFoamFSI);
 
 namespace ElmerFoamFSI {

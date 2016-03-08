@@ -208,6 +208,11 @@ SUBROUTINE Initializer(global, runs)
    !Allocate space for storing the NodePressures
    !This location will be registered with IMPACT
    ALLOCATE(global%NodePressures(global%nNodes))
+   !Allocate space for storing the verbosity
+   !This verbosity will be registered with IMPACT
+   ALLOCATE(global%verbosity(1))
+   !Initialize verbosity to 1
+   global%verbosity = 1
    !Allocate space for storing the NodeLoads
    !This location will be registered with IMPACT
    ALLOCATE(global%NodeLoads(3*global%nNodes))
@@ -425,6 +430,12 @@ SUBROUTINE Initializer(global, runs)
                          COM_DOUBLE_PRECISION, 3, '')
    CALL COM_SET_ARRAY(TRIM(global%window_name)//'.FaceLoads',11,&
                       global%FaceLoads,3)
+
+   !Set the verbosity with COM 
+   CALL COM_NEW_DATAITEM(TRIM(global%window_name)//'.verbosity',&
+                         'w', COM_INTEGER, 1, '')
+   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.verbosity',11,&
+                      global%verbosity,1)
 
    PreviousTime = 0.0
 
