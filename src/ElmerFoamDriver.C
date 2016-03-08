@@ -648,10 +648,12 @@ namespace ElmerFoamFSI {
     fsiCoupler.Finalize();
     FunctionExit("coupler.Finalize");
 
-    COM_unload_module(fluidSolverName.c_str(),"FluidsComponentInterface");
+    //COM_unload_module(fluidSolverName.c_str(),"FluidsComponentInterface");
     COM_unload_module(solidSolverName.c_str(),"StructuresComponentInterface");
 
+    std::cout << "Before Running FunctionExit" << std::endl;
     FunctionExit("Run");    
+    std::cout << "After Running FunctionExit" << std::endl;
     // return 0 for success
     return(0);
   };

@@ -274,6 +274,7 @@ namespace ElmerFoamFSI {
 //      fluidsAgent.Initialize("FluidsComponentInterface");
 
       COM_unload_module("OpenFoamFSI","FluidsComponentInterface");
+      COM_finalize();
       result.UpdateResult("FluidsInitialize:Runs",runs);
     }
     // MS: Start
@@ -341,6 +342,8 @@ namespace ElmerFoamFSI {
       }
 
       result.UpdateResult("UnloadElmerModule:Works",works);
+      COM_finalize();
+
       return;
     }
     // MS: End
@@ -395,6 +398,7 @@ namespace ElmerFoamFSI {
       }
 
       result.UpdateResult("UnloadOpenFoamModule:Works",works);
+      COM_finalize();
       return;
     }
     // MS: End

@@ -27,7 +27,7 @@ echo "Build log for ElmerFoam Tool Chain" 2>&1 | tee Build.dat
 if $isFirst
 then
   echo "Patching OpenFoam & Elmer for the first build"  2>&1 | tee -a Build.dat
-  ./BuildTools/PatchScript $topSourceDir 2>&1 | tee -a Build.dat
+#  ./BuildTools/PatchScript $topSourceDir 2>&1 | tee -a Build.dat
   if [ ${PIPESTATUS[0]} -ne 0 ]
   then
     echo "Error in executing PatchScript" 2>&1 | tee -a Build.dat

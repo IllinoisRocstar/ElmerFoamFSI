@@ -8,7 +8,7 @@ cat <<EOF > ./elmerfoamfsi_parallel_test_batch.csh
 #PBS -l walltime=00:30:00 
 #PBS -j oe
 #PBS -o elmerfoamfsi_parallel_test_batch_output
-#PBS -A IRRD
+#PBS -A MPINFRA
 
 cd \${PBS_O_WORKDIR}
 mpiexec -np 16 ./bin/pepi -o tmpresults_2.txt 1000000
