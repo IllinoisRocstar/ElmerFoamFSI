@@ -12,6 +12,7 @@
 #include "Orchestrator.H"
 #include "OpenFoamAgent.H"
 #include "ElmerAgent.H"
+#include "Global.H"
 
 typedef SolverUtils::TransferObject transferagent;
 typedef openfoamagent fluidagent;
@@ -585,7 +586,6 @@ public:
         StdOut(outString.str(),1,true);
         outString.clear();
         outString.str("");
-         
         TransferDisplacementsToFluid(structuresAgent,fluidsAgent);
       }
       if(runMode < 2){
@@ -620,7 +620,10 @@ public:
       if(!(runMode==1)){
         structuresAgent->InitializeTimeStep(simulationTime);
         // Step structures to get displacements @ T(n+1)
+        /* WK
         outString << "ElmerFoamDriver:Run: Stepping structures to time(" 
+                  << simulationTime+simulationTimeStep << ")" << std::endl; */
+        outString << "ElmerFoamDriver:Run: Stepping structures to time("
                   << simulationTime+simulationTimeStep << ")" << std::endl;
         StdOut(outString.str(),1,true);
         outString.clear();
@@ -633,6 +636,8 @@ public:
       if(converged){
         simulationTime += simulationTimeStep;
         outString << "ElmerFoamDriver:Run: Converged at time(" 
+                  << simulationTime << ")" << std::endl; 
+        outString << "ElmerFoamDriver:Run: Converged at time("
                   << simulationTime << ")" << std::endl;
         StdOut(outString.str(),1,true);
         outString.clear();
@@ -646,17 +651,22 @@ public:
         innerCount++;
         if(innerCount > maxSubSteps){
           outString << "ElmerFoamDriver:Run: Failed to converge after "
-                    << maxSubSteps << ", giving up." << std::endl;
+                    << maxSubSteps << ", giving up." << std::endl; */
           StdOut(outString.str(),0,true);
           outString.clear();
           outString.str("");
           return(1);
         }
       }
-      
+
+     StdOut(outString.str(),0,true);
+     outString.clear();
+     outString.str("");
+
       if(!(systemStep%dumpinterval)){
         //DumpSolution();
       }
+      
     }
     FunctionExit("Run");
     return(0);

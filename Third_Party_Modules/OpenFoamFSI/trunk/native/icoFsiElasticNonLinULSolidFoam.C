@@ -57,11 +57,11 @@ int main(int argc, char *argv[])
 
   //* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
   
-  Info << "\nStarting time loop\n" << endl;
+  Info << "\nicoFsiElasticNonLinULSolidFoam:main: Starting time loop\n" << endl;
   
   
   while(!runTime.end()){
-    Info << "Time = " << runTime.timeName() << nl << endl;
+    Info << "icoFsiElasticNonLinULSolidFoam:main: Time = " << runTime.timeName() << nl << endl;
     fsifoam.Step();
     Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
         << "  ClockTime = " << runTime.elapsedClockTime() << " s"
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
       fsifoam.Dump();
   }
   
-  Info<< "End\n" << endl;
+  Info<< "icoFsiElasticNonLinULSolidFoam:main: End\n" << endl;
   
   return(0);
 }
