@@ -3,7 +3,7 @@
 
 class openfoamagent : public impact::orchestrator::agentbase, public SolverUtils::FEM::SolverAgent {
 public:
-  virtual int Initialize(const std::string interfaceName, int verblevel = 1){
+  virtual int Initialize(const std::string interfaceName){
     componentInterfaceNames.push_back(interfaceName);
     componentFunctionHandles[INIT] = COM_get_function_handle(std::string(interfaceName+".InitFoam").c_str());
     int fluidsInitHandle = componentFunctionHandles[INIT];
@@ -24,8 +24,7 @@ public:
     char *argv[2];
     argv[0] = const_cast<char *>("test");
     argv[1] = NULL;
-    int verbIn = verblevel;
-    COM_call_function(componentFunctionHandles[INIT],&argc_dupe,argv,&verbIn);
+    COM_call_function(componentFunctionHandles[INIT],&argc_dupe,argv);
 
     std::vector<int> paneIDs;
     COM_get_panes(interfaceName.c_str(),paneIDs);

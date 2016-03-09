@@ -3,32 +3,6 @@
 export ElmerFoamTop=$1
 export installDir=$ElmerFoamTop/support_install
 
-isFirst=false
-yesTest=true
-buildFoam=true
-runPatch=true
-
-for var in "$@"
-do
-  var="$(echo "$var" | awk '{print tolower($0)}')"
-  if [ "$var" = "first" ] 
-  then
-    isFirst=true
-  fi
-  if [ "$var" = "notest" ]  
-  then
-    yesTest=false
-  fi
-  if [ "$var" = "nofoam" ]  
-  then
-    buildFoam=false
-  fi
-  if [ "$var" = "nopatch" ]
-  then
-    runPatch=false
-  fi
-done
-
 source $ElmerFoamTop/BuildTools/BashSourceScript $ElmerFoamTop
 if [ $? -ne 0 ]; then exit 1; fi
 
@@ -40,10 +14,5 @@ if [ $? -ne 0 ]; then exit 1; fi
 make
 if [ $? -ne 0 ]; then exit 1; fi
 make install
-if [ $? -ne 0 ]; then exit 1; fi
-if $yesTest 
-then 
-  make test
-fi
 if [ $? -ne 0 ]; then exit 1; fi
 cd $topSourceDir
