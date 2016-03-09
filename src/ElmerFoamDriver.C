@@ -651,7 +651,7 @@ public:
         innerCount++;
         if(innerCount > maxSubSteps){
           outString << "ElmerFoamDriver:Run: Failed to converge after "
-                    << maxSubSteps << ", giving up." << std::endl; */
+                    << maxSubSteps << ", giving up." << std::endl; 
           StdOut(outString.str(),0,true);
           outString.clear();
           outString.str("");
