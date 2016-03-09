@@ -55,8 +55,7 @@ protected:
   std::vector<double> solidDisplacement;
   std::vector<double> time;
   std::vector<double> deltaTime;
-  //JK 3/3/16: Adding new verbosity data to get verbosity from driver
-  std::vector<int> verbosity;
+  int verbosity;
 
   // function status variables
   std::vector<int> initStatus;
@@ -206,7 +205,7 @@ public:
 
 
   /// function to register through IMPACT
-  void InitFoam(int *pargc, void **pargv);
+  void InitFoam(int *pargc, void **pargv, int *verbIn);
   void RunFoam();
   void StepFoam();
   void StepFluid();

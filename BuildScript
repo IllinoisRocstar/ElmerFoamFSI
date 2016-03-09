@@ -3,19 +3,29 @@
 isFirst=false
 noTest=false
 buildFoam=true
+runPatch=true
 
-if [ "$1" = "First" ] || [ "$1" = "FIRST" ] || [ "$1" = "first" ] || [ "$2" = "First" ] || [ "$2" = "FIRST" ] || [ "$2" = "first" ] || [ "$3" = "First" ] || [ "$3" = "FIRST" ] || [ "$3" = "first" ]
-then
-  isFirst=true
-fi
-if [ "$1" = "notest" ] || [ "$1" = "NoTest" ] || [ "$1" = "NOTEST" ] || [ "$2" = "notest" ] || [ "$2" = "NoTest" ] || [ "$2" = "NOTEST" ] || [ "$3" = "notest" ] || [ "$3" = "NoTest" ] || [ "$3" = "NOTEST" ] 
-then
-  noTest=true
-fi
-if [ "$1" = "nofoam" ] || [ "$1" = "NoFoam" ] || [ "$1" = "NOFOAM" ] || [ "$2" = "nofoam" ] || [ "$2" = "NoFoam" ] || [ "$2" = "NOFOAM" ] || [ "$3" = "nofoam" ] || [ "$3" = "NoFoam" ] || [ "$3" = "NOFOAM" ]
-then
-  buildFoam=false
-fi
+for var in "$@"
+do
+  var="$(echo "$var" | awk '{print tolower($0)}')"
+  if [ "$var" = "first" ] 
+  then
+    isFirst=true
+  fi
+  if [ "$var" = "notest" ]  
+  then
+    noTest=true
+  fi
+  if [ "$var" = "nofoam" ]  
+  then
+    buildFoam=false
+  fi
+  if [ "$var" = "nopatch" ]
+  then
+    runPatch=false
+  fi
+done
+
 
 # Set our current directory, which should be the top
 # level source for ElmerFoamFSI
@@ -24,10 +34,10 @@ installDir="$topSourceDir/support_install"
 
 echo "Build log for ElmerFoam Tool Chain" 2>&1 | tee Build.dat
  
-if $isFirst
+if $isFirst && $runPatch
 then
   echo "Patching OpenFoam & Elmer for the first build"  2>&1 | tee -a Build.dat
-#  ./BuildTools/PatchScript $topSourceDir 2>&1 | tee -a Build.dat
+  ./BuildTools/PatchScript $topSourceDir 2>&1 | tee -a Build.dat
   if [ ${PIPESTATUS[0]} -ne 0 ]
   then
     echo "Error in executing PatchScript" 2>&1 | tee -a Build.dat
@@ -51,23 +61,23 @@ then
   if $isFirst
   then 
     ./BuildTools/BuildOpenFoam $topSourceDir first 2>&1 | tee -a Build.dat
-    if [ ${PIPESTATUS[0]} -ne 0 ]
-    then
-      echo "Error in building OpenFoam" 2>&1 | tee -a Build.dat
-      exit 1
-    fi
   else 
     ./BuildTools/BuildOpenFoam $topSourceDir 2>&1 | tee -a Build.dat
-    if [ ${PIPESTATUS[0]} -ne 0 ]
-    then
-      echo "Error in building OpenFoam" 2>&1 | tee -a Build.dat
-      exit 1
-    fi
+  fi
+  if [ ${PIPESTATUS[0]} -ne 0 ]
+  then
+    echo "Error in building OpenFoam" 2>&1 | tee -a Build.dat
+    exit 1
   fi
 fi
 
-# Build IMPACT, which will also build IRAD 
-./BuildTools/BuildIMPACT $topSourceDir 2>&1 | tee -a Build.dat
+# Build IMPACT, which will also build IRAD
+if $noTest
+then
+  ./BuildTools/BuildIMPACT $topSourceDir notest 2>&1 | tee -a Build.dat
+else
+  ./BuildTools/BuildIMPACT $topSourceDir 2>&1 | tee -a Build.dat
+fi
 if [ ${PIPESTATUS[0]} -ne 0 ]
 then
   echo "Error in building IMPACT & IRAD" 2>&1 | tee -a Build.dat
@@ -104,16 +114,11 @@ fi
 if $noTest
 then
   ./BuildTools/BuildElmerFoamFSIDriver $topSourceDir noTest 2>&1 | tee -a Build.dat
-  if [ ${PIPESTATUS[0]} -ne 0 ]
-  then
-    echo "Error in building ElmerFoamFSI Driver" 2>&1 | tee -a Build.dat
-    exit 1
-  fi
 else
   ./BuildTools/BuildElmerFoamFSIDriver $topSourceDir 2>&1 | tee -a Build.dat
-  if [ ${PIPESTATUS[0]} -ne 0 ]
-  then
-    echo "Error in building ElmerFoamFSI Driver & running tests" 2>&1 | tee -a Build.dat
-    exit 1
-  fi
+fi
+if [ ${PIPESTATUS[0]} -ne 0 ]
+then
+  echo "Error in building ElmerFoamFSI Driver & running tests" 2>&1 | tee -a Build.dat
+  exit 1
 fi
