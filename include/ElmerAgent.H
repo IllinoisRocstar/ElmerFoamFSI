@@ -4,7 +4,7 @@
 class elmeragent : public impact::orchestrator::agentbase, public SolverUtils::FEM::SolverAgent {
   
 public:
-  virtual int Initialize(const std::string &interfaceName){
+  virtual int Initialize(const std::string &interfaceName, int verblevel=1){
     int structuresInitHandle     = COM_get_function_handle(std::string(interfaceName+".Initialize").c_str());
     if(structuresInitHandle < 0){
       WriteErr("Failed to get Elmer initialization handle.\n");
@@ -27,7 +27,8 @@ public:
     componentFunctionHandles[FINALIZE] = structuresFinalizeHandle;
     
     int runs = 0;
-    COM_call_function(componentFunctionHandles[INIT],&runs);
+    int verbIn = verblevel;
+    COM_call_function(componentFunctionHandles[INIT],&runs, &verbIn);
     if(!runs){
       WriteErr("Elmer failed to initialize!\n");
       return(1);

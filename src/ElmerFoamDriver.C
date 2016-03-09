@@ -416,7 +416,7 @@ public:
 
     // Initialize the structures module
     if(runMode != 1)
-      structuresAgent->Initialize(structuresInterfaceName);
+      structuresAgent->Initialize(structuresInterfaceName, verblevel);
 
     // Initialize the transfer module's common refinement
     if(runMode == 0) {
@@ -427,14 +427,14 @@ public:
 
     //JK: Setting the verbosity with the modules
     int *fluidsVerb = NULL;
-    int *solidsVerb = NULL;
+    //int *solidsVerb = NULL;
     std::string fluidsVerbName(fluidsInterfaceName + ".verbosity");
-    std::string solidsVerbName(structuresInterfaceName + ".verbosity");
+    //std::string solidsVerbName(structuresInterfaceName + ".verbosity");
     COM_get_array(fluidsVerbName.c_str(),fluidsAgent->PaneID(),&fluidsVerb);
-    COM_get_array(solidsVerbName.c_str(),structuresAgent->PaneID(),&solidsVerb);
+    //COM_get_array(solidsVerbName.c_str(),structuresAgent->PaneID(),&solidsVerb);
    
     *fluidsVerb = verblevel;
-    *solidsVerb = verblevel;
+    //*solidsVerb = verblevel;
     //JK: End verbosity
 
     componentAgents.resize(2);

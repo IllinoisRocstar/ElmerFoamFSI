@@ -38,7 +38,7 @@
 
 ! ******************************************************************************
 
-SUBROUTINE Initializer(global, runs)
+SUBROUTINE Initializer(global, runs, verbIn)
    USE TESTOBJECT
    USE Types
    USE GeneralUtils
@@ -50,7 +50,7 @@ SUBROUTINE Initializer(global, runs)
    INCLUDE 'comf90.h'
 
    TYPE(t_global), POINTER :: global
-   INTEGER :: runs, counter, nindex
+   INTEGER :: runs, counter, nindex, verbIn
 
    REAL(KIND=dp) :: CT, RT
 !   INTEGER, PARAMETER :: Init=0
@@ -64,6 +64,13 @@ SUBROUTINE Initializer(global, runs)
 #endif
 
    WRITE(6,*) 'ElmerCSC:Initializer: Starting ...'
+
+   !Allocate space for storing the verbosity
+   ALLOCATE(global%verbosity(1))
+   !Initialize verbosity to 1
+   global%verbosity = verbIn
+
+   WRITE(*,*) 'verbosity = ', global%verbosity
 
    CALL envir( 'ELMERSOLVER_OUTPUT_TOTAL'//CHAR(0), toutput, tlen )
    Silent = toutput(1:1)=='0' .OR. toutput(1:5)=='false'
@@ -208,11 +215,6 @@ SUBROUTINE Initializer(global, runs)
    !Allocate space for storing the NodePressures
    !This location will be registered with IMPACT
    ALLOCATE(global%NodePressures(global%nNodes))
-   !Allocate space for storing the verbosity
-   !This verbosity will be registered with IMPACT
-   ALLOCATE(global%verbosity(1))
-   !Initialize verbosity to 1
-   global%verbosity = 1
    !Allocate space for storing the NodeLoads
    !This location will be registered with IMPACT
    ALLOCATE(global%NodeLoads(3*global%nNodes))
@@ -432,10 +434,10 @@ SUBROUTINE Initializer(global, runs)
                       global%FaceLoads,3)
 
    !Set the verbosity with COM 
-   CALL COM_NEW_DATAITEM(TRIM(global%window_name)//'.verbosity',&
-                         'w', COM_INTEGER, 1, '')
-   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.verbosity',11,&
-                      global%verbosity,1)
+   !CALL COM_NEW_DATAITEM(TRIM(global%window_name)//'.verbosity',&
+   !                      'w', COM_INTEGER, 1, '')
+   !CALL COM_SET_ARRAY(TRIM(global%window_name)//'.verbosity',11,&
+   !                   global%verbosity,1)
 
    PreviousTime = 0.0
 
@@ -862,10 +864,10 @@ SUBROUTINE ElmerCSC_LOAD_MODULE(name)
       EXTERNAL asso
     END SUBROUTINE COM_set_pointer
 
-    SUBROUTINE Initializer(global, runs)
+    SUBROUTINE Initializer(global, runs, verbIn)
       USE TESTOBJECT
       TYPE(t_global), POINTER :: global
-      INTEGER :: runs
+      INTEGER :: runs, verbIn
     END SUBROUTINE Initializer
 
     SUBROUTINE RUN(global, runs, tFinal)
@@ -909,9 +911,10 @@ SUBROUTINE ElmerCSC_LOAD_MODULE(name)
 
   com_types(1) = COM_F90POINTER
   com_types(2) = COM_INTEGER
+  com_types(3) = COM_INTEGER
   
   CALL COM_set_member_function(TRIM(name)//'.Initialize',Initializer, &
-                               TRIM(name)//'.global','bb',com_types)
+                               TRIM(name)//'.global','bbi',com_types)
 
   com_types(3) = COM_DOUBLE_PRECISION
  

@@ -28,7 +28,7 @@
 
 // Loading native modules
 COM_EXTERN_MODULE(OpenFoamFSI);
-COM_EXTERN_MODULE(SolverModule);
+COM_EXTERN_MODULE(ElmerCSC);
 
 namespace ElmerFoamFSI {
 
@@ -298,7 +298,7 @@ namespace ElmerFoamFSI {
 
       // load Elmer module
       std::cout << "Loading Elmer Module" << std::endl;
-      COM_LOAD_MODULE_STATIC_DYNAMIC(SolverModule, "ElmerModule");
+      COM_LOAD_MODULE_STATIC_DYNAMIC(ElmerCSC, "ElmerModule");
       bool works = false;
 
       // get window handle
@@ -317,7 +317,7 @@ namespace ElmerFoamFSI {
 
       // unload Elmer Module
       std::cout << "Unloading Elmer Module" << std::endl;
-      COM_UNLOAD_MODULE_STATIC_DYNAMIC(SolverModule, "ElmerModule");
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC(ElmerCSC, "ElmerModule");
       works=false;
 
       // make sure module unloaded

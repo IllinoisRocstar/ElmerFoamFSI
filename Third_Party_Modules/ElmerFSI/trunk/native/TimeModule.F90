@@ -107,7 +107,7 @@
      INTEGER :: MyN, CurrentInterval
      TYPE(ValueList_t), POINTER :: ptr
      
-     WRITE(6,*) 'TimeModule:UpdateLoads: Updating loads on the structure'
+     WRITE(6,*) 'MyTimeModule:UpdateLoads: Updating loads on the structure'
     
      IF (MyVerbosity > 3) THEN
        WRITE(6,*) 'sTime(1) = ', sTime(1)
@@ -134,7 +134,7 @@
   
      !Setting the loads accessible by Elmer to the interpolated value
      !for the current time
-     WRITE(*,*) 'TimeModule:UpdateLoads: Time Step Summary '
+     WRITE(*,*) 'MyTimeModule:UpdateLoads: Time Step Summary '
      WRITE(*,*) '    sTime(1)     = ', sTime(1)
      WRITE(*,*) '    PreviousTime = ', PreviousTime
      WRITE(*,*) '    FinalTime    = ', FinalTime
@@ -177,7 +177,7 @@
        END DO
      END IF
  
-     WRITE(6,*) 'TimeModule:UpdateLoads: Finishing'
+     WRITE(6,*) 'MyTimeModule:UpdateLoads: Finishing'
   
   END SUBROUTINE UpdateLoads
 !----------------------------------------------------------------------
@@ -225,7 +225,7 @@ SUBROUTINE TimeStepper(global,runs)
 
 
        RealTimestep = 1
-       WRITE(*,*) 'TimeModule:TimeStepper: Timesteps(interval) = ', Timesteps(interval)
+       WRITE(*,*) 'MyTimeModule:TimeStepper: Timesteps(interval) = ', Timesteps(interval)
        DO timestep = 1,Timesteps(interval)
 
          cum_Timestep = cum_Timestep + 1
@@ -460,7 +460,7 @@ SUBROUTINE TimeStepper(global,runs)
             DEALLOCATE( xx, xxnrm, yynrm, prevxx )
          ELSE ! Adaptive timestepping
             !IF (MyVerbosity > 3) THEN
-              WRITE(*,*) 'TimeModule:TimeStepper: Calling SolveEquations'
+              WRITE(*,*) 'MyTimeModule:TimeStepper: Calling SolveEquations'
               WRITE(*,*) '   Transient = ', Transient
             !END IF
             CALL SolveEquations( CurrentModel, dt, Transient, &

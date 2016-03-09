@@ -44,7 +44,6 @@ namespace ElmerFoamFSI{
   ///
   int Test(int argc,char *argv[])
   {
-    
     // The default verbosity is 0
     int verblevel = 0;
 
@@ -140,7 +139,7 @@ namespace ElmerFoamFSI{
       test.Process(results);
     }
     *Out << results << std::endl;
-    
+
     if(Ouf)
       Ouf.close();
 
