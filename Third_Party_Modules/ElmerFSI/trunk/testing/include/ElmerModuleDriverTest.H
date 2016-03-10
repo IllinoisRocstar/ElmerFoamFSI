@@ -492,10 +492,11 @@ namespace ElmerModuleDriver {
       int init_handle = COM_get_function_handle("Window1.Initialize");
       bool init_func = (init_handle > 0);
       int init_runs = 0;
+      int verb=3;
       std::cout << "init = " << init_handle << std::endl;
       if(init_handle){
         //Call the function
-        COM_call_function(init_handle, &init_runs);
+        COM_call_function(init_handle, &init_runs, &verb);
       }
       else{
         std::cout << "InitializeRuns Error: Could not get function handle."
@@ -921,10 +922,11 @@ namespace ElmerModuleDriver {
       int init_handle = COM_get_function_handle("Window1.Initialize");
       bool init_func = (init_handle > 0);
       int init_runs = 0;
+      int verb=3;
       std::cout << "init = " << init_handle << std::endl;
       if(init_handle){
         //Call the function
-        COM_call_function(init_handle, &init_runs);
+        COM_call_function(init_handle, &init_runs, &verb);
       }
       else{
         std::cout << "ElasticBeam3D_LoadFunction Error: Could not get function handle."

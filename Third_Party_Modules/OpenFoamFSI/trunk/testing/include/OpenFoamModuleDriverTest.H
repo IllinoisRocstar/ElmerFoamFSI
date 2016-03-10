@@ -354,9 +354,10 @@ namespace OpenFoamModuleDriver {
       // We test the "correctness" of the registered data in subsequent tests
       int dummy1=1;
       char *dummy2[2];
+      int verb=3;
       dummy2[0] = const_cast<char *>(std::string("functionInit").c_str());
       dummy2[1] = NULL;
-      COM_call_function(initHandle, &dummy1, &dummy2);
+      COM_call_function(initHandle, &dummy1, &dummy2, &verb);
 
       // check the status variable to determine success of initialize
       int* initStatus=NULL;
@@ -413,9 +414,9 @@ namespace OpenFoamModuleDriver {
       char *dummy2[2];
       dummy2[0] = const_cast<char *>(std::string("DataReg").c_str());
       dummy2[1] = NULL;
-
+      int verb=3;
       int initHandle = COM_get_function_handle("OFModule.InitFoam");
-      COM_call_function(initHandle, &dummy1, &dummy2);
+      COM_call_function(initHandle, &dummy1, &dummy2, &verb);
 
       // list of panes in this window
       int numPanes;
@@ -559,9 +560,9 @@ namespace OpenFoamModuleDriver {
       char *dummy2[2];
       dummy2[0] = const_cast<char *>(std::string("StepFluid").c_str());
       dummy2[1] = NULL;
-
+      int verb=3;
       int initHandle = COM_get_function_handle("OFModule.InitFoam");
-      COM_call_function(initHandle, &dummy1, &dummy2);
+      COM_call_function(initHandle, &dummy1, &dummy2, &verb);
 
       // list of panes in this window
       int numPanes;
@@ -679,7 +680,8 @@ namespace OpenFoamModuleDriver {
       char *dummy2[2];
       dummy2[0] = const_cast<char *>(std::string("meshReg").c_str());
       dummy2[1] = NULL;
-      COM_call_function(initHandle, &dummy1, &dummy2);
+      int verb=3;
+      COM_call_function(initHandle, &dummy1, &dummy2, &verb);
 
       // get information about what was registered in this window
       int numDataItems=0;

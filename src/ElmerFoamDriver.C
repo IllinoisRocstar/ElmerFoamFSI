@@ -47,7 +47,9 @@ public:
   fsicoupling() : GlobalType("fsicoupling"), fluidsAgent(NULL), structuresAgent(NULL), transferAgent(NULL), 
                   runMode(0), writeHDF(true), writeVTK(true) {};
   fsicoupling(GlobalType &globin) : GlobalType(globin), fluidsAgent(NULL), structuresAgent(NULL), transferAgent(NULL), 
-                  runMode(0), writeHDF(true), writeVTK(true) {};
+                  runMode(0), writeHDF(true), writeVTK(true) {
+     SetName("fsicoupling");
+   };
   // JK: Making stuff for verblevel in fsicoupling functions
   void SetVerbLevel(int verb){ verblevel = verb;};
   int VerbLevel() const { return verblevel;}; 
@@ -481,7 +483,6 @@ public:
           double finalTime, double timeStep){
 
     FunctionEntry("Initialize"); 
-    //SetName("Initialize"); 
     std::stringstream outString; 
     //Masoud 
     outString << "Final Time = " << finalTime << std::endl;
@@ -753,7 +754,9 @@ namespace ElmerFoamFSI {
     COM_load_module("Simpal","Simpal");
     FunctionExit("LoadModules");
 
-    fsicoupling fsiCoupler;
+    std::cout << "line " << __LINE__ << std::endl;
+    fsicoupling fsiCoupler(*this);
+    std::cout << "line " << __LINE__ << std::endl;
     fsiCoupler.SetRunMode(runMode);
     fsiCoupler.SetVerbLevel(verblevel);
 
