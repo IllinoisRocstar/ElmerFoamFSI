@@ -102,12 +102,34 @@ else
   fi
 fi
 
+# Build the elmer module driver
+if ! $noTest
+then
+  ./BuildTools/BuildElmerModuleDriver $topSourceDir 2>&1 | tee -a Build.dat
+  if [ ${PIPESTATUS[0]} -ne 0 ]
+  then
+    echo "Error in building Elmer module driver & running tests" 2>&1 | tee -a Build.dat
+    exit 1
+  fi
+fi
+
 # Build openfoam module
 ./BuildTools/BuildOpenFoamModule $topSourceDir 2>&1 | tee -a Build.dat
 if [ ${PIPESTATUS[0]} -ne 0 ]
 then
   echo "Error in building OpenFoam module" 2>&1 | tee -a Build.dat
   exit 1
+fi
+
+# Build the openfoam module driver
+if ! $noTest
+then
+  ./BuildTools/BuildOpenFoamModuleDriver $topSourceDir 2>&1 | tee -a Build.dat
+  if [ ${PIPESTATUS[0]} -ne 0 ]
+  then
+    echo "Error in building OpenFoam module driver & running tests" 2>&1 | tee -a Build.dat
+    exit 1
+  fi
 fi
 
 # Build the ElmerFoamFSI driver

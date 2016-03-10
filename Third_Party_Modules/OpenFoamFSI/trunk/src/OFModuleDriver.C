@@ -70,8 +70,9 @@ int main(int argc, char *argv[]){
   char *myArgv[2];
   myArgv[0] = argv[0];
   myArgv[1] = NULL;
+  int verb=3;
 
-  COM_call_function(init_handle, &myArgc, &myArgv);
+  COM_call_function(init_handle, &myArgc, &myArgv, &verb);
 
   // get information about what was registered in this window
   int numDataItems=0;
