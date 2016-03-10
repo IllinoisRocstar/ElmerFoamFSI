@@ -91,9 +91,10 @@ int SolverModuleDriver::init(int argc, char *argv[]){
   /// Get the handle for the initialize function and call it
   int init_handle = COM_get_function_handle("Window1.Initialize");
   bool init_func = (init_handle > 0);
+  int verb=3;
  runs = 0;
   if(init_func){
-    COM_call_function(init_handle, &runs);
+    COM_call_function(init_handle, &runs, &verb);
   }
 
   return 0;
