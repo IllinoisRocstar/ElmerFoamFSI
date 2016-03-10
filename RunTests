@@ -1,0 +1,53 @@
+#!/bin/bash
+
+topSourceDir=`pwd`
+
+echo "Sourcing BashSourceScript" 2>&1 | tee -a Build.dat 
+
+# Source the SourceScript to ensure the proper build environment
+source BuildTools/BashSourceScript $topSourceDir 2>&1 | tee -a Build.dat
+if [ ${PIPESTATUS[0]} -ne 0 ]
+then
+  echo "Error: Unable to source BashSourceScript" 2>&1 | tee -a Build.dat
+  exit 1
+fi
+
+# Test IMPACT & IRAD
+cd IMPACT/build
+if [ ${PIPESTATUS[0]} -ne 0 ]
+then
+  echo "Error cannot change directories to ./IMPACT/build" 2>&1 | tee -a Build.dat
+  exit 1
+fi
+make test
+cd $topSourceDir
+
+# Test Elmer module driver
+cd Third_Party_Modules/ElmerFSI/trunk/build
+if [ ${PIPESTATUS[0]} -ne 0 ]
+then
+  echo "Error cannot change directories to ./Third_Party_Modules/ElmerFSI/trunk/build" 2>&1 | tee -a Build.dat
+  exit 1
+fi
+make test
+cd $topSourceDir
+
+# Test OpenFoam module driver
+cd Third_Party_Modules/OpenFoamFSI/trunk/build
+if [ ${PIPESTATUS[0]} -ne 0 ]
+then
+  echo "Error cannot change directories to ./Third_Party_Modules/OpenFoamFSI/trunk/build" 2>&1 | tee -a Build.dat
+  exit 1
+fi
+make test
+cd $topSourceDir
+
+# Test ElmerFoamFSI driver
+cd build
+if [ ${PIPESTATUS[0]} -ne 0 ]
+then
+  echo "Error cannot change directories to ./build" 2>&1 | tee -a Build.dat
+  exit 1
+fi
+make test
+
