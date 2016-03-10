@@ -102,6 +102,9 @@ else
   fi
 fi
 
+# Build the elmer module driver
+
+
 # Build openfoam module
 ./BuildTools/BuildOpenFoamModule $topSourceDir 2>&1 | tee -a Build.dat
 if [ ${PIPESTATUS[0]} -ne 0 ]
