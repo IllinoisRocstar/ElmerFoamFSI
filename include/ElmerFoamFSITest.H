@@ -364,7 +364,7 @@ namespace ElmerFoamFSI {
 
       // unload Elmer Module
       std::cout << "Unloading OpenFoam Module" << std::endl;
-      COM_UNLOAD_MODULE_STATIC_DYNAMIC(OpenFoamFSI, "OFModule");
+      //COM_UNLOAD_MODULE_STATIC_DYNAMIC(OpenFoamFSI, "OFModule");
       works=false;
 
       // make sure module unloaded
@@ -395,10 +395,11 @@ namespace ElmerFoamFSI {
       Test__ExampleFunction(result);
       Test__TrapezoidQuadrature(result);
       Test__MidPointQuadrature(result);
-      Test__FluidsInitialize(result);
+      //Test__FluidsInitialize(result);
       // MS: Start
       Test__ScaffoldUnitTestFun(result);
-      Test__ElmerModuleLoad(result);
+      for (int i=0; i<10; i++)
+	      Test__ElmerModuleLoad(result);
       Test__OFModuleLoad(result);
       // MS: End
       Epilogue();
