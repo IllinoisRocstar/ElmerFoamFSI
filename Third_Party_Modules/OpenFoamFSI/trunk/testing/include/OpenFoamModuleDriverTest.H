@@ -325,7 +325,9 @@ namespace OpenFoamModuleDriver {
       std::cout << "Running Test__ModuleFunctionInitialize" << std::endl; 
  
       //load OpenFoam module
+      std::cout << "Before loading OFModule" << std::endl;
       COM_LOAD_MODULE_STATIC_DYNAMIC(OpenFoamFSI, "OFModule");
+      std::cout << "After loading OFModule" << std::endl;
       bool works = false;
 
       // Test Initalize function exists
