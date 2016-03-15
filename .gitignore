@@ -1,8 +1,10 @@
 Build.dat
-Third_Party_Modules/OpenFoamFSI/trunk/build/
-Third_Party_Modules/OpenFoamFSI/trunk/native/Make/linux64GccDPOpt/
+IMPACT/build/*
+elmerfem/build/*
+Third_Party_Modules/OpenFoamFSI/trunk/build/*
+Third_Party_Modules/OpenFoamFSI/trunk/native/Make/linux64GccDPOpt/*
 Third_Party_Modules/OpenFoamFSI/trunk/native/fsiFOAM.dep
-Third_Party_Modules/OpenFoamFSI/trunk/native/lnInclude/
-build/
+Third_Party_Modules/OpenFoamFSI/trunk/native/lnInclude/*
+build/*
 include/.ElmerFoamFSITest.H.swp
-support_install/
+support_install/*

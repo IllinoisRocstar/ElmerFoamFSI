@@ -19,12 +19,15 @@ mkdir ${InputDir}
 cd ${InputDir}
 
 #Copy input data into InputDir
+echo "copying from $2/share/Testing/test_data/${InputDir}/*"
 cp -r $2/share/Testing/test_data/${InputDir}/* .
 
 #Run executable to generate output data
 #ENTER YOUR COMMAND FOR RUNNING YOUR EXECUTABLE HERE
-cd fluid
-$3/elmerfoamfsi $2/share/Testing/test_data/${InputDir}/fluid/test.config
+./Allclean
+./Allrun
+cd ./fluid
+$3/elmerfoamfsi test.config
 
 #Make sure the necesary output was generated
 foreach file (${Outputs})

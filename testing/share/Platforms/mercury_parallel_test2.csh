@@ -1,9 +1,11 @@
 #!/bin/tcsh
 
+echo "Var 1 = $1"
 rm -f tmpresults_2.txt
 cat <<EOF > ./elmerfoamfsi_parallel_test_batch.csh
 #!/bin/tcsh
 #
+#PBS -V
 #PBS -l nodes=2:ppn=8
 #PBS -l walltime=00:30:00 
 #PBS -j oe
@@ -11,7 +13,7 @@ cat <<EOF > ./elmerfoamfsi_parallel_test_batch.csh
 #PBS -A MPINFRA
 
 cd \${PBS_O_WORKDIR}
-mpiexec -np 16 ./bin/pepi -o tmpresults_2.txt 1000000
+mpiexec -np 16 ../bin/pepi -o tmpresults_2.txt 1000000
 EOF
 qsub elmerfoamfsi_parallel_test_batch.csh
 @ i = 1
