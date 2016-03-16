@@ -12,26 +12,22 @@ SUBROUTINE DeprecatedTimeStepper(global,runs)
      TYPE(t_global), POINTER :: global
      INTEGER :: runs
 
-     ! Masoud
-     WRITE(*,*) 'Inside MyDeprecatedTimeStepper ... '
-     ! Masoud : End
-
      DO interval = 1, TimeIntervals
         stepcount = stepcount + Timesteps(interval)
      END DO
 
-     IF (MyVerbosity > 3) THEN
-       WRITE(*,*) 'In TimeStepper'
-       WRITE(*,*) 'TimeIntervals = ', TimeIntervals 
-       WRITE(*,*) 'global%nNodes = ', global%nNodes
+     IF (global%verbosity(1) >= 1) THEN
+       WRITE(*,*) 'In TimeStepper:DeprecatedTimeStepper'
+       WRITE(*,*) 'TimeStepper:DeprecatedTimeStepper: TimeIntervals = ', TimeIntervals 
+       WRITE(*,*) 'TimeStepper:DeprecatedTimeStepper: global%nNodes = ', global%nNodes
      END IF
 
      cum_Timestep = 0
      ddt = 0.0d0
      DO interval = 1,TimeIntervals
 
-     IF (MyVerbosity > 3) THEN
-       WRITE(*,*) 'interval = ', interval
+     IF (global%verbosity(1) >= 1) THEN
+       WRITE(*,*) 'TimeStepper:DeprecatedTimeStepper: interval = ', interval
      END IF 
 !------------------------------------------------------------------------------
        IF ( Transient .OR. Scanning ) THEN
@@ -47,17 +43,17 @@ SUBROUTINE DeprecatedTimeStepper(global,runs)
 
 
        RealTimestep = 1
-       WRITE(*,*) 'Timesteps(interval) = ', Timesteps(interval)
+       IF(global%verbosity(1) >= 1) WRITE(*,*) 'TimeStepper:DeprecatedTimeStepper: Timesteps(interval) = ', Timesteps(interval)
        DO timestep = 1,Timesteps(interval)
 
-         IF (MyVerbosity > 3) THEN
-           WRITE(6,*) 'timestepper timestep = ', timestep
-           WRITE(6,*) 'sTime(1) = ', sTime(1)
-           WRITE(6,*) 'dtfunc = ', dtfunc
-           WRITE(6,*) 'dt = ', dt
+         IF (global%verbosity(1)>= 1) THEN
+           WRITE(6,*) 'TimeStepper:DeprecatedTimeStepper: timestepper timestep = ', timestep
+           WRITE(6,*) 'TimeStepper:DeprecatedTimeStepper: sTime(1) = ', sTime(1)
+           WRITE(6,*) 'TimeStepper:DeprecatedTimeStepper: dtfunc = ', dtfunc
+           WRITE(6,*) 'TimeStepper:DeprecatedTimeStepper: dt = ', dt
          END IF
 
-         IF (MyVerbosity > 3) WRITE(*,*) 'TimeStepper Calling &
+         IF (global%verbosity(1) >= 2) WRITE(*,*) 'TimeStepper:DeprecatedTimeStepper: TimeStepper Calling &
              UpdateLoads'
          CALL UpdateLoads(global,runs)
 
@@ -98,8 +94,10 @@ SUBROUTINE DeprecatedTimeStepper(global,runs)
            CALL Info( 'MAIN', '-------------------------------------', Level=3 )
 
            IF ( Transient .OR. Scanning ) THEN
-             WRITE( Message, * ) 'Time: ',TRIM(i2s(cum_Timestep)),'/', &
-                   TRIM(i2s(stepcount)), sTime(1)
+             IF( global%verbosity(1) >=1) THEN
+               WRITE( Message, * ) 'TimeStepper:DeprecatedTimeStepper: Time: ',TRIM(i2s(cum_Timestep)),'/', &
+                     TRIM(i2s(stepcount)), sTime(1)
+             END IF
              CALL Info( 'MAIN', Message, Level=3 )
 
              newtime= RealTime()
@@ -107,28 +105,40 @@ SUBROUTINE DeprecatedTimeStepper(global,runs)
              IF( cum_Timestep > 1 ) THEN
                maxtime = ListGetConstReal( CurrentModel % Simulation,'Real Time Max',GotIt)
                IF( GotIt ) THEN
-                  WRITE( Message,'(A,F8.3)') 'Fraction of real time left: ',&
-                              1.0_dp-RealTime() / maxtime
+                  IF(global%verbosity(1) >=1) THEN
+                    WRITE( Message,'(A,F8.3)') 'TimeStepper:DeprecatedTimeStepper: Fraction of real time left: ',&
+                                1.0_dp-RealTime() / maxtime
+                  END IF
                ELSE             
                  timeleft = NINT((stepcount-(cum_Timestep-1))*(newtime-prevtime)/60._dp);
                  IF (timeleft > 120) THEN
-                   WRITE( Message, *) 'Estimated time left: ', &
-                     TRIM(i2s(timeleft/60)),' hours.'
+                   IF( global%verbosity(1) >= 1) THEN
+                     WRITE( Message, *) 'TimeStepper:DeprecatedTimeStepper: Estimated time left: ', &
+                       TRIM(i2s(timeleft/60)),' hours.'
+                   END IF
                  ELSE IF(timeleft > 60) THEN
-                   WRITE( Message, *) 'Estimated time left: 1 hour ', &
-                     TRIM(i2s(MOD(timeleft,60))), ' minutes.'
+                   IF (global%verbosity(1) >=1) THEN
+                     WRITE( Message, *) 'TimeStepper:DeprecatedTimeStepper: Estimated time left: 1 hour ', &
+                       TRIM(i2s(MOD(timeleft,60))), ' minutes.'
+                   END IF
                  ELSE IF(timeleft >= 1) THEN
-                   WRITE( Message, *) 'Estimated time left: ', &
-                     TRIM(i2s(timeleft)),' minutes.'
+                   IF(global%verbosity(1) >=1) THEN
+                     WRITE( Message, *) 'TimeStepper:DeprecatedTimeStepper: Estimated time left: ', &
+                       TRIM(i2s(timeleft)),' minutes.'
+                   END IF
                  ELSE
-                   WRITE( Message, *) 'Estimated time left: less than a minute.'
+                   IF(global%verbosity(1) >= 1) THEN
+                     WRITE( Message, *) 'TimeStepper:DeprecatedTimeStepper: Estimated time left: less than a minute.'
+                   END IF
                  END IF
                END IF
                CALL Info( 'MAIN', Message, Level=3 )
              END IF
              prevtime = newtime
            ELSE
-             WRITE( Message, * ) 'Steady state iteration: ',cum_Timestep
+             IF(global%verbosity(1) >=1) THEN
+               WRITE( Message, * ) 'TimeStepper:DeprecatedTimeStepper: Steady state iteration: ',cum_Timestep
+             END IF
              CALL Info( 'MAIN', Message, Level=3 )
            END IF
 
@@ -147,8 +157,10 @@ SUBROUTINE DeprecatedTimeStepper(global,runs)
                         'Adaptive Time Error', GotIt )
  
             IF ( .NOT. GotIt ) THEN 
-               WRITE( Message, * ) 'Adaptive Time Limit must be given for' // &
-                        'adaptive stepping scheme.'
+               IF(global%verbosity(1) >= 1) THEN
+                 WRITE( Message, * ) 'TimeStepper:DeprecatedTimeStepper: Adaptive Time Limit must be given for' // & 
+                         'adaptive stepping scheme.'
+               END IF
                CALL Fatal( 'ElmerSolver', Message )
             END IF
 
@@ -273,15 +285,17 @@ SUBROUTINE DeprecatedTimeStepper(global,runs)
                   ddt = ddt / 2
                   StepControl = -1
                END IF
-               WRITE(*,'(a,3e20.12)') 'Adaptive(cum,ddt,err): ', cumtime, ddt, maxerr
+               IF(global%verbosity(1) >= 1) THEN
+                 WRITE(*,'(a,3e20.12)') 'TimeStepper:DeprecatedTimeStepper: Adaptive(cum,ddt,err): ', cumtime, ddt, maxerr
+               END IF
             END DO
             sSize(1) = dt
             sTime(1) = s + dt
   
             DEALLOCATE( xx, xxnrm, yynrm, prevxx )
          ELSE ! Adaptive timestepping
-            IF (MyVerbosity > 3) THEN
-              WRITE(*,*) 'Calling SolveEquations (no transient and no adaptive)'
+            IF (global%verbosity(1) >= 2) THEN
+              WRITE(*,*) 'TimeStepper:DeprecatedTimeStepper: Calling SolveEquations (no transient and no adaptive)'
             END IF
             CALL SolveEquations( CurrentModel, dt, Transient, &
               CoupledMinIter, CoupledMaxIter, SteadyStateReached, RealTimestep )
@@ -339,7 +353,9 @@ SUBROUTINE DeprecatedTimeStepper(global,runs)
 
          IF ( SteadyStateReached .AND. .NOT. (Transient .OR. Scanning) ) THEN
             IF ( Timestep >= CoupledMinIter ) THEN
-              WRITE(6,*) 'SteadyStateReached, exiting'
+              IF(global%verbosity(1) >=1) THEN
+                WRITE(6,*) 'TimeStepper:DeprecatedTimeStepper: SteadyStateReached, exiting'
+              END IF
               EXIT
             END IF
          END IF
@@ -351,8 +367,8 @@ SUBROUTINE DeprecatedTimeStepper(global,runs)
 !------------------------------------------------------------------------------
      END DO ! timestep intervals, i.e. the simulation
 
-     IF (MyVerbosity > 3) THEN
-       write(6,*) 'LastSaved = ', LastSaved
+     IF (global%verbosity(1) >= 2) THEN
+       write(6,*) 'TimeStepper:DeprecatedTimeStepper: LastSaved = ', LastSaved
      END IF
 
      runs = 1

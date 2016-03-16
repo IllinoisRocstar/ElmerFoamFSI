@@ -3157,7 +3157,7 @@ void fsifoam_module::Load(const std::string &name){
   types[2] = COM_VOID;
   COM_set_member_function( (name+".InitFoam").c_str(),
                            (Member_func_ptr)(&fsifoam_module::InitFoam),
-                           global_name.c_str(), "biii", &types[0]);
+                           global_name.c_str(), "bii", &types[0]);
 
   COM_set_member_function( (name+".RunFoam").c_str(),
                            (Member_func_ptr)(&fsifoam_module::RunFoam),
@@ -3184,26 +3184,25 @@ void fsifoam_module::Load(const std::string &name){
 }
 
 
-void fsifoam_module::InitFoam(int *pargc, void **pargv, int *verbIn)
+void fsifoam_module::InitFoam(int *pargc, void **pargv)
 {
   int argc = *pargc;
   char** argv = (char**)(pargv);
-  verbosity = *verbIn;
-
-  std::cout << "OF Module verbosity = " << verbosity << std::endl;
 
 /*
   // register function status variables
   std::string initStatusName(my_window_name+".initStatus");
   COM_new_dataitem(initStatusName.c_str(),'w', COM_INT, 1, "");
   COM_set_array(initStatusName.c_str(), 11, &initStatus);
-*/ 
+*/
 
   Initialize(argc, argv);
 
   /// Register the Data Items
 
   // set up solution meta data
+  //JK 3/3/16: Adding new verbosity data to get verbosity from driver
+  Solution().Meta().AddField("verbosity", 's', 1, 4, "");
   Solution().Meta().AddField("time", 's', 1, 8, "s");
   Solution().Meta().AddField("endTime", 's', 1, 8, "s");
   Solution().Meta().AddField("initStatus", 's', 1, 4, "");
@@ -3231,6 +3230,7 @@ void fsifoam_module::InitFoam(int *pargc, void **pargv, int *verbIn)
 
   initStatus.resize(1, -1000);
   runStatus.resize(1, -1000);
+  verbosity.resize(1, 1);
 
   surfacePressure.resize(numElementsSurface, -1);
   surfaceTraction.resize(3*numElementsSurface, -1);
@@ -3239,6 +3239,7 @@ void fsifoam_module::InitFoam(int *pargc, void **pargv, int *verbIn)
   // reset the buffers to be our own local buffers
   Solution().SetFieldBuffer("initStatus", initStatus);
   Solution().SetFieldBuffer("runStatus", runStatus);
+  Solution().SetFieldBuffer("verbosity", verbosity);
   Solution().SetFieldBuffer("time", time);
   Solution().SetFieldBuffer("endTime", endTime);
   Solution().SetFieldBuffer("pressure", surfacePressure);
