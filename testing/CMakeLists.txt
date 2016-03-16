@@ -47,6 +47,7 @@ ADD_TEST(RunTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_s
 ADD_TEST(RunPlatformSpecificTests ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/platforms -s ${PROJECT_SOURCE_DIR} -b ${PROJECT_BINARY_DIR}/bin -o elmerfoamfsi_testresults.txt)
 ADD_TEST(RunSpecificTestScript    ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Platforms/test_stub.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -o elmerfoamfsi_testresults.txt)
 ADD_TEST(SimpleStaticRegressionTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regression.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt )
+ADD_TEST(SimpleDynamicRegressionTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regDynamic.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt )
 #Uncomment test below if you have edited and used the regression test script
 ADD_TEST(RegressionTestHTFSI3:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regHTFSI3.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt)
 
@@ -65,6 +66,7 @@ ADD_TEST(MidPointQuadrature:Accurate ${TESTRESULT} MidPointQuadrature:Accurate e
 ADD_TEST(MidPointQuadrature:Order ${TESTRESULT} MidPointQuadrature:Order2 elmerfoamfsi_testresults.txt)
 #ADD_TEST(FluidsInitialize:Runs ${TESTRESULT} FluidsInitialize:Runs elmerfoamfsi_testresults.txt)
 ADD_TEST(SimpleStaticRegressionTest:Works ${TESTRESULT} SimpleStaticRegressionTest elmerfoamfsi_testresults.txt)
+ADD_TEST(SimpleDynamicRegressionTest:Works ${TESTRESULT} SimpleDynamicRegressionTest elmerfoamfsi_testresults.txt)
 ADD_TEST(ScaffoldUnitTestFun:Runs ${TESTRESULT} ScaffoldUnitTestFun:Runs elmerfoamfsi_testresults.txt)
 ADD_TEST(LoadElmerModule:Works ${TESTRESULT} LoadElmerModule:Works elmerfoamfsi_testresults.txt)
 ADD_TEST(UnloadElmerModule:Works ${TESTRESULT} UnloadElmerModule:Works elmerfoamfsi_testresults.txt)

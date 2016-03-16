@@ -132,7 +132,7 @@ if( $STEST != 0 ) then
 else
   printf "1\n" >> ${TmpOut}
   # remove if successful
-  rm -r HronTurekFsi HronTurekFsiIMPACT
+  #rm -r HronTurekFsi HronTurekFsiIMPACT
 endif
  
 cat ${TmpOut} >> ${OutFile}
