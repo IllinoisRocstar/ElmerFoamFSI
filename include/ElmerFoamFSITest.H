@@ -364,7 +364,7 @@ namespace ElmerFoamFSI {
 
       // unload Elmer Module
       std::cout << "Unloading OpenFoam Module" << std::endl;
-      //COM_UNLOAD_MODULE_STATIC_DYNAMIC(OpenFoamFSI, "OFModule");
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC(OpenFoamFSI, "OFModule");
       works=false;
 
       // make sure module unloaded
