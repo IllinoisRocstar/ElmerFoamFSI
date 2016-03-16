@@ -107,24 +107,24 @@
      INTEGER :: MyN, CurrentInterval
      TYPE(ValueList_t), POINTER :: ptr
      
-     WRITE(6,*) 'MyTimeModule:UpdateLoads: Updating loads on the structure'
+     IF(global%verbosity(1) >= 2) WRITE(6,*) 'TimeModule:UpdateLoads: Updating loads on the structure'
     
-     IF (MyVerbosity > 3) THEN
-       WRITE(6,*) 'sTime(1) = ', sTime(1)
-       WRITE(6,*) 'FinalTime = ', FinalTime
-       WRITE(6,*) 'PreviousTime = ', PreviousTime
+     IF (global%verbosity(1) >=  1) THEN
+       WRITE(6,*) 'TimeModule:UpdateLoads: sTime(1) = ', sTime(1)
+       WRITE(6,*) 'TimeModule:UpdateLoads: FinalTime = ', FinalTime
+       WRITE(6,*) 'TimeModule:UpdateLoads: PreviousTime = ', PreviousTime
      END IF
- 
+    
      !printing the loads as a check
-     IF( MyVerbosity > 3) THEN
-       WRITE(*,*) 'global%NodeLoads:'
+     IF( global%verbosity(1) >= 1) THEN
+       WRITE(*,*) 'TimeModule:UpdateLoads: global%NodeLoads:'
        DO t = 1, global%nNodes
            WRITE(*,*) global%NodeLoads(3*(t-1) + 1), global%NodeLoads(3*(t-1) + 2), &
            global%NodeLoads(3*(t-1) + 3)
        END DO
      END IF
-     IF( MyVerbosity > 3) THEN
-       WRITE(*,*) 'global%PreviousLoads:'
+     IF( global%verbosity(1) >= 1) THEN
+       WRITE(*,*) 'TimeModule:UpdateLoads: global%PreviousLoads:'
        DO t = 1, global%nNodes
          DO j =1,3
            WRITE(*,*) global%PreviousLoads(j,t)
@@ -134,10 +134,12 @@
   
      !Setting the loads accessible by Elmer to the interpolated value
      !for the current time
-     WRITE(*,*) 'MyTimeModule:UpdateLoads: Time Step Summary '
-     WRITE(*,*) '    sTime(1)     = ', sTime(1)
-     WRITE(*,*) '    PreviousTime = ', PreviousTime
-     WRITE(*,*) '    FinalTime    = ', FinalTime
+     IF( global%verbosity(1) >= 1 ) THEN
+       WRITE(*,*) 'TimeModule:UpdateLoads: Time Step Summary '
+       WRITE(*,*) 'TimeModule:UpdateLoads:     sTime(1)     = ', sTime(1)
+       WRITE(*,*) 'TimeModule:UpdateLoads:     PreviousTime = ', PreviousTime
+       WRITE(*,*) 'TimeModule:UpdateLoads:     FinalTime    = ', FinalTime
+      END IF
      !Original
      DO t = 1, global%nNodes
        j=1
@@ -146,7 +148,7 @@
            !Masoud : setting node loads to zero for beam end nodes in the
            !Heron-Turek problem
            CurrentModel % NodeLoadsPass(j,t) = 0.d0
-           WRITE(*,*) '   Node #',t,' is load free'
+           IF( global%verbosity(1) >= 1) WRITE(*,*) 'TimeModule:UpdateLoads:    Node #',t,' is load free'
            !Masoud End
          ELSE
            CurrentModel % NodeLoadsPass(j,t) = global%PreviousLoads(j,t) + &
@@ -168,8 +170,8 @@
     
  
      !printing the loads as a check
-     IF( MyVerbosity > 3) THEN
-       WRITE(*,*) 'CurrentModel % NodeLoadsPass:'
+     IF( global%verbosity(1) >= 1) THEN
+       WRITE(*,*) 'TimeModule:UpdateLoads: CurrentModel % NodeLoadsPass:'
        DO t = 1, global%nNodes
          DO j =1,3
            WRITE(*,*) CurrentModel % NodeLoadsPass(j,t)
@@ -177,7 +179,7 @@
        END DO
      END IF
  
-     WRITE(6,*) 'MyTimeModule:UpdateLoads: Finishing'
+     IF( global%verbosity(1) >= 2) WRITE(6,*) 'TimeModule:UpdateLoads: Finishing'
   
   END SUBROUTINE UpdateLoads
 !----------------------------------------------------------------------
@@ -198,18 +200,18 @@ SUBROUTINE TimeStepper(global,runs)
         stepcount = stepcount + Timesteps(interval)
      END DO
 
-     IF (MyVerbosity > 3) THEN
-       WRITE(*,*) 'In TimeStepper'
-       WRITE(*,*) 'TimeIntervals = ', TimeIntervals 
-       WRITE(*,*) 'global%nNodes = ', global%nNodes
+     IF (global%verbosity(1) >= 1) THEN
+       WRITE(*,*) 'In TimeModule:TimeStepper '
+       WRITE(*,*) 'TimeModule:TimeStepper: TimeIntervals = ', TimeIntervals 
+       WRITE(*,*) 'TimeModule:TimeStepper: global%nNodes = ', global%nNodes
      END IF
 
      cum_Timestep = 0
      ddt = 0.0d0
      DO interval = 1,TimeIntervals
 
-     IF (MyVerbosity > 3) THEN
-       WRITE(*,*) 'interval = ', interval
+     IF ( global%verbosity(1) >= 1) THEN
+       WRITE(*,*) 'TimeModule:TimeStepper: interval = ', interval
      END IF 
 !------------------------------------------------------------------------------
        IF ( Transient .OR. Scanning ) THEN
@@ -225,7 +227,7 @@ SUBROUTINE TimeStepper(global,runs)
 
 
        RealTimestep = 1
-       WRITE(*,*) 'MyTimeModule:TimeStepper: Timesteps(interval) = ', Timesteps(interval)
+       IF( global%verbosity(1) >= 1)  WRITE(*,*) 'TimeModule:TimeStepper: Timesteps(interval) = ', Timesteps(interval)
        DO timestep = 1,Timesteps(interval)
 
          cum_Timestep = cum_Timestep + 1
@@ -265,37 +267,52 @@ SUBROUTINE TimeStepper(global,runs)
            CALL Info( 'MAIN', '-------------------------------------', Level=3 )
 
            IF ( Transient .OR. Scanning ) THEN
-             WRITE( Message, * ) 'Time: ',TRIM(i2s(cum_Timestep)),'/', &
-                   TRIM(i2s(stepcount)), sTime(1)
+             IF(global%verbosity(1) >= 1) THEN
+               WRITE( Message, * ) 'TimeModule:TimeStepper: Time: ',TRIM(i2s(cum_Timestep)),'/', &
+                     TRIM(i2s(stepcount)), sTime(1)
+             END IF
              CALL Info( 'MAIN', Message, Level=3 )
 
              newtime= RealTime()
 
              IF( cum_Timestep > 1 ) THEN
+               WRITE(*,*) 'do i even get here WK', global%verbosity(1)
                maxtime = ListGetConstReal( CurrentModel % Simulation,'Real Time Max',GotIt)
                IF( GotIt ) THEN
-                  WRITE( Message,'(A,F8.3)') 'Fraction of real time left: ',&
-                              1.0_dp-RealTime() / maxtime
+                 IF(global%verbosity(1) >= 1) THEN
+                    WRITE( Message,'(A,F8.3)') 'TimeModule:TimeStepper: Fraction of real time left: ',&
+                                1.0_dp-RealTime() / maxtime
+                 END IF
                ELSE             
                  timeleft = NINT((stepcount-(cum_Timestep-1))*(newtime-prevtime)/60._dp);
                  IF (timeleft > 120) THEN
-                   WRITE( Message, *) 'Estimated time left: ', &
-                     TRIM(i2s(timeleft/60)),' hours.'
+                   IF(global%verbosity(1) >= 1) THEN
+                     WRITE( Message, *) 'TimeModule:TimeStepper: Estimated time left: ', &
+                       TRIM(i2s(timeleft/60)),' hours.'
+                   END IF
                  ELSE IF(timeleft > 60) THEN
-                   WRITE( Message, *) 'Estimated time left: 1 hour ', &
-                     TRIM(i2s(MOD(timeleft,60))), ' minutes.'
+                   IF(global%verbosity(1) >= 1) THEN
+                     WRITE( Message, *) 'TimeModule:TimeStepper: Estimated time left: 1 hour ', &
+                       TRIM(i2s(MOD(timeleft,60))), ' minutes.'
+                   END IF
                  ELSE IF(timeleft >= 1) THEN
-                   WRITE( Message, *) 'Estimated time left: ', &
-                     TRIM(i2s(timeleft)),' minutes.'
+                   IF(global%verbosity(1) >= 1) THEN
+                     WRITE( Message, *) 'TimeModule:TimeStepper: Estimated time left: ', &
+                       TRIM(i2s(timeleft)),' minutes.'
+                   END IF
                  ELSE
-                   WRITE( Message, *) 'Estimated time left: less than a minute.'
+                   IF(global%verbosity(1) >= 1) THEN
+                     WRITE( Message, *) 'TimeModule:TimeStepper: Estimated time left: less than a minute.'
+                   END IF
                  END IF
                END IF
                CALL Info( 'MAIN', Message, Level=3 )
              END IF
              prevtime = newtime
            ELSE
-             WRITE( Message, * ) 'Steady state iteration: ',cum_Timestep
+             IF(global%verbosity(1) >= 1) THEN
+               WRITE( Message, * ) 'TimeModule:TimeStepper: Steady state iteration: ',cum_Timestep
+             END IF
              CALL Info( 'MAIN', Message, Level=3 )
            END IF
 
@@ -307,12 +324,12 @@ SUBROUTINE TimeStepper(global,runs)
 !        Call UpdateLoads to the get linearly interpolated load value at 
 !        the current time
 !------------------------------------------------------------------------------
-         IF (MyVerbosity > 3) THEN
-           WRITE(6,*) 'timestepper timestep = ', timestep
-           WRITE(6,*) 'sTime(1) = ', sTime(1)
-           WRITE(6,*) 'dtfunc = ', dtfunc
-           WRITE(6,*) 'dt = ', dt
-           WRITE(*,*) 'TimeStepper Calling UpdateLoads'
+         IF (global%verbosity(1) >= 1) THEN
+           WRITE(6,*) 'TimeModule:TimeStepper: timestepper timestep = ', timestep
+           WRITE(6,*) 'TimeModule:TimeStepper: sTime(1) = ', sTime(1)
+           WRITE(6,*) 'TimeModule:TimeStepper: dtfunc = ', dtfunc
+           WRITE(6,*) 'TimeModule:TimeStepper: dt = ', dt
+           WRITE(*,*) 'TimeModule:TimeStepper: TimeStepper Calling UpdateLoads'
          END IF
          CALL UpdateLoads(global,runs)
 !------------------------------------------------------------------------------
@@ -326,8 +343,10 @@ SUBROUTINE TimeStepper(global,runs)
                         'Adaptive Time Error', GotIt )
  
             IF ( .NOT. GotIt ) THEN 
-               WRITE( Message, * ) 'Adaptive Time Limit must be given for' // &
-                        'adaptive stepping scheme.'
+               IF( global%verbosity(1) >= 2) THEN
+                 WRITE( Message, * ) 'TimeModule:TimeStepper: Adaptive Time Limit must be given for' // &
+                          'adaptive stepping scheme.'
+                 END IF
                CALL Fatal( 'ElmerSolver', Message )
             END IF
 
@@ -452,17 +471,19 @@ SUBROUTINE TimeStepper(global,runs)
                   ddt = ddt / 2
                   StepControl = -1
                END IF
-               WRITE(*,'(a,3e20.12)') 'Adaptive(cum,ddt,err): ', cumtime, ddt, maxerr
+               IF(global%verbosity(1) >= 1) THEN
+                 WRITE(*,'(a,3e20.12)') 'TimeModule:TimeStepper: Adaptive(cum,ddt,err): ', cumtime, ddt, maxerr 
+               END IF
             END DO
             sSize(1) = dt
             sTime(1) = s + dt
   
             DEALLOCATE( xx, xxnrm, yynrm, prevxx )
          ELSE ! Adaptive timestepping
-            !IF (MyVerbosity > 3) THEN
-              WRITE(*,*) 'MyTimeModule:TimeStepper: Calling SolveEquations'
-              WRITE(*,*) '   Transient = ', Transient
-            !END IF
+            IF (global%verbosity(1) >= 1) THEN
+              WRITE(*,*) 'TimeModule:TimeStepper: Calling SolveEquations'
+              WRITE(*,*) 'TimeModule:TimeStepper:    Transient = ', Transient
+            END IF
             CALL SolveEquations( CurrentModel, dt, Transient, &
               CoupledMinIter, CoupledMaxIter, SteadyStateReached, RealTimestep )
             RealTimestep = RealTimestep+1
@@ -519,7 +540,7 @@ SUBROUTINE TimeStepper(global,runs)
 
          IF ( SteadyStateReached .AND. .NOT. (Transient .OR. Scanning) ) THEN
             IF ( Timestep >= CoupledMinIter ) THEN
-              WRITE(6,*) 'SteadyStateReached, exiting'
+              IF(global%verbosity(1) >= 2) WRITE(6,*) 'TimeModule:TimeStepper: SteadyStateReached, exiting'
               EXIT
             END IF
          END IF
@@ -531,8 +552,8 @@ SUBROUTINE TimeStepper(global,runs)
 !------------------------------------------------------------------------------
      END DO ! timestep intervals, i.e. the simulation
 
-     IF (MyVerbosity > 3) THEN
-       write(6,*) 'LastSaved = ', LastSaved
+     IF (global%verbosity(1)>= 1) THEN
+       write(6,*) 'TimeModule:TimeStepper: LastSaved = ', LastSaved
      END IF
 
      runs = 1

@@ -520,6 +520,7 @@ public:
     }
     //    exit(1);
 
+
     componentAgents.resize(2);
     componentAgents[0] = fluidsAgent;
     componentAgents[1] = structuresAgent;

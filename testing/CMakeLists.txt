@@ -46,7 +46,7 @@ ADD_TEST(RunElmerFoamFSIUnitTests ${EXECUTABLE_OUTPUT_PATH}/elmerfoamfsi_test -o
 ADD_TEST(RunTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/tests.list -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt)
 ADD_TEST(RunPlatformSpecificTests ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/platforms -s ${PROJECT_SOURCE_DIR} -b ${PROJECT_BINARY_DIR}/bin -o elmerfoamfsi_testresults.txt)
 ADD_TEST(RunSpecificTestScript    ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Platforms/test_stub.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -o elmerfoamfsi_testresults.txt)
-ADD_TEST(SimpleStaticRegressionTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regression.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt )
+ADD_TEST(SimpleStaticRegressionTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regSimpStatic.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt )
 ADD_TEST(SimpleDynamicRegressionTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regDynamic.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt )
 #Uncomment test below if you have edited and used the regression test script
 ADD_TEST(RegressionTestHTFSI3:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regHTFSI3.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt)
@@ -72,8 +72,6 @@ ADD_TEST(LoadElmerModule:Works ${TESTRESULT} LoadElmerModule:Works elmerfoamfsi_
 ADD_TEST(UnloadElmerModule:Works ${TESTRESULT} UnloadElmerModule:Works elmerfoamfsi_testresults.txt)
 ADD_TEST(LoadOpenFoamModule:Works ${TESTRESULT} LoadOpenFoamModule:Works elmerfoamfsi_testresults.txt)
 ADD_TEST(UnloadOpenFoamModule:Works ${TESTRESULT} UnloadOpenFoamModule:Works elmerfoamfsi_testresults.txt)
-#Uncomment test below and add your Regression test name in the appropriate
-#spot if you have edited and used the regression test script
 ADD_TEST(RegressionTestHTFSI3:Works ${TESTRESULT} Hron-Turek-FSI3 elmerfoamfsi_testresults.txt)
 
 
