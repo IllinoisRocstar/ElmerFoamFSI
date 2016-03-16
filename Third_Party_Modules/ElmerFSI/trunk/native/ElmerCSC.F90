@@ -63,15 +63,14 @@ SUBROUTINE Initializer(global, runs, verbIn)
    CALL SET_STDIO_BUFS()
 #endif
 
-   WRITE(6,*) 'ElmerCSC:Initializer: Starting ...'
-
    !Allocate space for storing the verbosity
    ALLOCATE(global%verbosity(1))
    !Initialize verbosity to 1
-   global%verbosity = verbIn
-
-   WRITE(*,*) 'verbosity = ', global%verbosity
-
+ 
+   global%verbosity(1) = verbIn
+   MyVerbosity=global%verbosity(1)
+   IF( global%verbosity(1) >= 2)  WRITE(6,*) 'ElmerCSC:Initializer: Starting ...'
+   
    CALL envir( 'ELMERSOLVER_OUTPUT_TOTAL'//CHAR(0), toutput, tlen )
    Silent = toutput(1:1)=='0' .OR. toutput(1:5)=='false'
 
@@ -84,7 +83,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
      CALL FLUSH(6)
    END IF
 
-   IF( MyVerbosity > 3) WRITE( *, * ) 'Calling ElmerInitialize'
+   IF( global%verbosity(1) >= 2) WRITE( *, * ) 'Calling ElmerInitialize'
 
    CALL ElmerInitialize(runs)
 
@@ -96,7 +95,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
       Solver => global % MyModel % Solvers(i)
       SolverParams => GetSolverParams(Solver)
       Equation = GetString(SolverParams, 'Equation', GotIt)
-      WRITE(*,*) 'Equation = ',Equation
+      If(global%verbosity(1) >= 1) WRITE(*,*) 'ElmerCSC:Initializer: Equation = ',Equation
       IF( Equation .eq. 'nonlinear elasticity' ) THEN
          global%SolverId =  i
          EXIT
@@ -112,13 +111,13 @@ SUBROUTINE Initializer(global, runs, verbIn)
       IsFSI = ListGetLogical(CurrentModel % BCs(t) % Values,&
              'FSI BC', GotIt )
       IF ( IsFSI ) THEN
-         IF (MyVerbosity > 3) WRITE(*,*) 'BC', t, 'is FSI'
+         IF (global%verbosity(1) >= 1) WRITE(*,*) 'ElmerCSC:Initializer: BC', t, 'is FSI'
          global%FSIbcId = t
       END IF
    END DO
 
    IF (global%FSIbcId == -1) THEN
-      WRITE(*,*) 'Not registering data no FSI BC!'
+      IF(global%verbosity(1) >= 1) WRITE(*,*) 'ElmerCSC:Initializer: Not registering data no FSI BC!'
       RETURN
    END IF
      
@@ -146,16 +145,12 @@ SUBROUTINE Initializer(global, runs, verbIn)
       bc_id = GetBCId(MyCurrentElement)
 
       IF ( bc_id == global%FSIbcId ) THEN
-         LastFSIElement = t
-         IF( MyVerbosity > 3) THEN 
-           WRITE(*,*) 'Initializer element = ',t,' bc_id = ',bc_id
-         END IF
+         LastFSIElement = t 
+         IF (global%verbosity(1) >= 1) WRITE(*,*) 'ElmerCSC:Initializer: Initializer element = ',t,' bc_id = ',bc_id
          global%nElem = global%nElem + 1
          DO nt = 1,MyCurrentElement % TYPE % NumberOfNodes
             MyNodeIndexes => MyCurrentElement % NodeIndexes
-            IF( MyVerbosity > 3) THEN 
-              WRITE(*,*) 'Node index = ', MyNodeIndexes(nt)
-            END IF
+             IF (global%verbosity(1) >= 1) WRITE(*,*) 'ElmerCSC:Initializer: Node index = ', MyNodeIndexes(nt)
             NodePresent = .FALSE.
             DO nk=1,counter
               IF (TempNodeList(nk) == MyNodeIndexes(nt)) THEN
@@ -165,17 +160,15 @@ SUBROUTINE Initializer(global, runs, verbIn)
             END DO
             IF ( NodePresent .eqv. .FALSE. ) THEN
                counter = counter + 1
-               IF( MyVerbosity > 4) THEN 
-                 WRITE(*,*) 'counter = ', counter
-               END IF
+               IF (global%verbosity(1) >= 1) WRITE(*,*) 'ElmerCSC:Initializer: counter = ', counter
                TempNodeList(counter) = MyNodeIndexes(nt)
             END IF
          END DO
       END IF
    END DO
 
-   IF( MyVerbosity > 5) THEN 
-     WRITE(*,*) 'SIZE(TempNodeList) =', SIZE(TempNodeList)
+   IF( global%verbosity(1) >= 3) THEN 
+      WRITE(*,*) 'ElmerCSC:Initializer: SIZE(TempNodeList) =', SIZE(TempNodeList)
      DO t = 1,SIZE(TempNodeList)
        WRITE(*,*) TempNodeList(t)
      END DO
@@ -183,14 +176,14 @@ SUBROUTINE Initializer(global, runs, verbIn)
   
    global%nNodes = counter 
 
-   IF( MyVerbosity > 4) THEN 
-     WRITE(*,*) 'global%nElem = ',global%nElem
-     WRITE(*,*) 'global%nNodes = ',global%nNodes
+   IF( global%verbosity(1) >= 1) THEN 
+     WRITE(*,*) 'ElmerCSC:Initializer: global%nElem = ',global%nElem
+     WRITE(*,*) 'ElmerCSC:Initializer: global%nNodes = ',global%nNodes
    END IF
 
    !Allocate space for storing the NodeDisplacements
    !This location will be registered with IMPACT
-   IF( MyVerbosity > 3) WRITE(*,*) 'global%nNodes =', global%nNodes
+   IF( global%verbosity(1) >= 1) WRITE(*,*) 'ElmerCSC:Initializer: global%nNodes =', global%nNodes
    ALLOCATE(global%NodeDisplacements(3*global%nNodes))
    !Masoud
    ALLOCATE(global%PreviousNodeDisplacements(3*global%nNodes))
@@ -199,8 +192,8 @@ SUBROUTINE Initializer(global, runs, verbIn)
    global%IsLoadFreeNode = .FALSE.
    !Masoud End
    ALLOCATE(global%MyToElmerNodes(global%nNodes))
-   IF( MyVerbosity > 3) THEN 
-     WRITE(*,*) 'SIZE(NodeDisplacements)=',SIZE(global%NodeDisplacements)
+   IF( global%verbosity(1) >= 1) THEN 
+     WRITE(*,*) 'ElmerCSC:Initializer: SIZE(NodeDisplacements)=',SIZE(global%NodeDisplacements)
    END IF
    ALLOCATE(CurrentModel%ElmerToMyNodes(CurrentModel % NumberOfNodes))
    global%MyToElmerNodes = -1
@@ -223,7 +216,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
    ALLOCATE(global%PreviousLoads(3,global%nNodes))
    !Allocate the NodeLoads that gets passed to the user defined function
    ALLOCATE(CurrentModel%NodeLoadsPass(3,global%nNodes))
-   IF( MyVerbosity > 3) WRITE(*,*) 'SIZE(NodeLoads)=',SIZE(global%NodeLoads)
+   IF( global%verbosity(1) >= 1) WRITE(*,*) 'ElmerCSC:Initializer: SIZE(NodeLoads)=',SIZE(global%NodeLoads)
    !Initialize the loads to 0.0
    DO t = 1, global%nNodes
      DO j =1,3
@@ -246,8 +239,8 @@ SUBROUTINE Initializer(global, runs, verbIn)
          CALL Fatal( ' ', 'FSI elements of 1 dimension must have 2 or 3 nodes!' )
       END IF
    ELSE IF (MyCurrentElement % TYPE % DIMENSION == 2) THEN
-      IF( MyVerbosity > 3) THEN
-         WRITE(*,*) 'FSI BC element NumberOfNodes =',&
+      IF(global%verbosity(1) >= 1) THEN
+         WRITE(*,*) 'ElmerCSC:Initializer: FSI BC element NumberOfNodes =',&
                     MyCurrentElement % TYPE % NumberOfNodes 
       END IF
       IF (MyCurrentElement % TYPE % NumberOfNodes == 3) THEN
@@ -270,9 +263,9 @@ SUBROUTINE Initializer(global, runs, verbIn)
       CALL Fatal( ' ', 'FSI elements cannot have dimension greater than 2!' )
    END IF
 
-   IF( MyVerbosity > 3) THEN 
-     WRITE(*,*) 'global%MeshType = ',global%MeshType
-     WRITE(*,*) 'global%nConn =',global%nConn
+   IF( global%verbosity(1) >= 2) THEN 
+     WRITE(*,*) 'ElmerCSC:Initializer: global%MeshType = ',global%MeshType
+     WRITE(*,*) 'ElmerCSC:Initizlizer: global%nConn =',global%nConn
    END IF
    ALLOCATE(global%Conn(global%nConn*global%nElem))
    ALLOCATE(global%Coords(3*global%nNodes))
@@ -300,8 +293,8 @@ SUBROUTINE Initializer(global, runs, verbIn)
 
       IF ( bc_id == global%FSIbcId ) THEN
          counter = counter + 1
-         IF( MyVerbosity > 3) THEN 
-           WRITE(*,*) 'element = ',t
+         IF( global%verbosity(1) >= 1) THEN 
+           WRITE(*,*) 'ElmerCSC:Initializer: element = ',t
          END IF
          CALL GetElementNodes(ElementNodes,MyCurrentElement)
 
@@ -313,8 +306,8 @@ SUBROUTINE Initializer(global, runs, verbIn)
          DO nt = 1,MyCurrentElement % TYPE % NumberOfNodes
             MyNodeIndexes => MyCurrentElement % NodeIndexes
             
-            IF( MyVerbosity > 3) THEN 
-              WRITE(*,*) 'Node index = ', MyNodeIndexes(nt)
+            IF( global%verbosity(1) >= 1) THEN 
+              WRITE(*,*) 'ElmerCSC:Initializer: Node index = ', MyNodeIndexes(nt)
               WRITE(*,*) ElementNodes % x(nt), ElementNodes % y(nt), &
                          ElementNodes % z(nt)
             END IF
@@ -350,18 +343,18 @@ SUBROUTINE Initializer(global, runs, verbIn)
    !WRITE(*,*) 'global%IsLoadFreeNode = ', global%IsLoadFreeNode
    !Masoud End
 
-   IF( MyVerbosity >= 5) THEN 
-     WRITE(6,*) 'global%MyToElmerNodes = '
+   IF( global%verbosity(1) >= 3) THEN 
+     WRITE(6,*) 'ElmerCSC:Initializer: global%MyToElmerNodes = '
      DO i=1,global%nNodes
         WRITE(6,*) i,' = ',global%MyToElmerNodes(i)
      END DO
-     WRITE(6,*) 'CurrentModel%ElmerToMyNodes = '
+     WRITE(6,*) 'ElmerCSC:Initializer: CurrentModel%ElmerToMyNodes = '
      DO i=1,CurrentModel % NumberOfNodes
         WRITE(6,*) i,' = ',CurrentModel%ElmerToMyNodes(i)
      END DO
 
      WRITE(6,*)'-------------------------------------------'
-     WRITE(*,*) 'global%Conn = '
+     WRITE(*,*) 'ElmerCSC:Initializer: global%Conn = '
      WRITE(6,*)'-------------------------------------------'
      DO t = 1, global%nElem
         WRITE(*,*) t,':',global%Conn(global%nConn*(t-1) + 1),&
@@ -371,7 +364,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
      WRITE(6,*)
 
      WRITE(6,*)'-------------------------------------------'
-     WRITE(*,*) 'global%Coords = '
+     WRITE(*,*) 'ElmerCSC:Initializer: global%Coords = '
      WRITE(6,*)'-------------------------------------------'
      DO t = 1, global%nNodes
         WRITE(*,*) t,':',global%Coords(3*(t-1)+1),global%Coords(3*(t-1)+2),&
@@ -382,8 +375,8 @@ SUBROUTINE Initializer(global, runs, verbIn)
    WRITE(6,*)
 
    !Register the mesh 
-   IF( MyVerbosity > 3) THEN 
-      WRITE(*,*) 'window.mesh = ', &
+   IF( global%verbosity(1) >= 1) THEN 
+      WRITE(*,*) 'ElmerCSC:Initializer: window.mesh = ', &
               TRIM(global%window_name)//'.'//TRIM(global%MeshType)
    END IF
    CALL COM_SET_SIZE(TRIM(global%window_name)//'.nc',11,global%nNodes)
@@ -441,9 +434,9 @@ SUBROUTINE Initializer(global, runs, verbIn)
 
    PreviousTime = 0.0
 
-   IF( MyVerbosity > 4) THEN 
+   IF( global%verbosity(1) >=  1) THEN 
      WRITE(6,*)'-------------------------------------------'
-     WRITE(*,*) 'global%NodeDisplacements = '
+     WRITE(*,*) 'ElmerCSC:Initializer: global%NodeDisplacements = '
      WRITE(6,*)'-------------------------------------------'
      DO i = 1,global%nNodes
         DO j=1,3
@@ -456,7 +449,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
    END IF
 
 
-   WRITE(6,*) 'ElmerCSC:Initializer: Done.....'
+   IF(global%verbosity(1) >= 2) WRITE(6,*) 'ElmerCSC:Initializer: Done.....'
 
    NULLIFY(TempNodeList)
  
@@ -507,52 +500,52 @@ SUBROUTINE RUN(global, runs, tFinal)
                   previous time step!')
    END IF
 
-   IF (MyVerbosity > 3) WRITE(*,*) 'In RUN function'
+   IF (global%verbosity(1) >= 2) WRITE(*,*) 'In ElmerCSC:Run function'
      
    standardTimestep = TimestepSizes(1,1)
    deltaTime = tFinal - sTime(1)
    Timesteps(1) = FLOOR(deltaTime/standardTimestep)
  
-   IF (MyVerbosity > 3) THEN
-     WRITE(*,*) 'tFinal = ', tFinal 
-     WRITE(*,*) 'sTime(1) = ', sTime(1)
-     WRITE(*,*) 'standardTimestep = ', standardTimestep
+   IF (global%verbosity(1) >= 1) THEN
+     WRITE(*,*) 'ElmerCSC:Run: tFinal = ', tFinal 
+     WRITE(*,*) 'ElmerCSC:Run: sTime(1) = ', sTime(1)
+     WRITE(*,*) 'ElmerCSC:Run: standardTimestep = ', standardTimestep
    END IF
  
    var3 = deltaTime - INT(deltaTime/standardTimestep)*standardTimestep
 
    IF ( abs(var3) < 1.0d-12 ) THEN
       TimeIntervals = 1
-      IF (MyVerbosity > 3) WRITE(*,*)  'standardTimestep evenly divides time'
+      IF (global%verbosity(1) >=  1) WRITE(*,*)  'ElmerCSC:Run: standardTimestep evenly divides time'
    ELSE
       TimestepSizes(2,1) = deltaTime - Timesteps(1)*standardTimestep
       TimeIntervals = 2
       Timesteps(2) = 1
-      IF (MyVerbosity > 3) THEN
-        WRITE(*,*) 'Remainder for time'
-        WRITE(*,*) 'TimestepSizes(2,1) = ', TimestepSizes(2,1)
+      IF (global%verbosity(1) >= 1) THEN
+        WRITE(*,*) 'ElmerCSC:Run: Remainder for time'
+        WRITE(*,*) 'ElmerCSC:Run: TimestepSizes(2,1) = ', TimestepSizes(2,1)
       END IF
    END IF
    
-   IF (MyVerbosity > 3) THEN
-     WRITE(*,*) 'In Run function'
-     WRITE(*,*) 'tFinal = ', tFinal 
-     WRITE(*,*) 'sTime(1) = ', sTime(1)
-     WRITE(*,*) 'Timesteps(1) = ', Timesteps(1)
-     WRITE(*,*) 'standardTimestep = ', standardTimestep
+   IF (global%verbosity(1) >= 1) THEN
+     WRITE(*,*) 'ElmerCSC:Run: In Run function'
+     WRITE(*,*) 'ElmerCSC:Run: tFinal = ', tFinal 
+     WRITE(*,*) 'ElmerCSC:Run: sTime(1) = ', sTime(1)
+     WRITE(*,*) 'ElmerCSC:Run: Timesteps(1) = ', Timesteps(1)
+     WRITE(*,*) 'ElmerCSC:Run: standardTimestep = ', standardTimestep
      !Printing out the Pressures as a check
-     WRITE(*,*) 'Pressures '
+     WRITE(*,*) 'ElmerCSC:Run: Pressures '
      DO t = 1, global%nElem
        WRITE(*,*) global%FacePressures(t)
      END DO
      !Printing out the FaceLoads as a check
-     WRITE(*,*) 'FaceLoads '
+     WRITE(*,*) 'ElmerCSC:Run: FaceLoads '
      DO t = 1, global%nElem
        WRITE(*,*) global%FaceLoads(3*(t-1) + 1), global%FaceLoads(3*(t-1) + 2),&
                   global%FaceLoads(3*(t-1) + 3)
      END DO
      !Print out the NodePressures as a check
-     WRITE(*,*) 'NodePressures '
+     WRITE(*,*) 'ElmerCSC:Run: NodePressures '
      DO t = 1, global%nNodes
        WRITE(*,*) global%NodePressures(t)
      END DO
@@ -564,12 +557,12 @@ SUBROUTINE RUN(global, runs, tFinal)
 !      First go trough timeintervals
 !------------------------------------------------------------------------------
           !WRITE(*,*) 'global%nNodes = ',global%nNodes
-          IF (MyVerbosity > 3) WRITE(*,*) 'Calling TimeStepper' 
+          IF (global%verbosity(1) >= 2) WRITE(*,*) 'ElmerCSC:Run: Calling TimeStepper' 
           CALL TimeStepper(global,runs)
-          IF (MyVerbosity > 3) WRITE(*,*) 'Done with TimeStepper' 
+          IF (global%verbosity(1) >= 2) WRITE(*,*) 'ElmerCSC:Run: Done with TimeStepper' 
 
    IF (global%FSIbcId /= -1) THEN
-      IF (MyVerbosity > 3) WRITE(*,*) 'Calling UpdateDisplacements'
+      IF (global%verbosity(1) >= 2) WRITE(*,*) 'ElmerCSC:Run: Calling UpdateDisplacements'
       CALL UpdateDisplacements(global,runs, tFinal)
    END IF
 
@@ -584,12 +577,13 @@ SUBROUTINE RUN(global, runs, tFinal)
    !Setting PreviousTime to FinalTime now that
    !Run is finished
    PreviousTime = FinalTime
-
+   !If(global%verbosity(1)>=1) THEN 
    WRITE(*,*) 'ElmerCSC:Run: runs = ',runs
    WRITE(*,*) 'ElmerCSC:Run: CurrentModel%GetTestLoads = ',&
               CurrentModel%GetTestLoads
    WRITE(*,*) 'ElmerCSC:Run: CurrentModel%UDFUsed = ',&
-              CurrentModel%UDFUsed
+              CurrentModel%UDFUsed      
+   !ENDIF
    IF (runs == 1 .AND. CurrentModel%GetTestLoads .eqv. .TRUE. & 
       .AND. CurrentModel%UDFUsed .eqv. .TRUE.) THEN
      runs = 2
@@ -613,8 +607,10 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
    DOUBLE PRECISION :: tFinal
    INTEGER :: nCount, counter, nCountMax
 
+   IF(global%verbosity(1)>=2) THEN
    WRITE(*,*) 'ElmerCSC:UpdateDisplacements:',&
               ' Reporting displacements to the fluid solver'
+   ENDIF
 
    !access the displacements here
    Solver => CurrentModel % Solvers(global%SolverId)
@@ -624,12 +620,12 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
    Displacement   => StressSol % Values
    MyPerm => StressSol % Perm
 
-   IF( MyVerbosity > 3) THEN
-     WRITE(*,*) 'The SIZE(Displacement) = ', SIZE(Displacement)
-     WRITE(*,*) 'After SolverActivate Call, Displacement(1) = ',&
+   IF( global%verbosity(1)>=1) THEN
+     WRITE(*,*) 'ElmerCSC:UpdateDisplacements: The SIZE(Displacement) = ', SIZE(Displacement)
+     WRITE(*,*) 'ElmerCSC:UpdateDisplacements: After SolverActivate Call, Displacement(1) = ',&
               Displacement(1)
      DO t=1,SIZE(Displacement)
-        WRITE(*,*) 'Displacement',t,'=',Displacement(t)
+        WRITE(*,*) 'ElmerCSC:UpdateDisplacements: Displacement',t,'=',Displacement(t)
      END DO
    END IF
 
@@ -644,9 +640,9 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
    nCount = 0
    nCountMax = 0
    counter = 0
-   IF( MyVerbosity > 3) THEN 
-     WRITE(*,*) 'Number of bulk elements = ', MyMesh % NumberOfBulkElements
-     WRITE(*,*) 'Number of boundary elements = ', MyMesh % NumberOfBoundaryElements
+   IF( global%verbosity(1) >= 1) THEN 
+     WRITE(*,*) 'ElmerCSC:UpdateDisplacements: Number of bulk elements = ', MyMesh % NumberOfBulkElements
+     WRITE(*,*) 'ElmerCSC:UpdateDisplacements: Number of boundary elements = ', MyMesh % NumberOfBoundaryElements
    END IF
    DO t = MyMesh % NumberOfBulkElements+1, &
           MyMesh % NumberOfBulkElements + &
@@ -655,12 +651,12 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
       bc_id = GetBCId(MyCurrentElement)
       IF ( bc_id == global%FSIbcId ) THEN
          counter = counter+1
-         IF( MyVerbosity > 3) THEN
+         IF(global%verbosity(1) >= 1) THEN
            WRITE(*,*) '*************************************'
-           WRITE(*,*) 'element ',counter,'on FSI boundary'
-           WRITE(*,*) 'Update t = ',t,' bc_id = ',bc_id
+           WRITE(*,*) 'ElmerCSC:UpdateDisplacements: element ',counter,'on FSI boundary'
+           WRITE(*,*) 'ElmerCSC:UpdateDisplacements: Update t = ',t,' bc_id = ',bc_id
            WRITE(*,*)
-           WRITE(*,*) 'Element no. of nodes:', &
+           WRITE(*,*) 'ElmerCSC:UpdateDisplacements: Element no. of nodes:', &
                       MyCurrentElement % TYPE % NumberOfNodes
          END IF
 
@@ -669,17 +665,17 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
          DO nt = 1,MyCurrentElement % TYPE % NumberOfNodes
             MyNodeIndexes => MyCurrentElement % NodeIndexes
               
-            IF( MyVerbosity > 3) THEN
+            IF( global%verbosity(1) >= 1) THEN
               WRITE(*,*) '*********************'
-              WRITE(*,*) 'Node index = ', MyNodeIndexes(nt)
+              WRITE(*,*) 'ElmerCSC:UpdateDisplacements: Node index = ', MyNodeIndexes(nt)
               WRITE(*,*) ElementNodes % x(nt), ElementNodes % y(nt), &
                          ElementNodes % z(nt)
-              WRITE(*,*) 'MyPerm = ', MyPerm(MyNodeIndexes(nt))
+              WRITE(*,*) 'ElmerCSC:UpdateDisplacements: MyPerm = ', MyPerm(MyNodeIndexes(nt))
             END IF
 
             IF ( MyPerm(MyNodeIndexes(nt)) > 0 ) THEN
                nk = (StressSol % DOFs)*(MyPerm(MyNodeIndexes(nt)) - 1)
-               IF( MyVerbosity > 3) WRITE(*,*) 'DOFs = ', StressSol % DOFs
+               IF( global%verbosity(1) >=1 ) WRITE(*,*) 'ElmerCSC:UpdateDisplacements: DOFs = ', StressSol % DOFs
 
                nCount = CurrentModel%ElmerToMyNodes(MyNodeIndexes(nt))
                
@@ -687,17 +683,17 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
                !          implementing a correct displacement update
 
                IF ( nCount > nCountMax ) THEN
-                  IF( MyVerbosity > 3) THEN
-                  WRITE(6,*) 'Updating NodeDisplacement(',nCount,')'
+                  IF( global%verbosity(1) >= 1) THEN
+                  WRITE(6,*) 'ElmerCSC:UpdateDisplacements: Updating NodeDisplacement(',nCount,')'
                  END IF
  
                  IF ( StressSol % DOFs == 1 ) THEN
-                     IF( MyVerbosity > 3) WRITE(*,*) Displacement(nk+1), 0.0, 0.0
+                     IF( global%verbosity(1) >= 1) WRITE(*,*) Displacement(nk+1), 0.0, 0.0
                      global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
                      global%NodeDisplacements(3*(nCount-1) + 2) = 0.0d0
                      global%NodeDisplacements(3*(nCount-1) + 3) = 0.0d0
                  ELSE IF ( StressSol % DOFs == 2 ) THEN
-                     IF( MyVerbosity > 3) WRITE(*,*) Displacement(nk+1), Displacement(nk+2)
+                     IF( global%verbosity(1) >= 1) WRITE(*,*) Displacement(nk+1), Displacement(nk+2)
                      global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
                      global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)
                      global%NodeDisplacements(3*(nCount-1) + 3) = 0.0d0
@@ -736,8 +732,8 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
                      !WRITE(*,*) '----------------------'
                      ! Masoud : End
                  ELSE
-                     WRITE(*,*) 'StressSol % DOFs = ', StressSol % DOFs
-                     WRITE(*,*) 'DOFs are assumed to be <= 3'
+                     WRITE(*,*) 'ElmerCSC:UpdateDisplacements:  StressSol % DOFs = ', StressSol % DOFs
+                     WRITE(*,*) 'ElmerCSC:UpdateDisplacements: DOFs are assumed to be <= 3'
                      CALL Fatal( ' ', 'StressSol DOFs are greater than 3 ' )
                  END IF
                  nCountMax = MAX(nCount, nCountMax)
@@ -792,13 +788,13 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
       END IF
    END DO
 
-   IF( MyVerbosity > 50) THEN
-     WRITE(6,*) 'tFinal = ', tFinal
-     WRITE(6,*) 'NodeDisplacements'
+   IF(global%verbosity(1) >= 1) THEN
+     WRITE(6,*) 'ElmerCSC:UpdateDisplacements: tFinal = ', tFinal
+     WRITE(6,*) 'ElmerCSC:UpdateDisplacements: NodeDisplacements'
      DO i = 1,global%nNodes
         WRITE(6,*) (global%NodeDisplacements(3*(i-1) + j),j=1,3)
      ENDDO
-     WRITE(6,*) 'Exiting UpdateDisplacements'
+     WRITE(6,*) 'ElmerCSC:UpdateDisplacements: Exiting UpdateDisplacements'
    END IF
 
 END SUBROUTINE UpdateDisplacements
@@ -826,7 +822,7 @@ SUBROUTINE Finalize(global, runs)
 
    CurrentModel => global%MyModel
 
-   WRITE(*,*) 'ElmerCSC:Finalize: Finishing simulation'
+   IF(global%verbosity(1) >= 2) WRITE(*,*) 'ElmerCSC:Finalize: Finishing simulation'
 
    CALL ElmerFinalize(runs)
 
@@ -838,11 +834,11 @@ SUBROUTINE Finalize(global, runs)
          !WRITE( *,'(a,F12.2,F12.2)' ) 'SOLVER TOTAL TIME(CPU,REAL): ', &
          !           CPUTime()-CT, RealTime()-RT
          DateStr = FormatDate()
-         WRITE( *,'(A,A)' ) 'ELMER SOLVER FINISHED AT: ', TRIM(DateStr)
+         IF(global%verbosity(1) >= 1) WRITE( *,'(A,A)' ) 'ELMER SOLVER FINISHED AT: ', TRIM(DateStr)
       END IF
    END IF
 
-   WRITE(6,*) 'ElmerCSC:Finalize: End Finalize. FirstTime = ',FirstTime 
+   IF(global%verbosity(1)>=2)  WRITE(6,*) 'ElmerCSC:Finalize: End Finalize. FirstTime = ',FirstTime 
 
 END SUBROUTINE Finalize
 
@@ -898,7 +894,7 @@ SUBROUTINE ElmerCSC_LOAD_MODULE(name)
   
 
   WRITE(*,'(A)') "Loading ElmerCSC: "//TRIM(name)
-  
+ 
 
   ALLOCATE(glb)
   glb%window_name = TRIM(name)
@@ -946,16 +942,16 @@ SUBROUTINE ElmerCSC_UNLOAD_MODULE(name)
   character(*),intent(in) :: name
   TYPE(t_global), POINTER :: glb
   INTEGER :: window_handle,other_window_handle,c_window_handle, owlen
-
+  
   WRITE(*,'(A)') "Unloading ElmerCSC: "//TRIM(name)
   NULLIFY(glb)
   window_handle = COM_GET_WINDOW_HANDLE(TRIM(name))
   if(window_handle .gt. 0) then
      CALL COM_get_pointer(TRIM(name)//'.global',glb,associate_pointer)
      IF(ASSOCIATED(glb).eqv..true.) THEN       
-        WRITE(*,'(A)') 'Fortran module '//TRIM(glb%window_name)//' unloading name '//TRIM(name)
+           WRITE(*,'(A)') 'ElmerCSC:Unload: Fortran module '//TRIM(glb%window_name)//' unloading name '//TRIM(name)
         if(glb%other_window_handle .gt. 0) then
-           WRITE(*,*) 'Fortran module '//TRIM(glb%window_name)//&
+           WRITE(*,*) 'ElmerCSC:Unload: Fortran module '//TRIM(glb%window_name)//&
                 ' unloading external Fortran module '//TRIM(glb%other_window_name)//'.'
            other_window_handle = COM_GET_WINDOW_HANDLE(TRIM(glb%other_window_name))
            IF(other_window_handle .gt. 0) THEN
@@ -963,7 +959,7 @@ SUBROUTINE ElmerCSC_UNLOAD_MODULE(name)
            ENDIF
         endif
         if(glb%c_window_handle .gt. 0) then
-           WRITE(*,*) 'Fortran module '//TRIM(glb%window_name)//&
+            WRITE(*,*) 'ElmerCSC:Unload: Fortran module '//TRIM(glb%window_name)//&
                 ' unloading external C module '//TRIM(glb%c_window_name)//'.'
            c_window_handle = COM_GET_WINDOW_HANDLE(TRIM(glb%c_window_name))
            IF(c_window_handle .gt. 0) THEN
