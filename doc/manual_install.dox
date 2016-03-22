@@ -30,7 +30,7 @@
 /// > \-\-disable-mpi-f77 \n
 /// > \-\-disable-mpi-f90 \n
 /// > \-\-disable-mpi-cxx
-///    * Modify the appropriate shell script. The user should navigate into $ELMERFOAMTOP/foam/foam-extend-<version>/etc and open the cshrc or bashrc file depening on if using Cshell or Bash respectively. In the file every instance of "$HOME" should be replaced with "$ElmerFoamTop"
+///    * Modify the appropriate shell script. The user should navigate into $ELMERFOAMTOP/foam/foam-extend-<version>/etc and open the cshrc or bashrc file depening on if using Cshell or Bash respectively. In the file every instance of "$HOME" should be replaced with "$ElmerFoamTop" (Note: either manually enter the full path to the top level ElmerFoamFSI directory for $ElmerFoamTop or set an environment variable equal to that path).
 ///    * Source the appropriate shell script (bash or csh)
 ///    * Build with (or without) <b><i>ParaView</i></b> (user choice)
 ///    * Review the build output to make sure that the 5 stages of <b><i>OpenFOAM</i></b> built properly

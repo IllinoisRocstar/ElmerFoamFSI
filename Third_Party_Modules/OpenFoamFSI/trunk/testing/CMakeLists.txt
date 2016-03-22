@@ -96,7 +96,7 @@ ${LDUSOLVERS_LIB} ${FOAM_LIB} ${IMPACT_LIB} ${SolverUtils_LIB} ${IRAD_LIB})
 # The 3 tests below actually run all the tests
 ADD_TEST(RunOpenFoamModuleDriverUnitTests
 ${EXECUTABLE_OUTPUT_PATH}/OFModuleTest -s ${PROJECT_SOURCE_DIR} -com-mpi -o testresults.txt)
-ADD_TEST(RunTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/tests.list -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o testresults.txt)
+ADD_TEST(RunTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/tests.list -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o testresults.txt)
 ADD_TEST(OpenFoamFsiRegressionTest:Works ${TESTRESULT} OpenFoamFsiRegressionTest:Works testresults.txt)
 ADD_TEST(HronTurekFsiRegressionTest:Works ${TESTRESULT} HronTurekFsiRegressionTest:Works testresults.txt)
 ADD_TEST(LoadSolverModule:Works ${TESTRESULT} LoadSolverModule:Works testresults.txt)
