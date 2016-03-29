@@ -7,20 +7,20 @@ FUNCTION LoadXDirection(Model, inindex, Tvalue) RESULT(load)
 
    USE DefUtils
    USE GeneralModule
-   USE TESTOBJECT  
-
+ 
    IMPLICIT None
 
    TYPE(Model_t) :: Model
    INTEGER :: inindex, funci
    REAL(KIND=dp) :: Tvalue, load, diff
-   TYPE(t_global), POINTER :: global
+
    Model%UDFUsed = .TRUE.
 
    load =  Model%NodeLoadsPass(1,Model%ElmerToMyNodes(inindex))
    !WRITE(*,*) load
 
-   IF ( MyVerbosity >= 2) WRITE(6,*)'Inside [LoadFunctionLibrary]...[LoadXDirection]'
+   IF (MyVerbosity > 3) WRITE(6,*)'Inside [LoadFunctionLibrary]...[LoadXDirection]'
+
    !Calculate diff for testing purposes
    IF (Tvalue < 8.001) THEN
      diff = float(Model%ElmerToMyNodes(inindex)-1)*3.0d0
@@ -63,7 +63,7 @@ FUNCTION LoadYDirection(Model, inindex, Tvalue) RESULT(load)
 
    load = Model%NodeLoadsPass(2,Model%ElmerToMyNodes(inindex)) 
 
-   IF (MyVerbosity >= 2) WRITE(6,*)'Inside [LoadFunctionLibrary]...[LoadYDirection]'
+   IF (MyVerbosity > 3) WRITE(6,*)'Inside [LoadFunctionLibrary]...[LoadYDirection]'
 
    !Calculate diff for testing purposes
    IF (Tvalue < 8.001) THEN

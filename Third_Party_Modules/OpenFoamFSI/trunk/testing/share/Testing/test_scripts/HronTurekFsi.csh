@@ -67,8 +67,10 @@ endif
 # done any actual validation of the saved data set, but it is still nice
 # to know that the code based changed under us.
 
-set resultFile = "0.005/accumulatedFluidInterfaceDisplacement" 
-diff fluid/$resultFile archiveData/$resultFile
+# remove OpenFoam's header from the file
+(tail -n +19 fluid/0.005/accumulatedFluidInterfaceDisplacement) > fluid/0.005/accumulatedFluidInterfaceDisplacement_resultOnly
+set resultFile = "0.005/accumulatedFluidInterfaceDisplacement_resultOnly" 
+$4/diffdatafiles  -n fluid/$resultFile archiveData/$resultFile
 set STEST = $?
 
 # move back to top level
@@ -117,7 +119,7 @@ endif
 # rest is likely the same
 
 set resultFile = "0.005/accumulatedFluidInterfaceDisplacement" 
-diff $resultFile ../../HronTurekFsi/fluid/$resultFile
+$4/diffdatafiles -n $resultFile ../../HronTurekFsi/fluid/$resultFile
 set STEST = $?
 
 # move back to top level

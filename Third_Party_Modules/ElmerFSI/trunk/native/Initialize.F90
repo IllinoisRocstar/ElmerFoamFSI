@@ -54,13 +54,12 @@
 !------------------------------------------------------------------------------
    SUBROUTINE ElmerInitialize(runs)
 !------------------------------------------------------------------------------
-     USE GeneralModule
      USE TESTOBJECT
+     USE GeneralModule
 !------------------------------------------------------------------------------
      IMPLICIT NONE
 !------------------------------------------------------------------------------
      
-     TYPE(t_global), POINTER :: global
 !      INTEGER :: Initialize
 
 !------------------------------------------------------------------------------
@@ -229,7 +228,7 @@
        
        CALL InitializeElementDescriptions
        
-       IF(MyVerbosity >= 2) WRITE(*,*) 'Initialize:ElmerInitialize:  Setting FirstTime to FALSE'
+       WRITE(*,*) "Initialize: Setting FirstTime to FALSE"
        FirstTime = .FALSE.
      END IF
 
@@ -244,7 +243,6 @@
        END IF
      END IF
          
-
      IF( .NOT. GotModelName ) THEN
        OPEN( 1, File='ELMERSOLVER_STARTINFO', STATUS='OLD', ERR=10 )
        READ(1,'(a)') ModelName
@@ -267,7 +265,7 @@
 
        IF ( initialize==2 ) GOTO 1
 
-       IF( MyVerbosity >= 1) WRITE(*,*) 'Initialize:ElmerInitialize: FirstLoad = ', FirstLoad
+       IF( MyVerbosity > 3) WRITE(*,*) 'FirstLoad = ', FirstLoad
 
        IF ( FirstLoad ) THEN
          IF( .NOT. Silent ) THEN
@@ -280,12 +278,12 @@
          INQUIRE(Unit=InFileUnit, Opened=GotIt)
          IF ( gotIt ) CLOSE(inFileUnit)
      
-         IF( MyVerbosity >=1) WRITE(*,*) 'Initialize:ElmerInitialize: ModelName = ', ModelName
+         IF( MyVerbosity > 3) WRITE(*,*) 'ModelName = ', ModelName
     
          OPEN( Unit=InFileUnit, Action='Read',File=ModelName,Status='OLD',ERR=20 )
-         IF( MyVerbosity >=2) WRITE(*,*) 'Initialize:ElmerInitialize: Before LoadModel call'
+         IF( MyVerbosity > 3) WRITE(*,*) 'Before LoadModel call'
          CurrentModel => LoadModel(ModelName,.FALSE.,ParEnv % PEs,ParEnv % MyPE )
-         IF( MyVerbosity >=2) WRITE(*,*) 'Initialize:ElmerInitialize: After LoadModel call'
+         IF( MyVerbosity > 3) WRITE(*,*) 'After LoadModel call'
 
          ! Optionally perform simple extrusion to increase the dimension of the mesh
          !----------------------------------------------------------------------------------
@@ -318,7 +316,7 @@
          CoordTransform = ListGetString(CurrentModel % Simulation,'Coordinate Transformation',GotIt)
          IF( GotIt ) THEN
            ! Masoud
-           IF( MyVerbosity >=2) WRITE(*,*) 'Initialize:ElmerInitialize: In Coordinate Transformation is activated for Elmer.\n'
+           WRITE(*,*) 'Initialize: Coordinate Transformation is activated for Elmer.\n'
            ! Masoud : End
            CALL CoordinateTransformation( CurrentModel % Meshes, CoordTransform, &
                CurrentModel % Simulation, .TRUE. )
@@ -337,9 +335,9 @@
            OPEN( Unit=InFileUnit, Action='Read', & 
                     File=ModelName,Status='OLD',ERR=20 )
          END IF
- 
-         IF (MyVerbosity >=1) THEN
-            WRITE(6,*) 'Initialize:ElmerInitialize: Initialize: CurrentModel % NumberOfNodes&
+
+         IF (MyVerbosity > 3) THEN
+            WRITE(6,*) 'Initialize: CurrentModel % NumberOfNodes&
             = ', CurrentModel % NumberOfNodes
          END IF
 
@@ -519,16 +517,16 @@
             'Initialization Phase', .FALSE. )
 
        FirstLoad = .FALSE.
-       IF (MyVerbosity >= 1) THEN
-         WRITE(6,*) 'Initialize:ElmerInitialize: MyElmerSolver 493 Initialize = ', Initialize     
+       IF (MyVerbosity > 3) THEN
+         WRITE(6,*) 'MyElmerSolver 493 Initialize = ', Initialize     
        END IF
 !       IF ( Initialize == 1 ) EXIT
 #endif
 
 !     END DO
 
-     IF (MyVerbosity >= 1) THEN
-       WRITE(6,*) 'Initialize:ElmerInitialize: MyRun: CurrentModel % NumberOfNodes = ', &
+     IF (MyVerbosity > 3) THEN
+       WRITE(6,*) 'MyRun: CurrentModel % NumberOfNodes = ', &
                   CurrentModel % NumberOfNodes
      END IF
 
@@ -545,24 +543,24 @@
 !      is a hack that recognizes VTU suffix and creates a instance of output solver.
 !      Note that this is really quite a dirty hack, and is not a good example.
 !-----------------------------------------------------------------------------
-       IF (MyVerbosity >= 2) THEN
-         write(6,*) 'Initialize:ElmerInitialize: calling AddVtuOutputSolverHack' 
+       IF (MyVerbosity > 3) THEN
+         write(6,*) 'calling AddVtuOutputSolverHack' 
        END IF
        CALL AddVtuOutputSolverHack()
-       IF (MyVerbosity >= 2) THEN
-         write(6,*) 'Initialize:ElmerInitialize: leaving AddVtuOutputSolverHack'
+       IF (MyVerbosity > 3) THEN
+         write(6,*) 'leaving AddVtuOutputSolverHack'
        END IF
 
 !------------------------------------------------------------------------------
 !      Figure out what (flow,heat,stress,...) should be computed, and get
 !      memory for the dofs
 !------------------------------------------------------------------------------
-       IF (MyVerbosity >= 2) THEN
-         write(6,*) 'Initialize:ElmerInitialize: calling AddSolvers'
+       IF (MyVerbosity > 3) THEN
+         write(6,*) 'calling AddSolvers'
        END IF
        CALL AddSolvers()
-       IF (MyVerbosity >= 2) THEN
-         write(6,*) 'Initialize:ElmerInitialize: leaving AddSolvers'
+       IF (MyVerbosity > 3) THEN
+         write(6,*) 'leaving AddSolvers'
        END IF
 
 !------------------------------------------------------------------------------
@@ -653,9 +651,9 @@
          OutputIntervals = 1
        END IF
 
-       IF (MyVerbosity >= 1) THEN
-         write(6,*) 'Initialize:ElmerInitialize: MyRunI SIZE(OutputIntervals) =', SIZE(OutputIntervals)
-         write(6,*) 'Initialize:ElmerInitialize: MyRunI OutputIntervals(1) = ',OutputIntervals(1)
+       IF (MyVerbosity > 3) THEN
+         write(6,*) 'MyRunI SIZE(OutputIntervals) =', SIZE(OutputIntervals)
+         write(6,*) 'MyRunI OutputIntervals(1) = ',OutputIntervals(1)
        END IF      
 
        ! Initial Conditions:
@@ -703,23 +701,23 @@
             'Initialization Phase', .FALSE. )
 
        FirstLoad = .FALSE.
-       IF (MyVerbosity >= 1) THEN
-         WRITE(6,*) 'Initialize:ElmerInitialize: MyElmerSolver 493 Initialize = ', Initialize     
-         write(6,*) 'Initialize:ElmerInitialize: TimeIntervals from inside RunI = ', TimeIntervals
-         WRITE(*,*) 'Initialize:ElmerInitialize: NumberOfSolvers = ', CurrentModel % NumberOfSolvers    
+       IF (MyVerbosity > 3) THEN
+         WRITE(6,*) 'MyElmerSolver 493 Initialize = ', Initialize     
+         write(6,*) 'TimeIntervals from inside RunI = ', TimeIntervals
+         WRITE(*,*) 'NumberOfSolvers = ', CurrentModel % NumberOfSolvers    
        END IF
 
 !       IF ( Initialize == 1 ) EXIT
  
      DO i=1,CurrentModel % NumberOfSolvers
         Solver => CurrentModel % Solvers(i)
-        IF (MyVerbosity >= 1) THEN
-          WRITE(*,*) 'Initialize:ElmerInitialize: Solver % PROCEDURE = ', Solver % PROCEDURE
+        IF (MyVerbosity > 3) THEN
+          WRITE(*,*) 'Solver % PROCEDURE = ', Solver % PROCEDURE
         END IF
         IF ( Solver % PROCEDURE==0 ) CYCLE
         IF ( Solver % SolverExecWhen == SOLVER_EXEC_AHEAD_ALL ) THEN
-           IF (MyVerbosity >= 1) THEN
-             WRITE(*,*) 'Initialize:ElmerInitialize: Calling SolverActivate for Solver', i
+           IF (MyVerbosity > 3) THEN
+             WRITE(*,*) 'Calling SolverActivate for Solver', i
            END IF
            CALL SolverActivate( CurrentModel,Solver,dt,Transient )
         END IF
