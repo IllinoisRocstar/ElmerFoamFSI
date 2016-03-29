@@ -26,7 +26,7 @@ set TmpOut=${OutFile}_tmp.txt
 
 if( -d HronTurekFsi ) then
   echo "removing HronTurekFsi directory"
-  rm -r HronTurekFsi
+  /bin/rm -r HronTurekFsi
 endif
 
 mkdir HronTurekFsi
@@ -88,7 +88,7 @@ endif
 
 if( -d HronTurekFsiIMPACT ) then
   echo "removing HronTurekFsiIMPACT directory"
-  rm -r HronTurekFsiIMPACT
+  /bin/rm -r HronTurekFsiIMPACT
 endif
 
 mkdir HronTurekFsiIMPACT
@@ -132,10 +132,10 @@ if( $STEST != 0 ) then
 else
   printf "1\n" >> ${TmpOut}
   # remove if successful
-  #rm -r HronTurekFsi HronTurekFsiIMPACT
+  #/bin/rm -r HronTurekFsi HronTurekFsiIMPACT
 endif
  
 cat ${TmpOut} >> ${OutFile}
-rm ${TmpOut}
+/bin/rm ${TmpOut}
 
 exit 0

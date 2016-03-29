@@ -55,7 +55,7 @@ include_directories(include ${IRAD_INCPATH} ${IMPACT_INCPATH})
 
 ADD_LIBRARY(ElmerFoamFSI SHARED src/ExampleSourceFile.C)
 TARGET_LINK_LIBRARIES(ElmerFoamFSI ${SOLVERUTILS_LIB} ${IRAD_LIB} ${IMPACT_LIB})
-ADD_EXECUTABLE(elmerfoamfsi_test src/TestElmerFoamFSI.C)
+ADD_EXECUTABLE(elmerfoamfsi_test src/TestElmerFoamFSI.C src/ElmerFoamDriver.C)
 TARGET_LINK_LIBRARIES(elmerfoamfsi_test ElmerFoamFSI)
 ADD_EXECUTABLE(sep src/ExampleSerialProgram.C src/sep.C)
 TARGET_LINK_LIBRARIES(sep ElmerFoamFSI)
