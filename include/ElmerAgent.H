@@ -1,3 +1,6 @@
+#ifndef __ELMER_AGENT_H__
+#define __ELMER_AGENT_H__
+
 
 #include "Orchestrator.H"
 
@@ -89,3 +92,5 @@ private:
   std::vector<double> nodeCoordinates;
   std::vector<double> faceCoordinates;
 };
+
+#endif

@@ -289,7 +289,7 @@ namespace ElmerFoamFSI {
     ///
     /// This function implements the main function executed by the program.
     /// 
-    virtual int Run();
+    int DriverRun();
   };
     
 
@@ -465,7 +465,7 @@ namespace ElmerFoamFSI {
     ///
     /// This function implements the main function executed by the program.
     /// 
-    virtual int Run();
+    int DriverRun();
   };
 #endif    
 
@@ -494,7 +494,7 @@ namespace ElmerFoamFSI {
     }
     if(MyProgram.VerbLevel() > 1)
       MyProgram.StdOut("Calling RUN.\n");
-    if(MyProgram.Run()){
+    if(MyProgram.DriverRun()){
       MyProgram.ErrOut("Error in Program RUN method.\n");
       return(1);
     }
