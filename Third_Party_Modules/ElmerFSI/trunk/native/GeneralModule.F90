@@ -112,7 +112,7 @@
      TYPE(Mesh_t), POINTER :: ExtrudedMesh
 
      INTEGER :: omp_get_max_threads
-     INTEGER :: MyVerbosity = 0
+     INTEGER :: MyVerbosity = 5
 
 
 #ifdef HAVE_TRILINOS
@@ -495,7 +495,6 @@ END INTERFACE
    SUBROUTINE InitCond()
 !------------------------------------------------------------------------------
      USE DefUtils
-     USE TESTOBJECT
      TYPE(Element_t), POINTER :: Edge
      INTEGER :: DOFs,i,j,k,l
      CHARACTER(LEN=MAX_NAME_LEN) :: str
@@ -505,8 +504,6 @@ END INTERFACE
      REAL(KIND=dp) :: Val
      REAL(KIND=dp),ALLOCATABLE :: Work(:)
      TYPE(ValueList_t), POINTER :: IC
-     TYPE(t_global), POINTER :: global
-
 !------------------------------------------------------------------------------
 
      Mesh => CurrentModel % Meshes
@@ -533,10 +530,8 @@ END INTERFACE
            IF( SIZE( Var % Values ) == Var % DOFs ) THEN
              Val = ListGetCReal( IC, Var % Name, GotIt )
              IF( GotIt ) THEN
-               IF(global%verbosity(1) >= 1) THEN
-                 WRITE( Message,'(A,ES12.3)')  'Initializing global variable: > '&
-                     //TRIM(Var % Name)//' < to :',Val
-               END IF
+               WRITE( Message,'(A,ES12.3)') 'Initializing global variable: > '&
+                   //TRIM(Var % Name)//' < to :',Val
                CALL Info('InitCond', Message,Level=8)
                Var % Values = Val
              END IF
@@ -719,8 +714,6 @@ END INTERFACE
 !------------------------------------------------------------------------------
    SUBROUTINE ExecSimulation(TimeIntervals,  CoupledMinIter, &
               CoupledMaxIter, OutputIntervals, Transient, Scanning)
-      USE TESTOBJECT
-      TYPE(t_global), POINTER :: global
       INTEGER :: TimeIntervals,CoupledMinIter, CoupledMaxIter,OutputIntervals(:)
       LOGICAL :: Transient,Scanning
 !------------------------------------------------------------------------------
@@ -750,32 +743,26 @@ END INTERFACE
     CHARACTER(LEN=MAX_NAME_LEN) :: Equation
     INTEGER :: BoundaryElementCount, ElementCount, t, body_id
     INTEGER :: bc_id, nElementNodes, nt, nk
-    INTEGER, POINTER :: NodeIndexes(:), MyPerm(:)
-    !WK 
-    !INTEGER, POINTER :: INDEX(:)
-    !WK
+    INTEGER, POINTER :: Index(:), NodeIndexes(:), MyPerm(:)
     TYPE(Element_t), POINTER :: Element, CurrentElement
     TYPE(Nodes_t) :: ElementNodes
     TYPE(Mesh_t), POINTER :: Mesh
     LOGICAL :: IsFSI
     !End of Jess stuff
 
-
-
-
 !$omp parallel
 !$   IF(.NOT.GaussPointsInitialized()) CALL GaussPointsInit
 !$omp end parallel
 
-    IF ( global%verbosity(1) >= 1 ) WRITE(*,*) 'GeneralModule:ExecSimulation: NumberOfSolvers = ',&
+    IF (MyVerbosity > 3) WRITE(*,*) 'NumberOfSolvers = ',&
                          CurrentModel % NumberOfSolvers    
  
      DO i=1,CurrentModel % NumberOfSolvers
         Solver => CurrentModel % Solvers(i)
         IF ( Solver % PROCEDURE==0 ) CYCLE
         IF ( Solver % SolverExecWhen == SOLVER_EXEC_AHEAD_ALL ) THEN
-           IF (global%verbosity(1) >= 1) WRITE(*,*) &
-                                'GeneralModule:ExecSimulation: Calling SolverActivate for Solver', i
+           IF (MyVerbosity > 3) WRITE(*,*) &
+                                'Calling SolverActivate for Solver', i
            CALL SolverActivate( CurrentModel,Solver,dt,Transient )
         END IF
      END DO
@@ -841,7 +828,7 @@ END INTERFACE
            CALL Info( 'MAIN', '-------------------------------------', Level=3 )
 
            IF ( Transient .OR. Scanning ) THEN
-             IF(global%verbosity(1) >= 1) WRITE( Message, * ) 'Time: ',TRIM(i2s(cum_Timestep)),'/', &
+             WRITE( Message, * ) 'Time: ',TRIM(i2s(cum_Timestep)),'/', &
                    TRIM(i2s(stepcount)), sTime(1)
              CALL Info( 'MAIN', Message, Level=3 )
 
@@ -850,41 +837,29 @@ END INTERFACE
              IF( cum_Timestep > 1 ) THEN
                maxtime = ListGetConstReal( CurrentModel % Simulation,'Real Time Max',GotIt)
                IF( GotIt ) THEN
-                  IF(global%verbosity(1) >=1) THEN
                   WRITE( Message,'(A,F8.3)') 'Fraction of real time left: ',&
                               1.0_dp-RealTime() / maxtime
-                  END IF
                ELSE             
                  timeleft = NINT((stepcount-(cum_Timestep-1))*(newtime-prevtime)/60._dp);
                  IF (timeleft > 120) THEN
-                   IF(global%verbosity(1) >= 1) THEN
-                     WRITE( Message, *) 'Estimated time left: ', &
-                       TRIM(i2s(timeleft/60)),' hours.'
-                   END IF
+                   WRITE( Message, *) 'Estimated time left: ', &
+                     TRIM(i2s(timeleft/60)),' hours.'
                  ELSE IF(timeleft > 60) THEN
-                   IF(global%verbosity(1) >= 1) THEN
-                     WRITE( Message, *) 'Estimated time left: 1 hour ', &
-                       TRIM(i2s(MOD(timeleft,60))), ' minutes.'
-                   ENDIF
+                   WRITE( Message, *) 'Estimated time left: 1 hour ', &
+                     TRIM(i2s(MOD(timeleft,60))), ' minutes.'
                  ELSE IF(timeleft >= 1) THEN
-                   IF(global%verbosity(1) >= 1) THEN
-                     WRITE( Message, *) 'Estimated time left: ', &
-                       TRIM(i2s(timeleft)),' minutes.'
-                   END IF
+                   WRITE( Message, *) 'Estimated time left: ', &
+                     TRIM(i2s(timeleft)),' minutes.'
                  ELSE
-                   IF(global%verbosity(1) >= 1) THEN
-                     WRITE( Message, *) 'Estimated time left: less than a minute.'
-                   END IF
+                   WRITE( Message, *) 'Estimated time left: less than a minute.'
                  END IF
                END IF
                CALL Info( 'MAIN', Message, Level=3 )
              END IF
              prevtime = newtime
            ELSE
-             IF(global%verbosity(1) >= 1) THEN
-               WRITE( Message, * ) 'Steady state iteration: ',cum_Timestep
-             END IF
-            CALL Info( 'MAIN', Message, Level=3 )
+             WRITE( Message, * ) 'Steady state iteration: ',cum_Timestep
+             CALL Info( 'MAIN', Message, Level=3 )
            END IF
 
            CALL Info( 'MAIN', '-------------------------------------', Level=3 )
@@ -902,10 +877,8 @@ END INTERFACE
                         'Adaptive Time Error', GotIt )
  
             IF ( .NOT. GotIt ) THEN 
-               IF(global%verbosity(1) >= 1) THEN
-                 WRITE( Message, * ) 'Adaptive Time Limit must be given for' // &
-                          'adaptive stepping scheme.'
-               END IF
+               WRITE( Message, * ) 'Adaptive Time Limit must be given for' // &
+                        'adaptive stepping scheme.'
                CALL Fatal( 'ElmerSolver', Message )
             END IF
 
@@ -1030,16 +1003,14 @@ END INTERFACE
                   ddt = ddt / 2
                   StepControl = -1
                END IF
-               IF(global%verbosity(1) >= 1) THEN
-                 WRITE(*,'(a,3e20.12)') 'Adaptive(cum,ddt,err): ', cumtime, ddt, maxerr
-               END IF 
-           END DO
+               WRITE(*,'(a,3e20.12)') 'Adaptive(cum,ddt,err): ', cumtime, ddt, maxerr
+            END DO
             sSize(1) = dt
             sTime(1) = s + dt
   
             DEALLOCATE( xx, xxnrm, yynrm, prevxx )
          ELSE ! Adaptive timestepping
-            IF( global%verbosity(1) >= 3) WRITE(*,*) 'Calling SolveEquations &
+            IF( MyVerbosity > 3) WRITE(*,*) 'Calling SolveEquations &
                                  (no transient and no adaptive)'
             CALL SolveEquations( CurrentModel, dt, Transient, &
               CoupledMinIter, CoupledMaxIter, SteadyStateReached, RealTimestep )
@@ -1151,8 +1122,6 @@ END INTERFACE
 !------------------------------------------------------------------------------
   SUBROUTINE SaveCurrent( CurrentStep )
 !------------------------------------------------------------------------------
-    USE TESTOBJECT
-    TYPE(t_global), POINTER :: global
     INTEGER :: i, j,k,l,n,q,CurrentStep,nlen
     TYPE(Variable_t), POINTER :: Var
     LOGICAL :: EigAnal, GotIt
@@ -1168,9 +1137,7 @@ END INTERFACE
           IF ( OutputFile(i:i) == ' ' ) EXIT
         END DO
         OutputFile(i:i) = '.'
-        IF(global%verbosity(1) >= 1) THEN
-          WRITE( OutputFile(i+1:), '(a)' ) TRIM(i2s(ParEnv % MyPE))
-        END IF
+        WRITE( OutputFile(i+1:), '(a)' ) TRIM(i2s(ParEnv % MyPE))
       END IF
       
       BinaryOutput = ListGetLogical( CurrentModel % Simulation,'Binary Output',GotIt )
@@ -1267,8 +1234,6 @@ END INTERFACE
 !------------------------------------------------------------------------------
   SUBROUTINE SaveToPost(CurrentStep)
 !------------------------------------------------------------------------------
-    USE TESTOBJECT
-    TYPE(t_global), POINTER :: global
     TYPE(Variable_t), POINTER :: Var
     LOGICAL :: EigAnal = .FALSE., Found
     INTEGER :: i, j,k,l,n,q,CurrentStep,nlen,timesteps,SavedEigenValues
@@ -1283,9 +1248,7 @@ END INTERFACE
           IF ( OutputFile(i:i) == ' ' ) EXIT
         END DO
         OutputFile(i:i) = '.'
-        IF(global%verbosity(1) >= 1) THEN
-          WRITE( OutputFile(i+1:), '(a)' ) TRIM(i2s(ParEnv % MyPE))
-        END IF
+        WRITE( OutputFile(i+1:), '(a)' ) TRIM(i2s(ParEnv % MyPE))
       END IF
     END IF
     
@@ -1297,9 +1260,7 @@ END INTERFACE
         IF ( PostFile(i:i) == ' ' ) EXIT
       END DO
       PostFile(i:i) = '.'
-      IF(global%verbosity(1) >= 1) THEN
-        WRITE( PostFile(i+1:), '(a)' ) TRIM(i2s(ParEnv % MyPE))
-      END IF
+      WRITE( PostFile(i+1:), '(a)' ) TRIM(i2s(ParEnv % MyPE))
     END IF
 
     ! Loop over all meshes
@@ -1849,9 +1810,7 @@ END INTERFACE
       Name = ListGetString( Model % Solvers(s) % Values, 'Mesh', GotIt )
 
       IF( GotIt ) THEN
-        IF(global%verbosity(1) >= 1) THEN
-          WRITE(Message,'(A,I0)') 'Loading solver specific mesh > '//TRIM(Name)// ' < for solver ',s
-        END IF
+        WRITE(Message,'(A,I0)') 'Loading solver specific mesh > '//TRIM(Name)// ' < for solver ',s
         CALL Info('ElmerLoadModel',Message,Level=7)
 
         single=.FALSE.

@@ -1,5 +1,8 @@
+#ifndef __OPEN_FOAM_AGENT_H__
+#define __OPEN_FOAM_AGENT_H__
 
 #include "Orchestrator.H"
+#include "InterfaceLayer.H"
 
 class openfoamagent : public impact::orchestrator::agentbase, public SolverUtils::FEM::SolverAgent {
 public:
@@ -65,3 +68,5 @@ private:
   std::vector<double> nodeCoordinates;
   std::vector<double> faceCoordinates;
 };
+
+#endif

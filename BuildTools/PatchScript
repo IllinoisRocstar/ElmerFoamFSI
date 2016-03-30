@@ -8,6 +8,7 @@ topSourceDir=$1
 installDir="$topSourceDir/support_install"
 
 # Patch Openfoam build files
+
 cd foam/foam-extend-3.2/ThirdParty/rpmBuild/SPECS/
 cp $topSourceDir/Third_Party_Modules/OpenFoamFSI/trunk/SPECSPatch .
 if [ $? -ne 0 ]; then status=1; fi
