@@ -42,6 +42,9 @@ namespace ElmerFoamFSI{
   ///           -n,--name <TestName>
   ///              Run test by name. (no default)
   ///
+  ///           -s,--source <pathname>
+  ///              Set the testing source directory. (no default)
+
   int Test(int argc,char *argv[])
   {
     // The default verbosity is 0
@@ -83,8 +86,9 @@ namespace ElmerFoamFSI{
     std::string TestName(comline.GetOption("name"));
     std::string ListName(comline.GetOption("list"));
     std::string sverb(comline.GetOption("verblevel"));
-    
-    // The following block parses and sets the verbosity level
+    std::string SourcePath(comline.GetOption("source"));
+
+   // The following block parses and sets the verbosity level
     if(!sverb.empty()){
       verblevel = 1;
       if(sverb != ".true."){
@@ -113,6 +117,11 @@ namespace ElmerFoamFSI{
     ElmerFoamFSI::TestingObject<ElmerFoamFSI::TestResults> test;
     // Make an instance of the ElmerFoamFSI results object, ElmerFoamFSI::TestResults
     ElmerFoamFSI::TestResults results;
+    
+    //Set the source directory for the testing object if it was input 
+    if(!SourcePath.empty()){
+      test.SetSourceDirPath(SourcePath);
+    }
     
     // If the user specified a name, then run only the named test
     if(!TestName.empty()){

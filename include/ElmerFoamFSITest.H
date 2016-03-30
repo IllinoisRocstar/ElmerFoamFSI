@@ -20,11 +20,11 @@
 #include <vector>
 #include <cmath>
 #include "Driver.H"
-#include "Parameters.H"
-#include "InterfaceLayer.H"
-#include "Orchestrator.H"
-#include "OpenFoamAgent.H"
-#include "ElmerAgent.H"
+//#include "Parameters.H"
+//#include "InterfaceLayer.H"
+//#include "Orchestrator.H"
+//#include "OpenFoamAgent.H"
+//#include "ElmerAgent.H"
 
 // Loading native modules
 COM_EXTERN_MODULE(OpenFoamFSI);
@@ -94,6 +94,9 @@ namespace ElmerFoamFSI {
     /// A set of values for testing quadrature methods.
     /// 
     std::vector<int> N;
+    //WK Start
+    std::string SourceDirPath;
+    //WK End
   public:
     /// 
     /// Default constructor.
@@ -385,6 +388,251 @@ namespace ElmerFoamFSI {
     }
     // MS: End
 
+
+    // WK : Start 
+    // Test if Elmer can load properly, and its functions handles can be accessed
+    virtual void Test__ElmerHandlesCheck(ResultsType & result){
+      bool works, loadWorks, globWorks, initWorks, runWorks, finWorks, unloadWorks = false;
+
+      std::cout << "Running Test__ElmerHandlesCheck" << std::endl;
+    
+      //Loading Elmer Module
+      std::cout << "Loading Elmer Module" << std::endl;
+      COM_LOAD_MODULE_STATIC_DYNAMIC(ElmerCSC,"ElmerModule");
+
+      //Checking Elmer Module is indeed loaded.
+      int ElmerHandle = COM_get_window_handle("ElmerModule");
+      if(ElmerHandle <=0){
+        std::cout << "After loading, COM_get_window_handle(\"ElmerModule\") returns "
+                  << ElmerHandle << std::endl;
+        std::cout << "Error : Could not get window handle." << std::endl;
+      }
+      else{
+        loadWorks = true;
+        std::cout << "Elmer Module Loaded." << std::endl;
+      }
+
+      //Checking the registration of global data.
+      int globHandle = COM_get_dataitem_handle("ElmerModule.global");
+      if(globHandle <= 0){
+        std::cout << "After loading, COM_get_dataitem_handle(\"ElmerModule.global\") returns "
+                  << globHandle << std::endl;
+        std::cout << "Error : Could not get the data item handle." << std::endl;
+      }
+      else{
+        globWorks = true;
+        std::cout << "Global data handle accessed." << std::endl;
+      }
+      
+      //Checking the ElmerModule function Initialize handle
+      int initHandle = COM_get_function_handle("ElmerModule.Initialize");
+      if(initHandle <= 0){
+        std::cout << "After loading, COM_get_function_handle(\"ElmerModule.Initialize\") returns "
+                  << initHandle << std::endl;
+        std::cout << "Error : Could not get the Initialize function handle." << std::endl;
+      }
+      else{
+        initWorks = true;
+        std::cout << "Initialize function handle accessed." << std::endl;
+      }
+
+      //Checking the ElmerModule function Run handle
+      int runHandle = COM_get_function_handle("ElmerModule.Run");
+      if(runHandle <= 0){
+        std::cout << "After loading, COM_get_function_handle(\"ElmerModule.Run\") returns "
+                  << runHandle << std::endl;
+        std::cout << "Error : Could not get the Run function handle." << std::endl;
+      }
+      else{
+        runWorks = true;
+        std::cout << "Run function handle accessed." << std::endl;
+      }
+
+      //Checking the ElmerModule function Finalize handle
+      int finHandle = COM_get_function_handle("ElmerModule.Finalize");
+      if(finHandle <= 0){
+        std::cout << "After loading, COM_get_function_handle(\"ElmerModule.Finalize\") returns "
+                  << finHandle << std::endl;
+        std::cout << "Error : Could not get the Finalize function handle." << std::endl;
+      }
+      else{
+        finWorks = true;
+        std::cout << "Finalize function handle accessed." << std::endl;
+      }
+
+      //Unloading Elmer Module
+      std::cout << "Unloading Elmer Module" << std::endl;
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC(ElmerCSC, "ElmerModule");
+      
+      //Checking Elmer Module is indeed unloaded.
+      ElmerHandle = COM_get_window_handle("ElmerModule");
+      if(ElmerHandle > 0){
+        std::cout << "After unloading, COM_get_window_handle(\"ElmerModule\") returns "
+                  << ElmerHandle << std::endl;
+        std::cout << "Error : Module was not properly unloaded." << std::endl;
+      }
+      else{
+        unloadWorks = true;
+        std::cout << "ElmerModule Unloaded." << std::endl;
+      } 
+      
+      if(loadWorks & globWorks & initWorks & runWorks & finWorks & unloadWorks) works = true;
+      result.UpdateResult("ElmerHandlesCheck:Works",works);
+    }
+        
+    /// Sets the string value of the testing source directory
+    ///
+    void SetSourceDirPath(std::string input){
+      SourceDirPath = input;
+    }   
+
+
+    //Copied from ElmerDriver testing script
+    virtual int GetInputData(std::string suffix,std::string TestDir){
+
+      std::cout << "In GetInputData" << std::endl;
+      std::string DirName;
+      std::string OrgDir;
+
+      //Save original working directory for later
+      OrgDir = IRAD::Sys::CWD();
+
+      //Create full path for test input data directory
+      DirName = SourceDirPath + suffix;
+
+      //Check if data directory exists
+      if(!IRAD::Sys::FILEEXISTS(DirName)){
+        std::cout << "GetInputData Error: Could not find data directory, "
+                  << DirName << ". Exiting (fail)." << std::endl;
+        return -1;
+      }
+
+      std::ifstream Inf;
+      std::ofstream Ouf;
+      std::string InFileName;
+      std::string OutFileName;
+      int IntDir;
+
+      //Create TestDir directory in current directory (if it doesn't
+      //already exist) to run our tests in.
+      if(!IRAD::Sys::FILEEXISTS(TestDir)){
+        IntDir = IRAD::Sys::CreateDirectory(TestDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not make directory, "
+                    << TestDir << ". Exiting (fail)." << std::endl;
+          return -1;
+        }
+      }
+
+      //Open the input test data directory
+      IRAD::Sys::Directory SourceDir(DirName);
+     
+      //Change directories to TestDir directory for running 
+      IntDir = IRAD::Sys::ChDir(TestDir);
+      if(IntDir == -1){
+        std::cout << "GetInputData Error: Could not change directories to "
+                  << TestDir << ". Exiting (fail)." << std::endl;
+        return -1;
+      }
+
+      //Copy input data to TestDir directory for running 
+      for(std::vector<std::string>::iterator it = SourceDir.begin();
+          it != SourceDir.end(); ++it){ 
+        InFileName = DirName + "/" + *it;
+
+        // WK recursively copying the directory as well
+        bool isDir = IRAD::Sys::ISDIR(InFileName.c_str());
+        if( isDir ){
+          std::string dirSuffix = suffix + "/"  + *it;
+          std::string dirTestDir = TestDir + "/" + *it;
+          IntDir  = GetInputData(dirSuffix, dirTestDir);
+          
+          //checking If recursive GetInputData exited correctly
+          if(IntDir != 0){
+            std::cout << "GetInput failed at the recursive level"
+                      << std::endl;
+            return -1;
+          }
+        }
+
+        Inf.open(InFileName.c_str());
+        OutFileName = IRAD::Sys::CWD() + "/" + *it;
+        Ouf.open(OutFileName.c_str());
+        Ouf << Inf.rdbuf();
+        Ouf.close();
+        Inf.close();
+      }    
+
+      //Change directories to back to original directory 
+      IntDir = IRAD::Sys::ChDir(OrgDir);
+      if(IntDir == -1){
+        std::cout << "GetInputData Error: Could not change directories to "
+                  << OrgDir << ". Exiting (fail)." << std::endl;
+        return -1;
+      }
+
+      return 0;
+    }
+
+    // Helper function
+    virtual bool __helper(){
+ 
+      int IntDir;
+      std::string OrgDir, TestDir;     
+
+      //call GetInputData to copy input test data to temp directory for running tests.
+      std::string suffix = "/share/Testing/test_data/SimpleStatic";
+  
+      //Make path for directory to run the test in
+      TestDir = IRAD::Sys::CWD() + "/SimpleStatic";
+      IntDir  = GetInputData(suffix, TestDir);
+  
+      //check if GetInputData exited correctly.
+      if(IntDir != 0){
+        std::cout << "GetInputData failed!"
+                  << std::endl;
+        return false;
+      }
+      // Check if TestDir directory exists in current Directory
+      if(!IRAD::Sys::FILEEXISTS(TestDir)){
+        std::cout << "Could not find directory, "
+                  << TestDir << ", for running tests." << std::endl;
+        return false;
+      }
+      return true;     
+    }  
+    //testing the get input?
+    virtual void Test__GetInput(ResultsType &result){
+      bool works =__helper();
+      result.UpdateResult("GetInput:Works",works);
+      
+    }
+      
+    void Test__ReadInputWorks(ResultsType &result){
+
+      int argc = 2;
+      char ** argv;
+      argv = new char*[3];
+      argv[0] = const_cast<char *>("elmerfoamfsi_test");
+      argv[1] = const_cast<char *>("test.config");
+      argv[2] = NULL;
+      std::cout << "Do I even get here? " << std::endl;       
+      ElmerFoamFSI::SerialDriverProgram MyProgram(argc,argv);
+      std::cout << "Do I even get here? 2" << std::endl;       
+      
+      int retval = MyProgram.Initialize();
+      if(retval){
+        MyProgram.ErrOut("Error in Prram initialization. \n");
+      }
+      std::cout << "Before Reading Input ! " << std::endl;       
+      MyProgram.ReadInput();
+      std::cout << "After  Reading Input ! " << std::endl;
+      int works = 0;
+      //result.UpdateResult("ReadInputWorks", works);
+    }
+
+    // WK : End
+
     ///
     /// Runs all tests implemented by the ElmerFoamFSI::TestingObject.
     ///
@@ -402,6 +650,11 @@ namespace ElmerFoamFSI {
 	      Test__ElmerModuleLoad(result);
       Test__OFModuleLoad(result);
       // MS: End
+      // WK: Start
+      Test__ElmerHandlesCheck(result);
+      //Test__GetInput(result);
+      Test__ReadInputWorks(result);
+      // WK: End
       Epilogue();
     }
     
@@ -429,7 +682,15 @@ namespace ElmerFoamFSI {
         Test__ElmerModuleLoad(result);
       else if(name == "OpenFoamModuleLoad")
         Test__OFModuleLoad(result);
-      // ME: End
+      // MS: End
+      // WK: Start
+      else if(name == "ElmerHandlesCheck")
+        Test__ElmerHandlesCheck(result);
+      //else if(name == "GetInput")
+      //  Test__GetInput(result);
+      else if(name == "ReadInputWorks")
+        Test__ReadInputWorks(result);
+      // WK: End
       Epilogue();
     }
 

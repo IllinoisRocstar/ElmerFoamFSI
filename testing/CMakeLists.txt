@@ -70,7 +70,7 @@ ADD_TEST(UnloadElmerModule:Works ${TESTRESULT} UnloadElmerModule:Works elmerfoam
 ADD_TEST(LoadOpenFoamModule:Works ${TESTRESULT} LoadOpenFoamModule:Works elmerfoamfsi_testresults.txt)
 ADD_TEST(UnloadOpenFoamModule:Works ${TESTRESULT} UnloadOpenFoamModule:Works elmerfoamfsi_testresults.txt)
 ADD_TEST(RegressionTestHTFSI3:Works ${TESTRESULT} Hron-Turek-FSI3 elmerfoamfsi_testresults.txt)
-
+ADD_TEST(ElmerHandlesCheck:Works ${TESTRESULT} ElmerHandlesCheck:Works elmerfoamfsi_testresults.txt)
 
 IF(MPI_CXX_COMPILER)
 
