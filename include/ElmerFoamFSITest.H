@@ -19,7 +19,7 @@
 #include "Profiler.H"
 #include <vector>
 #include <cmath>
-//#include "Driver.H"
+#include "Driver.H"
 //#include "Parameters.H"
 //#include "InterfaceLayer.H"
 //#include "Orchestrator.H"
