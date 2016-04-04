@@ -22,7 +22,14 @@ public:
     }
     componentFunctionHandles[RUN] = fluidsStepHandle;
     
+    //WK
+    std::cout << "am I here?" << std::endl;
+    //WK   
     WriteOut("Calling OpenFOAM Initialization.\n");
+
+    //WK
+    std::cout << "am I here? 2" << std::endl;
+    //WK   
     int argc_dupe = 1;
     char *argv[2];
     argv[0] = const_cast<char *>("test");
@@ -30,6 +37,9 @@ public:
     int verbIn = verblevel;
     COM_call_function(componentFunctionHandles[INIT],&argc_dupe,argv,&verbIn);
 
+    //WK
+    std::cout << "am I here? 3" << std::endl;
+    //WK   
     std::vector<int> paneIDs;
     COM_get_panes(interfaceName.c_str(),paneIDs);
     if(!paneIDs.empty())

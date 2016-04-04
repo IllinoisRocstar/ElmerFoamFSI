@@ -20,12 +20,11 @@
 #include <vector>
 #include <cmath>
 #include "Driver.H"
-//#include "Parameters.H"
 //#include "InterfaceLayer.H"
 //#include "Orchestrator.H"
 //#include "OpenFoamAgent.H"
 //#include "ElmerAgent.H"
-
+#include "FsiCoupling.H"
 // Loading native modules
 COM_EXTERN_MODULE(OpenFoamFSI);
 COM_EXTERN_MODULE(ElmerCSC);
@@ -80,6 +79,9 @@ namespace ElmerFoamFSI {
   template<typename ResultsType>
   class TestingObject : public IRAD::Util::TestingObject<ResultsType>
   {
+    typedef std::string                 StackType;
+    typedef IRAD::Profiler::ProfilerObj ProfilerType;
+    typedef IRAD::Global::GlobalObj<StackType,int,ProfilerType> TestGlobalType;
     typedef IRAD::Util::TestingObject<ResultsType> TestingObjectBaseType;
   protected:
     // Example test fixtures for ElmerFoamFSI testing.
@@ -97,6 +99,7 @@ namespace ElmerFoamFSI {
     //WK Start
     std::string SourceDirPath;
     //WK End
+    TestGlobalType global;
   public:
     /// 
     /// Default constructor.
@@ -581,7 +584,7 @@ namespace ElmerFoamFSI {
       std::string OrgDir, TestDir;     
 
       //call GetInputData to copy input test data to temp directory for running tests.
-      std::string suffix = "/share/Testing/test_data/SimpleStatic";
+      std::string suffix = "testing/share/Testing/test_data/SimpleStatic";
   
       //Make path for directory to run the test in
       TestDir = IRAD::Sys::CWD() + "/SimpleStatic";
@@ -608,7 +611,7 @@ namespace ElmerFoamFSI {
       
     }
       
-    void Test__ReadInputWorks(ResultsType &result){
+/*    void Test__ReadInputWorks(ResultsType &result){
 
       int argc = 2;
       char ** argv;
@@ -630,7 +633,101 @@ namespace ElmerFoamFSI {
       int works = 0;
       //result.UpdateResult("ReadInputWorks", works);
     }
+*/
 
+    virtual void Test__fsiCoupler(ResultsType &result){
+     
+      double time_final = 0.05;
+      double timestep = 2.0e-3;
+      int verblevel = 3;
+      bool works = true;
+      int IntDir;
+
+      bool work =__helper();
+      std::string fluidDir;
+      std::string simStaticDir;
+      fluidDir = IRAD::Sys::CWD() + "/SimpleStatic/fluid";
+      simStaticDir = IRAD::Sys::CWD() + "/SimpleStatic";
+      if(!(IRAD::Sys::FILEEXISTS(fluidDir)||(IRAD::Sys::FILEEXISTS(simStaticDir)))){
+        std::cout << "SimpleStatic / fluid Folders do not exists!" << std::endl;
+        works = false;           
+        result.UpdateResult("fsiCoupler:Works",works);
+        return; 
+      }
+      else{
+        IntDir = IRAD::Sys::ChDir(simStaticDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          works = false;
+          result.UpdateResult("fsiCoupler:Works",works);
+        }
+        std::system("chmod 755 Allclean Allrun AllrunPar makeLinks makeSerialLinks removeSerialLinks"); 
+        std::system("./Allclean");
+        std::system("./Allrun");
+        IntDir = IRAD::Sys::ChDir(fluidDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          works = false;
+          result.UpdateResult("fsiCoupler:Works",works);
+        }
+      }
+      
+ 
+      fsicoupling fsiCoupler(global); 
+ 
+      
+      std::string fluidSolverName("OpenFoamFSI");
+      std::string solidSolverName("ElmerCSC");
+      std::string transferServiceName("SurfX");
+      std::string runMode("1");
+
+
+      std::cout << "COM loading all this junks" << std::endl;
+      COM_load_module(fluidSolverName.c_str(),"FluidsComponentInterface");
+      COM_load_module(solidSolverName.c_str(),"StructuresComponentInterface");
+      COM_load_module("SurfUtil","SurfUtil");
+      COM_load_module("Simpal","Simpal");
+
+     
+      std::vector<std::string> componentInterfaceNames;
+      componentInterfaceNames.push_back("FluidsComponentInterface");
+      componentInterfaceNames.push_back("StructuresComponentInterface");
+      componentInterfaceNames.push_back("TransferInterface");
+      componentInterfaceNames.push_back("SurfUtil");
+      componentInterfaceNames.push_back("Simpal");
+ 
+      std::cout << "before SetRunMode and SetVerbLevel" << std::endl;
+      fsiCoupler.SetRunMode(runMode);
+      std::cout << "after  SetRunMode and before SetVerbLevel" << std::endl;
+      fsiCoupler.SetVerbLevel(verblevel);
+      
+      std::cout << "before Initialize" << std::endl;
+      fsiCoupler.Initialize(componentInterfaceNames, time_final, timestep);  
+      std::cout << "Initialize done?" << std::endl;
+      
+      std::vector<std::string> classInterfaceNames;
+      classInterfaceNames =  fsiCoupler.getVariable();
+      int i = 0;
+      
+      for(int i = 0; i < componentInterfaceNames.size(); i++){
+        if(componentInterfaceNames.at(i) != classInterfaceNames.at(i)){
+          works = false;
+          break;
+        }
+      }
+//      while (i < componentInterfaceNames.size()){
+//           if (componentInterfaceNames.at(i) != classInterfaceNames.at(i)){
+//                works = false;
+//                break;
+//           }
+//           i++;  
+//      }
+
+      result.UpdateResult("fsiCoupler:Works",works);
+      
+    }
     // WK : End
 
     ///
@@ -652,8 +749,9 @@ namespace ElmerFoamFSI {
       // MS: End
       // WK: Start
       Test__ElmerHandlesCheck(result);
-      //Test__GetInput(result);
-      Test__ReadInputWorks(result);
+      Test__GetInput(result);
+      //Test__ReadInputWorks(result);
+      Test__fsiCoupler(result);
       // WK: End
       Epilogue();
     }
@@ -686,10 +784,12 @@ namespace ElmerFoamFSI {
       // WK: Start
       else if(name == "ElmerHandlesCheck")
         Test__ElmerHandlesCheck(result);
-      //else if(name == "GetInput")
-      //  Test__GetInput(result);
-      else if(name == "ReadInputWorks")
-        Test__ReadInputWorks(result);
+      else if(name == "GetInput")
+        Test__GetInput(result);
+      //else if(name == "ReadInputWorks")
+      //  Test__ReadInputWorks(result);
+      else if(name == "fsiCoupler")
+        Test__fsiCoupler(result);
       // WK: End
       Epilogue();
     }

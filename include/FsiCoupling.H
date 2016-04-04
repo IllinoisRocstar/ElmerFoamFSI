@@ -496,7 +496,9 @@ public:
     
     if(componentInterfaceNames.size() < 2)
       return(1);
-    
+    //WK
+    std::cout << "am I here?" << std::endl;
+    //WK   
     fluidsInterfaceName     = componentInterfaceNames[0];
     structuresInterfaceName = componentInterfaceNames[1];
     transferInterfaceName   = componentInterfaceNames[2];
@@ -507,14 +509,24 @@ public:
     structuresAgent = new solidagent;
     transferAgent   = new transferagent(transferInterfaceName);
     
+    //WK
+    std::cout << "runmode = " << runMode << std::endl;
+    std::cout << "am I here? 2" << std::endl;
+    //WK   
     // Initialize the fluids module
     if(runMode != 2)
       fluidsAgent->Initialize(fluidsInterfaceName, verblevel);
 
+    //WK
+    std::cout << "am I here? 3" << std::endl;
+    //WK   
     // Initialize the structures module
     if(runMode != 1)
       structuresAgent->Initialize(structuresInterfaceName, verblevel);
 
+    //WK
+    std::cout << "am I here? 4" << std::endl;
+    //WK   
     // Initialize the transfer module's common refinement
     if(runMode == 0) {
       transferAgent->Overlay(structuresInterfaceName,fluidsInterfaceName);
@@ -673,7 +685,20 @@ public:
     // Anything I need to do to finalize myself
     return(0);
   }
-      
+  
+
+  //WK NS
+  /// Helper function that allows access to protected data members.
+  std::vector<std::string> getVariable(){
+    std::vector<std::string> varVector;
+    varVector.push_back(this->fluidsInterfaceName);
+    varVector.push_back(this->structuresInterfaceName);
+    varVector.push_back(this->transferInterfaceName);
+    varVector.push_back(this->surfUtilInterfaceName);
+    varVector.push_back(this->simpalInterfaceName);
+    return varVector;
+  }
+  //WK NS    
 };
 
 #endif

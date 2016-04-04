@@ -1,0 +1,38 @@
+///
+/// @page simplestatic Simple Static Problem
+///
+/// Hello I am going to talk about simple statc problem here once that doc building is over!
+///
+/// Application of Newman's P2D model in ICED is similar to those discussed
+/// elsewhere and is summarized here for convenience \cite Doyle:1993. Transport 
+/// in the separator is modeled with concentrated solution theory
+/// and assumes a binary electrolyte in a single-phase solvent. Transport
+/// through the composite electrodes is modeled using porous electrode theory
+/// where the electrodes and active material are treated as a superimposed continua,
+/// one representing the solution and another representing the matrix.
+///
+/// @section iced_governing_equations Governing Equations
+
+/// Composite electrodes are composed of porous matrices of a single reactive 
+/// electronic conductor (or mixtures of solids) that include both non-conductive 
+/// reactive materials in addition to the electronic conductors. In this 
+/// macroscopic treatment, the actual geometric details of the pores are 
+/// disregarded. Then, a potential is defined both in the solid, conducting 
+/// material, \f$\phi_s\f$, and in the pore-filling electrolyte, \f$\phi_e\f$. The 
+/// concentration of lithium ions in the two phases is similarly defined 
+/// as \f$c_s\f$ or \f$c_e\f$, representing either the solid or electrolyte phase, 
+/// respectively. The volume fraction of the electrolyte phase is represented 
+/// as \f$\epsilon\f$. This leads to the first equation, the time-dependent 
+/// diffusion of lithium ions in the electrolyte. 
+
+/// \f[ \epsilon \frac{\partial c}{\partial t} = \nabla\cdot\left(\epsilon D\nabla c\right)-\left[
+/// \kappa\nabla\phi_e + \kappa_D \nabla\ln c \right]  \cdot\frac{\nabla t^0}{z\nu{\cal F}}
+/// +\frac{aj_{n}(1-t^0)}{\nu} \f]
+
+\f[ \kappa_D = \frac{\kappa{\cal R}T}{{\cal F}} \left(1+\frac{\partial 
+\ln f_{\pm}}{\partial \ln c}\right) \left(\frac{s}{n\nu}+\frac{t^0}{z\nu}\right)\f]
+
+The ion diffusion equation is dependent on three transport properties that may be functions of the ion concentration.
+\li <b>ionic conductivity (\f$ \kappa \f$) </b> Measure of a solution's ability to conduct electricity
+\li <b>diffusion coefficient (\f$ D \f$) </b> Measure of how quickly an ion moves through solution
+\li <b>transference number (\f$ t^0 \f$) </b> Fraction of current carried by an ion in a solution (of uniform composition)

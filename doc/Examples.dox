@@ -1,0 +1,8 @@
+///
+/// @page examples Setting up Example Problems
+///
+///
+/// There are multiple example problems that our ElmerFoamFSI toolchain can demonstrate. \n
+/// 
+/// Here are the direction for @subpage simplestatic. \n
+/// Here are the direction for @subpage simpledynamic. \n
