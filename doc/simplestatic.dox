@@ -1,38 +1,29 @@
 ///
 /// @page simplestatic Simple Static Problem
 ///
-/// Hello I am going to talk about simple statc problem here once that doc building is over!
+/// 
+/// @section description Problem Description 
 ///
-/// Application of Newman's P2D model in ICED is similar to those discussed
-/// elsewhere and is summarized here for convenience \cite Doyle:1993. Transport 
-/// in the separator is modeled with concentrated solution theory
-/// and assumes a binary electrolyte in a single-phase solvent. Transport
-/// through the composite electrodes is modeled using porous electrode theory
-/// where the electrodes and active material are treated as a superimposed continua,
-/// one representing the solution and another representing the matrix.
+///The first simple verification problem selected for the ElmerFoamFSI suite is a static case of a viscous fluid applying uniform pressure to a beam. The fluid domain is square with uniform pressure, no fluid velocity, and no motion on the side and top walls. The bottom wall consists of a solid beam, attached on one side but free to move in the y-direction elsewhere. Since there is no fluid velocity the only contributing factor affecting the beam’s displacement is due to the pressure from the fluid with no traction. Therefore, this first problem verifies the pressure component of the total force being applied to the beam, ensuring that this piece of the coupling of the fluid and solid applications is correct. Figure 1 shows the geometry of the problem.
 ///
-/// @section iced_governing_equations Governing Equations
+/// ![Figure 1. Domain and boundary conditions for simple static verification problem](simplestaticgeo.png)
+///
+///The dimensions of the domain are L = 1.0 m, hs = 0.1 m, and hf = 1.0 m. The out-of-plane dimension is selected to be 0.1 m for both domains, arbitrarily. The velocity is initialized to 0.0 m/s throughout the fluid domain and the pressure given a uniform value of 1.0 Pa.
+///
+///
+/// @section runningsimple Running Simple Static Problem
+///
+/// In order to execute the simple static verification problem with ElmerFoamFSI, Elmer input and ElmerFoamFSI input file should be copied to the ./fluid. folder of the OpenFOAM input hierachy. Following directions are steps to take to run a problem :
+/// * Obtain input_data files of SimpleStatic problem.
+/// * Create a folder and copy Allclean, Allrun (scripts), /fluid/ and /solid/ folders into this folder, make sure to copy all sub-folders as well.
+/// > Make sure your folder has following files: Allclean, Allrun, AllrunPar, makeLinks, makeSerialLinks, removeSerialLinks (scripts so far), fluid(folder), solid(folder)
+/// * Copy elmer SIF, GRD and ELMERSOLVER_STARTINFO files to /fluid/.
+/// * Run ./Allclean and ./Allrun to clean-up and prepare input files for the OpenFOAM.
+/// * Go to ./fluid/ and type ElmerGrid 1 2 name where "name" should be replaced with the name of the GRD file for Elmer.
+/// * Run ElmerFoamFSI the FSI simulation by "elmerformfsi name" where name should be re-placed with the name of ElmerFoamFSI input file.
+/// > ./path/to/elmerfoamfsi/elmerfoamfsi test.config
+///
+/// As a result of simulation, you will obtain VTK,VTU outputs along with many log files. Output files can be further post processed by using tools such as Paraview.
 
-/// Composite electrodes are composed of porous matrices of a single reactive 
-/// electronic conductor (or mixtures of solids) that include both non-conductive 
-/// reactive materials in addition to the electronic conductors. In this 
-/// macroscopic treatment, the actual geometric details of the pores are 
-/// disregarded. Then, a potential is defined both in the solid, conducting 
-/// material, \f$\phi_s\f$, and in the pore-filling electrolyte, \f$\phi_e\f$. The 
-/// concentration of lithium ions in the two phases is similarly defined 
-/// as \f$c_s\f$ or \f$c_e\f$, representing either the solid or electrolyte phase, 
-/// respectively. The volume fraction of the electrolyte phase is represented 
-/// as \f$\epsilon\f$. This leads to the first equation, the time-dependent 
-/// diffusion of lithium ions in the electrolyte. 
 
-/// \f[ \epsilon \frac{\partial c}{\partial t} = \nabla\cdot\left(\epsilon D\nabla c\right)-\left[
-/// \kappa\nabla\phi_e + \kappa_D \nabla\ln c \right]  \cdot\frac{\nabla t^0}{z\nu{\cal F}}
-/// +\frac{aj_{n}(1-t^0)}{\nu} \f]
 
-\f[ \kappa_D = \frac{\kappa{\cal R}T}{{\cal F}} \left(1+\frac{\partial 
-\ln f_{\pm}}{\partial \ln c}\right) \left(\frac{s}{n\nu}+\frac{t^0}{z\nu}\right)\f]
-
-The ion diffusion equation is dependent on three transport properties that may be functions of the ion concentration.
-\li <b>ionic conductivity (\f$ \kappa \f$) </b> Measure of a solution's ability to conduct electricity
-\li <b>diffusion coefficient (\f$ D \f$) </b> Measure of how quickly an ion moves through solution
-\li <b>transference number (\f$ t^0 \f$) </b> Fraction of current carried by an ion in a solution (of uniform composition)

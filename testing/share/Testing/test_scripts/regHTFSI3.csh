@@ -68,7 +68,7 @@ printf "${TestName}=" >> ${TmpOut}
 printf "$result\n" >> ${TmpOut}
 cat ${TmpOut} >> ../${OutFile}
 cd ..
-rm -r ${InputDir}
+#rm -r ${InputDir}
 
 exit 0
 

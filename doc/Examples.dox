@@ -1,8 +1,58 @@
 ///
 /// @page examples Setting up Example Problems
 ///
+/// This page will talk about how to set up example problems in ElmerFoamFSI to solve fluid-structure interaction(FSI) phenomenon. ElmerFoamFSI uses a partitioned approach to solve FSI problems. OpenFoam is used as the fluid solver and Elmer is used as a structural sovler. Although ElmerFoamFSI can use both weak and strong coupling approaches, only weak-coupling algoritm is implemented into ElmerFoam FSI. 
 ///
-/// There are multiple example problems that our ElmerFoamFSI toolchain can demonstrate. \n
+/// @section what_sets_what Elmer/OpenFOAM Input - What sets what
+///
+/// @subsection elmer_input Elmer Input
+///
+/// Elmer is an extensive open-source finite element multiphysics code. It can be used to find deformation of a solid object (U) subject to different types of loads. ElmerFoamFSI uses Elmer as its structural solver. The description of a finite element problem usually starts with input files. The full description of the problem, including : geometry, materials boundaries conditions, type of equations to solve, etc. is usually provided in the input file(s).
 /// 
+/// The description of the geometry of the problem in Elmer is provided in a ".grd" file, and the rest of the definitions is described in a ".sif" file. If the ELMERSOLVER_STARTINFO is used, upon execution Elmer scans this file to figure out which input file should be read. Elmer uses a program called ElmerGrid to read the ".grd" file and compile the geometry description to a format useful for its internal usuage.
+///
+/// ![Sample .grd input file](grdsample.png)
+///
+/// A proper description of problem mesh requires a good level of understanding of finite element method, thus it is beyond the purpose of this page. For more information about ElmerGrid, look <a href="http://www.nic.funet.fi/pub/sci/physics/elmer/doc/ElmerGridManual.pdf">here</a>.
+///
+/// The ".sif" file uses a <i>Keyword-pair</i> format to describe the rest of the problem. Each keyword can be thought of as a command to the <i>Elmer</i> solver which describes certain feature of the problem. Many of these commands require some parameters to be passed by user. There parameters are defined in front of the command after the "=" symbol. The first section of SIF file defines general settings of the problem as well as the location for geometry file, where to save simulation results, the type of simulation, time step used, etc. This definitions of this ection of the SIF file is very straight foward as shown in the following :
+///
+/// ![Sample SIF file I](sifsample1.png)
+///
+/// In the next section, the types of equations to be solved and material properties for each constituent is described. Depending on what type of solver needed, a series of solver-related parameters should be passed to the <i>Elmer</i>. The following example defines a non-linear elasticity solver for elmer along with the type of equation solver and non-linear solution strategies that should be sued for the problem.
+///
+///
+/// ![Sample SIF file II](sifsample2.png)
+///
+/// The rest of SIF file defines the boundary conditions for the problem. For a structural problem different types of boundary conditions can be used, including displacement and traction. The boundary condition definition starts with a Target Boundaries(x) = y statement that specifies how many boundaries are using this description (x: an integer) and which boundary in geometry file should be used (y: separated by space if more than one). Finally we specify which direction our loads/displacement should be applied. (here 1,2,3 correspond to X, Y and Z direction). Some of the boundary conditions require special treatments that are defined by some extra keywords. For example look at the boundary condition 4 that describes a FSI boundary. In this case, we tell <i>Elmer</i> to apply a variable force to the sections of the geometry that reside on this boundary. 
+///
+/// We also specify, first, which direction loads should be applied, second, they are variable in time, and third, <i>Elmer</i> should resort to function <i>LoadYDirection</i> in <i>LoadFunctionLibrary</i> whenever it is needed. Care most be practiced with the proper formating. Further definition pf the keywords can be found in <i>Elmer</i> manuals.
+///
+/// ![Sample SIF file III](sifsample3.png)
+///
+/// @subsection openfoaminput OpenFOAM Input
+///
+/// <i>Elmerfoam</i> uses <i>openfoam</i> as its fluid solver module to solve for the fluid pressure and velocity. To capture the deformations of the solid/fluid interface,<i>OpenFOAM</i> has to also perform mesh update and re-meshing procedures in order to maintain the quality of the computational grid during the simulation (in a fluid problem, gird is equivalent to mesh for solid problems). <i>OpenFOAM</i> uses a finite-volume discretization scheme to obtain pressures and velocities and a Laplace solver to perform the re-meshing tasks. User has to specifies proper parameters for these solvers in the input files. 
+///
+/// The definition of a problem in <i>OpenFOAM</i> is performed based on a multi-part input file strategy. For FSI problems, <i>OpenFOAM</i> requires both the definition of the solid and the fluid sections of the grid. In <i>ElmerFoam</i>, however, the solid definition for <i>OpenFOAM</i> is disregarded and will be replaced with that of Elmer. Similarly, all other computations for the solid section will be performed solely by Elmer. To setup a fluid problem in \openfoam, we have to follow a strict folder/file hierarchy as <i>OpenFOAM</i> seeks the definition of a problem in multiple files residing in a set of subfolders. The input files in <i>OpenFOAM</i> are also called dictionary files. In each dictionary file, a set of keyword-value pairs specify proper settings for some part of the problem and solution procedure. There should be at-least three major sub-folders in the main fluid problem definition folder /fluid/. These sub-folders are first, ./fluid/0/, second,./fluid/constant/ and third,./fluid/system/. In the rest we briefly describe each folder and its contents. Readers are strongly encouraged to resort to <i>OpenFOAM</i> documentation for more details.
+///
+/// In <i>OpenFOAM</i>, /fluid/0/ contains initial and boundary conditions for the problem. In this folder, we specify initial and boundary conditions for the pressures, velocities and grid deformations in three separate files with the proper names. Similarly, ./fluid/system/ folder contains a series of input files to specify which solvers should be used and what solution strategies should be used for them. Finally, fluid/constant/ folder contains the description of the grid and material properties. In this folder, a sub-folder exists which contains all information about the problem geometry, specified in blockMeshDict. These geometric information will be read by blockMesh, an accessory of <i>OpenFOAM</i> that generates simple block-shaped grids from the geometric data defined in the dictionary. The overall structure of an example blockMesh file is as following:
+///
+/// ![Sample blockMesh file](openfoam.png)
+///
+/// After the <i>OpenFOAM</i> banner, at the top section of the file blockMesh accessory to be used and the format of the file is specified. In the <i>verticies</i> section, the coordinates for the verticies of the grid are specified (starting from 0, each line specifies a vertex coordinate). In the <i>block</i> section, the connectivity for the blocks of the mesh are specified. In the <i>patches</i> section, we sepcifiy boundaries of the domain and their connectivity with respect to the vertex indices.
+///
+/// @subsection elmerfoaminput ElmerFoamFSI Input
+///
+///Currently, ElmerFoamFSI uses a very basic input file (named "test.config"). This file should reside in the ./fluid/ folder where the ElmerFoamFSI executable is called, and it should be passed to the executable as a command-line parameter. Following example shows the structure of this keyword-value pair file. In this example the name of fluid and structure solver modules that should be loaded are specified in the first two lines. The third line specifies the solution transfer module (in this case SurfX which a part of IMPACT ). In the rest of the file the total analysis time and the time step are specified.
+/// 
+/// ![Test.config](elmerfoamfsi.png)
+///
+///
+/// @subsection exampleproblem Example Problems
+///
+/// There are multiple example problems ElmerFoamFSI can simulate; Simple static problem and simple dynamic problem. Here are problem-specific direction: \n
+/// 
+///
 /// Here are the direction for @subpage simplestatic. \n
-/// Here are the direction for @subpage simpledynamic. \n
+/// Here are the direction for @subpage SimpleDynamic. \n

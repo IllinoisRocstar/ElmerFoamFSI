@@ -729,8 +729,9 @@ namespace ElmerFoamFSI {
       result.UpdateResult("fsiCoupler:Works",works);
       
     }
+    //virtual void Test__
     // WK : End
-
+ 
     ///
     /// Runs all tests implemented by the ElmerFoamFSI::TestingObject.
     ///
