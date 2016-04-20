@@ -496,14 +496,12 @@ public:
     
     if(componentInterfaceNames.size() < 2)
       return(1);
-    //WK
-    std::cout << "am I here?" << std::endl;
-    //WK   
+       
     fluidsInterfaceName     = componentInterfaceNames[0];
     structuresInterfaceName = componentInterfaceNames[1];
     transferInterfaceName   = componentInterfaceNames[2];
-    surfUtilInterfaceName     = componentInterfaceNames[3];
-    simpalInterfaceName      = componentInterfaceNames[4];
+    surfUtilInterfaceName   = componentInterfaceNames[3];
+    simpalInterfaceName     = componentInterfaceNames[4];
 
     fluidsAgent     = new fluidagent;
     structuresAgent = new solidagent;
@@ -511,22 +509,16 @@ public:
     
     //WK
     std::cout << "runmode = " << runMode << std::endl;
-    std::cout << "am I here? 2" << std::endl;
     //WK   
+    
     // Initialize the fluids module
     if(runMode != 2)
       fluidsAgent->Initialize(fluidsInterfaceName, verblevel);
-
-    //WK
-    std::cout << "am I here? 3" << std::endl;
-    //WK   
+ 
     // Initialize the structures module
     if(runMode != 1)
       structuresAgent->Initialize(structuresInterfaceName, verblevel);
-
-    //WK
-    std::cout << "am I here? 4" << std::endl;
-    //WK   
+  
     // Initialize the transfer module's common refinement
     if(runMode == 0) {
       transferAgent->Overlay(structuresInterfaceName,fluidsInterfaceName);

@@ -21,7 +21,7 @@ isFirst=false
  fi
 
 
-cd $ElmerFoamTop/foam/foam-extend-3.2
+cd ~/foam/foam-extend-3.0
 if $isFirst
 then
   ./Allwmake.firstInstall

@@ -21,25 +21,15 @@ public:
       return(1);
     }
     componentFunctionHandles[RUN] = fluidsStepHandle;
-    
-    //WK
-    std::cout << "am I here?" << std::endl;
-    //WK   
     WriteOut("Calling OpenFOAM Initialization.\n");
-
-    //WK
-    std::cout << "am I here? 2" << std::endl;
-    //WK   
+   
     int argc_dupe = 1;
     char *argv[2];
     argv[0] = const_cast<char *>("test");
     argv[1] = NULL;
     int verbIn = verblevel;
-    COM_call_function(componentFunctionHandles[INIT],&argc_dupe,argv,&verbIn);
-
-    //WK
-    std::cout << "am I here? 3" << std::endl;
-    //WK   
+    COM_call_function(componentFunctionHandles[INIT],&argc_dupe,argv,&verbIn); 
+    
     std::vector<int> paneIDs;
     COM_get_panes(interfaceName.c_str(),paneIDs);
     if(!paneIDs.empty())
@@ -54,6 +44,7 @@ public:
     nodeCoordinates.resize(arraySize);
     for(int i = 0;i < arraySize;i++)
       nodeCoordinates[i] = nodalCoordinates[i];
+      
 
     std::string newDataItem(interfaceName+".coords");
     COM_new_dataitem(newDataItem.c_str(),'n',COM_DOUBLE,3,"m");
@@ -73,6 +64,15 @@ public:
     COM_call_function(componentFunctionHandles[RUN]);
     return(0);
   };
+  
+  std::vector<double> virtual returnNodeCoords(){
+    return nodeCoordinates;
+  };	
+  
+  std::vector<double> virtual returnFaceCoords(){
+		return faceCoordinates;
+  };
+  
 private:
   int paneID;
   std::vector<double> nodeCoordinates;

@@ -101,18 +101,32 @@ namespace ElmerFoamFSI {
     std::string SourceDirPath;
     //WK End
     TestGlobalType global;
+    //NS Start
+    std::vector<std::string> componentInterfaceNames;
+    ///
+    /// Instantiation of class for use with the fsiCoupler & Agent tests
+    ///
+    fsicoupling fsiCoupler;
+    ///
+    ///For use with the ElmerStructure and OpenFoamFluids tests
+    ///
+    solidagent* TeststructuresAgent;
+    fluidagent* TestfluidsAgent;
+    ///
+    ///track verbosity level for tests
+    ///
+    int verblevel;
+    //NS End
   public:
     /// 
     /// Default constructor.
     ///
-    TestingObject() : TestingObjectBaseType() {};
-
+    TestingObject() : TestingObjectBaseType() , fsiCoupler(global) , TeststructuresAgent(NULL) , TestfluidsAgent(NULL) {};
     ///
     /// Tears down the testing fixtures if needed.
     ///
     virtual void Epilogue() {
       COM_finalize();};
-
     ///
     /// Sets up the data fixtures for the tests.
     /// 
@@ -494,7 +508,6 @@ namespace ElmerFoamFSI {
     //Copied from ElmerDriver testing script
     virtual int GetInputData(std::string suffix,std::string TestDir){
 
-      std::cout << "In GetInputData" << std::endl;
       std::string DirName;
       std::string OrgDir;
 
@@ -577,40 +590,110 @@ namespace ElmerFoamFSI {
 
       return 0;
     }
+    
 
     // Helper function
-    virtual bool __helper(){
+    virtual int __helper(){
  
       int IntDir;
       std::string OrgDir, TestDir;     
 
       //call GetInputData to copy input test data to temp directory for running tests.
-      std::string suffix = "testing/share/Testing/test_data/SimpleStatic";
+      std::string suffix = "/share/Testing/test_data/SimpleStatic";
   
       //Make path for directory to run the test in
       TestDir = IRAD::Sys::CWD() + "/SimpleStatic";
+      std::cout << "Getting Input Data!!" << std::endl;
       IntDir  = GetInputData(suffix, TestDir);
   
       //check if GetInputData exited correctly.
       if(IntDir != 0){
         std::cout << "GetInputData failed!"
                   << std::endl;
-        return false;
+        return 1;
       }
       // Check if TestDir directory exists in current Directory
       if(!IRAD::Sys::FILEEXISTS(TestDir)){
         std::cout << "Could not find directory, "
                   << TestDir << ", for running tests." << std::endl;
-        return false;
+        return 2;
       }
-      return true;     
+      return 0;     
     }  
-    //testing the get input?
+    
+    
+    //testing the getinput
     virtual void Test__GetInput(ResultsType &result){
-      bool works =__helper();
-      result.UpdateResult("GetInput:Works",works);
+      int out = __helper();
+      bool works;
       
+      if(out == 0) works = true;
+      else works = false;
+      result.UpdateResult("GetInput:Works",works);
     }
+    
+    
+    ///
+    /// Initalize function for the fsiCoupler and agents 
+    ///
+    virtual void Test__fsiCouplerAgentsInitialize(){
+      int work =__helper();
+      int IntDir;
+      verblevel = 3;
+      TeststructuresAgent = new solidagent;
+      TestfluidsAgent = new fluidagent;
+      
+      std::string fluidDir;
+      std::string simStaticDir;
+      fluidDir = IRAD::Sys::CWD() + "/SimpleStatic/fluid";
+      simStaticDir = IRAD::Sys::CWD() + "/SimpleStatic";
+      if(work == 1)
+        std::cout << "GetInputData failed 2!" << std::endl;
+      else if (work == 2)
+      	std::cout << "Could not find directory for running tests" << std::endl;
+      	
+      if(!(IRAD::Sys::FILEEXISTS(fluidDir)||(IRAD::Sys::FILEEXISTS(simStaticDir)))){
+        std::cout << "SimpleStatic / fluid Folders do not exists!" << std::endl;
+        return; 
+      }
+      else{
+        IntDir = IRAD::Sys::ChDir(simStaticDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+        }
+        std::system("chmod 755 Allclean Allrun AllrunPar makeLinks makeSerialLinks removeSerialLinks"); 
+        std::system("./Allclean");
+        std::system("./Allrun");
+        IntDir = IRAD::Sys::ChDir(fluidDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+        }
+      }
+      
+      std::string fluidSolverName("OpenFoamFSI");
+      std::string solidSolverName("ElmerCSC");
+      std::string transferServiceName("SurfX");
+      std::string runMode("1");
+
+      std::cout << "COM loading all modules" << std::endl;
+      COM_load_module(fluidSolverName.c_str(),"FluidsComponentInterface");
+      COM_load_module(solidSolverName.c_str(),"StructuresComponentInterface");
+      COM_load_module("SurfUtil","SurfUtil");
+      COM_load_module("Simpal","Simpal");
+
+      componentInterfaceNames.push_back("FluidsComponentInterface");
+      componentInterfaceNames.push_back("StructuresComponentInterface");
+      componentInterfaceNames.push_back("TransferInterface");
+      componentInterfaceNames.push_back("SurfUtil");
+      componentInterfaceNames.push_back("Simpal");
+ 
+      fsiCoupler.SetRunMode(runMode);
+      fsiCoupler.SetVerbLevel(verblevel);
+      std::cout << "fsiCouplerAgentsInitialize Successful!" << std::endl;
+    }
+    
       
 /*    void Test__ReadInputWorks(ResultsType &result){
 
@@ -635,82 +718,24 @@ namespace ElmerFoamFSI {
       //result.UpdateResult("ReadInputWorks", works);
     }
 */
-
+		///
+		/// Test the functionality of the fsiCoupler
     virtual void Test__fsiCoupler(ResultsType &result){
-     
       double time_final = 0.05;
       double timestep = 2.0e-3;
-      int verblevel = 3;
       bool works = true;
-      int IntDir;
-
-      bool work =__helper();
-      std::string fluidDir;
-      std::string simStaticDir;
-      fluidDir = IRAD::Sys::CWD() + "/SimpleStatic/fluid";
-      simStaticDir = IRAD::Sys::CWD() + "/SimpleStatic";
-      if(!(IRAD::Sys::FILEEXISTS(fluidDir)||(IRAD::Sys::FILEEXISTS(simStaticDir)))){
-        std::cout << "SimpleStatic / fluid Folders do not exists!" << std::endl;
-        works = false;           
-        result.UpdateResult("fsiCoupler:Works",works);
-        return; 
-      }
-      else{
-        IntDir = IRAD::Sys::ChDir(simStaticDir);
-        if(IntDir == -1){
-          std::cout << "GetInputData Error: Could not change directory to " 
-                    << fluidDir << ". Exiting (fail). " << std::endl;
-          works = false;
-          result.UpdateResult("fsiCoupler:Works",works);
-        }
-        std::system("chmod 755 Allclean Allrun AllrunPar makeLinks makeSerialLinks removeSerialLinks"); 
-        std::system("./Allclean");
-        std::system("./Allrun");
-        IntDir = IRAD::Sys::ChDir(fluidDir);
-        if(IntDir == -1){
-          std::cout << "GetInputData Error: Could not change directory to " 
-                    << fluidDir << ". Exiting (fail). " << std::endl;
-          works = false;
-          result.UpdateResult("fsiCoupler:Works",works);
-        }
-      }
       
- 
-      fsicoupling fsiCoupler(global); 
- 
-      
-      std::string fluidSolverName("OpenFoamFSI");
-      std::string solidSolverName("ElmerCSC");
-      std::string transferServiceName("SurfX");
-      std::string runMode("1");
-
-
-      std::cout << "COM loading all this junks" << std::endl;
-      COM_load_module(fluidSolverName.c_str(),"FluidsComponentInterface");
-      COM_load_module(solidSolverName.c_str(),"StructuresComponentInterface");
-      COM_load_module("SurfUtil","SurfUtil");
-      COM_load_module("Simpal","Simpal");
-
-     
-      std::vector<std::string> componentInterfaceNames;
-      componentInterfaceNames.push_back("FluidsComponentInterface");
-      componentInterfaceNames.push_back("StructuresComponentInterface");
-      componentInterfaceNames.push_back("TransferInterface");
-      componentInterfaceNames.push_back("SurfUtil");
-      componentInterfaceNames.push_back("Simpal");
- 
-      std::cout << "before SetRunMode and SetVerbLevel" << std::endl;
-      fsiCoupler.SetRunMode(runMode);
-      std::cout << "after  SetRunMode and before SetVerbLevel" << std::endl;
-      fsiCoupler.SetVerbLevel(verblevel);
-      
-      std::cout << "before Initialize" << std::endl;
+      //Call the Agents Initialize function above
+      //as well as the Initialize function of fsiCoupler
+      std::cout << "Initalizing..." << std::endl;
+      Test__fsiCouplerAgentsInitialize();
       fsiCoupler.Initialize(componentInterfaceNames, time_final, timestep);  
-      std::cout << "Initialize done?" << std::endl;
+      std::cout << "Initialize Completed!" << std::endl;
       
+      //test to make sure that classInterfaceNames are populated 
+      //correctly to match componentInterfaceNames
       std::vector<std::string> classInterfaceNames;
       classInterfaceNames =  fsiCoupler.getVariable();
-      int i = 0;
       
       for(int i = 0; i < componentInterfaceNames.size(); i++){
         if(componentInterfaceNames.at(i) != classInterfaceNames.at(i)){
@@ -718,20 +743,98 @@ namespace ElmerFoamFSI {
           break;
         }
       }
-//      while (i < componentInterfaceNames.size()){
-//           if (componentInterfaceNames.at(i) != classInterfaceNames.at(i)){
-//                works = false;
-//                break;
-//           }
-//           i++;  
-//      }
-
       result.UpdateResult("fsiCoupler:Works",works);
-      
     }
-    //virtual void Test__
-    // WK : End
- 
+
+    
+    ///
+    /// Run an initialization check to make sure that the ElmerStructures
+    /// are running as they should
+    ///
+    virtual void Test__ElmerStructures(ResultsType &result){
+    	bool works = true;
+	
+    	std::cout << "Initalizing Structure..." << std::endl;
+    	Test__fsiCouplerAgentsInitialize();
+    	int initresult = TeststructuresAgent->Initialize(componentInterfaceNames[1], verblevel);
+    	std::cout << "Initialization Completed!" << std::endl;
+    	
+    	//Make sure the initializing doesn't return an error
+    	if (initresult != 0){ 
+    		std::cout << "structuresAgent->Initialize returns error. " <<
+    		             "Refer to ElmerAgent.H for more information. " << std::endl;
+    		works = false;
+    	}
+    	
+    	//Test to make sure the node coordinates are populated
+    	//More of an exercise to make sure the data is loaded correctly 
+    	//face coordinates are not in use currently
+    	std::vector<double> nodecoordinates(TeststructuresAgent->returnNodeCoords());
+    	std::cout << "Node size is: " << nodecoordinates.size() << std::endl;
+    	if (nodecoordinates.size() < 0){
+    		std::cout << "There is a problem with obtaining the nodecoordinate data" <<
+    		             "Refer to ElmerAgent.H for more information. " << std::endl;
+    		works = false;
+    	}
+    	
+    	double arr[306] = {0.1, 0.1, 0, 0, 0.1, 0, 0, 0.1, 0.02, 0.1, 0.1, 0.02, 0, 0.1, 0.04, 0.1, 0.1, 0.04, 0, 0.1, 0.06, 0.1, 0.1, 0.06, 0, 0.1, 0.08, 0.1, 0.1, 0.08, 0, 0.1, 0.1, 0.1, 0.1, 0.1, 0, 0.1, 0.12, 0.1, 0.1, 0.12, 0, 0.1, 0.14, 0.1, 0.1, 0.14, 0, 0.1, 0.16, 0.1, 0.1, 0.16, 0, 0.1, 0.18, 0.1, 0.1, 0.18, 0, 0.1, 0.2, 0.1, 0.1, 0.2, 0, 0.1, 0.22, 0.1, 0.1, 0.22, 0, 0.1, 0.24, 0.1, 0.1, 0.24, 0, 0.1, 0.26, 0.1, 0.1, 0.26, 0, 0.1, 0.28, 0.1, 0.1, 0.28, 0, 0.1, 0.3, 0.1, 0.1, 0.3, 0, 0.1, 0.32, 0.1, 0.1, 0.32, 0, 0.1, 0.34, 0.1, 0.1, 0.34, 0, 0.1, 0.36, 0.1, 0.1, 0.36, 0, 0.1, 0.38, 0.1, 0.1, 0.38, 0, 0.1, 0.4, 0.1, 0.1, 0.4, 0, 0.1, 0.42, 0.1, 0.1, 0.42, 0, 0.1, 0.44, 0.1, 0.1, 0.44, 0, 0.1, 0.46, 0.1, 0.1, 0.46, 0, 0.1, 0.48, 0.1, 0.1, 0.48, 0, 0.1, 0.5, 0.1, 0.1, 0.5, 0, 0.1, 0.52, 0.1, 0.1, 0.52, 0, 0.1, 0.54, 0.1, 0.1, 0.54, 0, 0.1, 0.56, 0.1, 0.1, 0.56, 0, 0.1, 0.58, 0.1, 0.1, 0.58, 0, 0.1, 0.6, 0.1, 0.1, 0.6, 0, 0.1, 0.62, 0.1, 0.1, 0.62, 0, 0.1, 0.64, 0.1, 0.1, 0.64, 0, 0.1, 0.66, 0.1, 0.1, 0.66, 0, 0.1, 0.68, 0.1, 0.1, 0.68, 0, 0.1, 0.7, 0.1, 0.1, 0.7, 0, 0.1, 0.72, 0.1, 0.1, 0.72, 0, 0.1, 0.74, 0.1, 0.1, 0.74, 0, 0.1, 0.76, 0.1, 0.1, 0.76, 0, 0.1, 0.78, 0.1, 0.1, 0.78, 0, 0.1, 0.8, 0.1, 0.1, 0.8, 0, 0.1, 0.82, 0.1, 0.1, 0.82, 0, 0.1, 0.84, 0.1, 0.1, 0.84, 0, 0.1, 0.86, 0.1, 0.1, 0.86, 0, 0.1, 0.88, 0.1, 0.1, 0.88, 0, 0.1, 0.9, 0.1, 0.1, 0.9, 0, 0.1, 0.92, 0.1, 0.1, 0.92, 0, 0.1, 0.94, 0.1, 0.1, 0.94, 0, 0.1, 0.96, 0.1, 0.1, 0.96, 0, 0.1, 0.98, 0.1, 0.1, 0.98, 0, 0.1, 1, 0.1, 0.1, 1};
+    	
+    	for (int i = 0; i < 306; i++){
+    		if (arr[i] != nodecoordinates.at(i)){
+    			std::cout << "Node Coordinate Inconsistencies." << std::endl;
+    			works = false;
+    			break;
+    		}
+    	}
+    	result.UpdateResult("ElmerStructures:Works",works);
+    	delete TeststructuresAgent;
+    }
+    
+    
+    ///
+    /// Run an initialization check to make sure the OpenFoamFluids 
+    /// are running as they should
+    ///
+    virtual void Test__OpenFoamFluids(ResultsType &result){
+      bool works = true;
+	
+    	std::cout << "Initializing Fluids..." << std::endl;
+    	Test__fsiCouplerAgentsInitialize();
+    	int initresult = TestfluidsAgent->Initialize(componentInterfaceNames[0], verblevel);
+    	std::cout << "Initialization Completed!" << std::endl;
+    	
+    	//Make sure the initializing doesn't return an error
+    	if (initresult != 0){ 
+    		std::cout << "fluidsAgent->Initialize returns error. " <<
+    		             "Refer to OpenFoamAgent.H for more information. " << std::endl;
+    		works = false;
+    	}
+    	
+    	//Test to make sure the node coordinates are populated
+    	//More of an exercise to make sure the data is loaded correctly 
+    	//face coordinates are not in use currently
+    	std::vector<double> nodecoordinates(TestfluidsAgent->returnNodeCoords());
+    	std::cout << "Fluid Node size is: " << nodecoordinates.size() << std::endl;
+    	if (nodecoordinates.size() < 0){
+    		std::cout << "There is a problem with obtaining the nodecoordinate data" <<
+    		             "Refer to OpenFoamAgent.H for more information. " << std::endl;
+    		works = false;
+    	}
+    	
+    	double arr[306] = {0.1, 0.1, 0, 0.1, 0.1, 0.02, 0, 0.1, 0.02, 0, 0.1, 0, 0.1, 0.1, 0.04, 0, 0.1, 0.04, 0.1, 0.1, 0.06, 0, 0.1, 0.06, 0.1, 0.1, 0.08, 0, 0.1, 0.08, 0.1, 0.1, 0.1, 0, 0.1, 0.1, 0.1, 0.1, 0.12, 0, 0.1, 0.12, 0.1, 0.1, 0.14, 0, 0.1, 0.14, 0.1, 0.1, 0.16, 0, 0.1, 0.16, 0.1, 0.1, 0.18, 0, 0.1, 0.18, 0.1, 0.1, 0.2, 0, 0.1, 0.2, 0.1, 0.1, 0.22, 0, 0.1, 0.22, 0.1, 0.1, 0.24, 0, 0.1, 0.24, 0.1, 0.1, 0.26, 0, 0.1, 0.26, 0.1, 0.1, 0.28, 0, 0.1, 0.28, 0.1, 0.1, 0.3, 0, 0.1, 0.3, 0.1, 0.1, 0.32, 0, 0.1, 0.32, 0.1, 0.1, 0.34, 0, 0.1, 0.34, 0.1, 0.1, 0.36, 0, 0.1, 0.36, 0.1, 0.1, 0.38, 0, 0.1, 0.38, 0.1, 0.1, 0.4, 0, 0.1, 0.4, 0.1, 0.1, 0.42, 0, 0.1, 0.42, 0.1, 0.1, 0.44, 0, 0.1, 0.44, 0.1, 0.1, 0.46, 0, 0.1, 0.46, 0.1, 0.1, 0.48, 0, 0.1, 0.48, 0.1, 0.1, 0.5, 0, 0.1, 0.5, 0.1, 0.1, 0.52, 0, 0.1, 0.52, 0.1, 0.1, 0.54, 0, 0.1, 0.54, 0.1, 0.1, 0.56, 0, 0.1, 0.56, 0.1, 0.1, 0.58, 0, 0.1, 0.58, 0.1, 0.1, 0.6, 0, 0.1, 0.6, 0.1, 0.1, 0.62, 0, 0.1, 0.62, 0.1, 0.1, 0.64, 0, 0.1, 0.64, 0.1, 0.1, 0.66, 0, 0.1, 0.66, 0.1, 0.1, 0.68, 0, 0.1, 0.68, 0.1, 0.1, 0.7, 0, 0.1, 0.7, 0.1, 0.1, 0.72, 0, 0.1, 0.72, 0.1, 0.1, 0.74, 0, 0.1, 0.74, 0.1, 0.1, 0.76, 0, 0.1, 0.76, 0.1, 0.1, 0.78, 0, 0.1, 0.78, 0.1, 0.1, 0.8, 0, 0.1, 0.8, 0.1, 0.1, 0.82, 0, 0.1, 0.82, 0.1, 0.1, 0.84, 0, 0.1, 0.84, 0.1, 0.1, 0.86, 0, 0.1, 0.86, 0.1, 0.1, 0.88, 0, 0.1, 0.88, 0.1, 0.1, 0.9, 0, 0.1, 0.9, 0.1, 0.1, 0.92, 0, 0.1, 0.92, 0.1, 0.1, 0.94, 0, 0.1, 0.94, 0.1, 0.1, 0.96, 0, 0.1, 0.96, 0.1, 0.1, 0.98, 0, 0.1, 0.98, 0.1, 0.1, 1, 0, 0.1, 1};
+    	
+    	for (int i = 0; i < 306; i++){
+    		if (arr[i] != nodecoordinates.at(i)){
+    			std::cout << "Node Coordinate Inconsistencies." << std::endl;
+    			works = false;
+    			break;
+    		}
+    	}
+      result.UpdateResult("OpenFoamFluids:Works",works);
+      delete TestfluidsAgent;
+    }
+
+
     ///
     /// Runs all tests implemented by the ElmerFoamFSI::TestingObject.
     ///
@@ -755,6 +858,10 @@ namespace ElmerFoamFSI {
       //Test__ReadInputWorks(result);
       Test__fsiCoupler(result);
       // WK: End
+      // NS: Start
+      Test__ElmerStructures(result);
+      Test__OpenFoamFluids(result);
+			// NS: End
       Epilogue();
     }
     
@@ -793,6 +900,12 @@ namespace ElmerFoamFSI {
       else if(name == "fsiCoupler")
         Test__fsiCoupler(result);
       // WK: End
+      // NS: Start
+      else if(name == "ElmerStructures")
+        Test__ElmerStructures(result);
+      else if(name == "OpenFoamFluids")
+        Test__OpenFoamFluids(result);  
+			// NS: End
       Epilogue();
     }
 
@@ -809,8 +922,6 @@ namespace ElmerFoamFSI {
         RunTest(*tni++,result);
       Epilogue();
     }
-
-
   };
 
 #ifdef _ELMERFOAMFSI_PARALLEL_
