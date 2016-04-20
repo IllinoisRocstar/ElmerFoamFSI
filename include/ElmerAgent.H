@@ -53,6 +53,7 @@ public:
     for(int i = 0;i < arraySize;i++)
       nodeCoordinates[i] = nodalCoordinates[i];
 
+
     std::string newDataItem(interfaceName+".coords");
     COM_new_dataitem(newDataItem.c_str(),'n',COM_DOUBLE,3,"m");
     COM_set_array(newDataItem.c_str(),paneID,&nodeCoordinates[0]);
@@ -87,6 +88,15 @@ public:
       return(1);
     }
   };
+  
+  std::vector<double> virtual returnNodeCoords(){
+    return nodeCoordinates;
+  };	
+  
+  std::vector<double> virtual returnFaceCoords(){
+		return faceCoordinates;
+  };
+  
 private:
   int paneID;
   std::vector<double> nodeCoordinates;

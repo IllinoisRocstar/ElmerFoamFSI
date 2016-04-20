@@ -42,7 +42,7 @@ include_directories( include ${CMAKE_BINARY_DIR}/include ../include ${IRAD_INCPA
 
 
 # This line runs the unit tests from the "com_test" executable
-ADD_TEST(RunElmerFoamFSIUnitTests ${EXECUTABLE_OUTPUT_PATH}/elmerfoamfsi_test -o elmerfoamfsi_testresults.txt)
+ADD_TEST(RunElmerFoamFSIUnitTests ${EXECUTABLE_OUTPUT_PATH}/elmerfoamfsi_test -o elmerfoamfsi_testresults.txt -s ${PROJECT_SOURCE_DIR})
 ADD_TEST(RunTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/tests.list -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt)
 ADD_TEST(RunPlatformSpecificTests ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/platforms -s ${PROJECT_SOURCE_DIR} -b ${PROJECT_BINARY_DIR}/bin -o elmerfoamfsi_testresults.txt)
 ADD_TEST(RunSpecificTestScript    ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Platforms/test_stub.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -o elmerfoamfsi_testresults.txt)
@@ -74,6 +74,9 @@ ADD_TEST(LoadOpenFoamModule:Works ${TESTRESULT} LoadOpenFoamModule:Works elmerfo
 ADD_TEST(UnloadOpenFoamModule:Works ${TESTRESULT} UnloadOpenFoamModule:Works elmerfoamfsi_testresults.txt)
 ADD_TEST(RegressionTestHTFSI3:Works ${TESTRESULT} Hron-Turek-FSI3 elmerfoamfsi_testresults.txt)
 ADD_TEST(ElmerHandlesCheck:Works ${TESTRESULT} ElmerHandlesCheck:Works elmerfoamfsi_testresults.txt)
+ADD_TEST(fsiCoupler:Works ${TESTRESULT} fsiCoupler:Works elmerfoamfsi_testresults.txt)
+ADD_TEST(ElmerStructures:Works ${TESTRESULT} ElmerStructures:Works elmerfoamfsi_testresults.txt)
+ADD_TEST(OpenFoamFluids:Works ${TESTRESULT} OpenFoamFluids:Works elmerfoamfsi_testresults.txt)
 
 IF(MPI_CXX_COMPILER)
 
