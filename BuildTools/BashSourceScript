@@ -1,6 +1,6 @@
 # source the openfoam source file
 export ElmerFoamTop=$1
-source ~/foam/foam-extend-3.0/etc/bashrc
+source $ElmerFoamTop/foam/foam-extend-3.2/etc/bashrc
 if [ $? -ne 0 ]
 then
   echo "Error: Unable to source $ElmerFoamTop/foam/foam-extend-3.2/etc/bashrc"
