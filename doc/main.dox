@@ -4,12 +4,15 @@
 
 @section elmerfoamfsi_intro Introduction 
 <b><i>ElmerFoamFSI</i></b> is an aeroelastic simulation application built up 
-from <b><i>OpenFOAM</i></b> CFD and <b><i>Elmer</i></b> CSM coupled through the <b><i>IMPACT</i></b> 
-multiphysics software integration infrastructure.
+from <b><i>OpenFOAM</i></b> (CFD) and <b><i>Elmer</i></b> (CSM) coupled through the <b><i>IMPACT</i></b> 
+multiphysics software integration infrastructure. \n \n
+
+First clone the ElmerFoamFSI repository from github via git clone.
+> git clone https://github.com/IllinoisRocstar/ElmerFoamFSI
 
 @section quick_start Build and Install
 
-ElmerFoamFSI comes with a build script that should work on a Linux terminal. This scripts essentially executes cmake, make, and make install for the various components of the project.  The commands in these build instructions assume use of a Linux terminal. ElmerFoamFSI requires C, C++, and Fortran compilers. Additionally, it requires gfortran of version greater than 4.8. Before beginning ensure that your gfortran compiler meets this requirement.
+The top level directory of ElmerFoamFSI comes with a build script (<b> BuildScript </b>) that should work on a Linux terminal. This scripts essentially executes cmake, make, and make install for the various components of the project. \n The commands in these build instructions assume use of a Linux terminal. ElmerFoamFSI requires C, C++, and Fortran compilers. Additionally, it requires gfortran of version greater than 4.8. \n Before beginning ensure that your gfortran compiler meets this requirement.
 
 ###1. Obtain the required submodules
 
@@ -29,11 +32,15 @@ Call the build script from the top level ElmerFoamFSI directory. Provide it with
 
 > ./BuildScript first
 
-The script may ask if the user wishes to compile without Paraview. It is fine to say "yes" to this question. The entire build and install process can take up to around 6 hours depending on the machine. If any errors occur along the way it should stop the process. All output from the build is located in a file named Build.dat, that can be checked for error messages. At the end of the build, the tests for ElmerFoamFSI should run and all pass. If any tests fail, there may be an issue with the build. If all goes according to plan, executing this script and answering "yes" should be the only steps required to build.
+The script may ask if the user wishes to compile without Paraview. It is fine to say "yes" to this question. The entire build and install process can take up to around 6 hours depending on the machine. \n If any errors occur along the way it should stop the process. All output from the build is located in a file named <b> Build.dat </b> (located in the same location as where the build script was called), that can be checked for error messages. At the end of the build, the tests for ElmerFoamFSI should run and all pass. If any tests fail, there may be an issue with the build. \n If all goes according to plan, executing this script and answering "yes" should be the only steps required to build.
 
 ###3. Rebuilding
 
-In the case of rebuilding, BuildScript can simply be executed again without the argument "first" given. The "first" argument causes the OpenFoam first install script to be called instead of the regular build script, patches some files required for linking the two applications, and makes some useful links in the install directory. 
+In the case of rebuilding, BuildScript can simply be executed again without the argument "first" given. 
+
+> ./BuildScript
+
+The "first" argument causes the OpenFoam first install script to be called instead of the regular build script, patches some files required for linking the two applications, and makes some useful links in the install directory. 
 
 The full list of arguments for BuildScript are as follows:
   - first: 
@@ -45,24 +52,27 @@ The full list of arguments for BuildScript are as follows:
   - nofoam:
     - Skips the building of OpenFoam (generally the building of OpenFoam is the longest portion so skipping this component when possible is desirable)
 
-BuildScript calls a series of other scripts located in the BuildTools directory. The precise manner in which these scripts are called can be seen by looking in the BuildScript file. If the user wishes to rebuild only one component of the project, these files can be called individually. They are listed below with their associated arguments:
+BuildScript calls a series of other scripts located in the <b> /ElmerFoamFSI/BuildTools/ </b> directory. The precise manner in which these scripts are called can be seen by looking in the BuildScript file. \n If the user wishes to rebuild only one component of the project, these files can be called individually. They are listed below with their associated arguments:
 
-  - BuildElmerFoamFSIDriver: builds only the orchestrator component
+  - <b> BuildElmerFoamFSIDriver </b> : builds only the orchestrator component
     - first argument must be the full path to the top level ElmerFoamFSI directory
     - optional second argument "notest" skips the running of the tests
-  - BuildElmerModule: builds the Elmer software as well as the module for interfacting Elmer with IMPACT
+  - <b> BuildElmerModule </b>: builds the Elmer software as well as the module for interfacting Elmer with IMPACT
     - first argument must be the full path to the top level ElmerFoamFSI directory
     - optional second argument "first" indicates that it is the first build and the Elmer libraries need to be linked to the appropriate location
-  - BuildIMPACT: builds IMPACT as well as IMPACT's submodule IRAD
+  - <b> BuildIMPACT </b>: builds IMPACT as well as IMPACT's submodule IRAD
     - first argument must be the full path to the top level ElmerFoamFSI directory
-  - BuildOpenFoam: builds the OpenFoam application only
+  - <b> BuildOpenFoam </b>: builds the OpenFoam application only
     - first argument must be the full path to the top level ElmerFoamFSI directory
-  - BuildOpenFoamModule: builds the module to interface OpenFoam with IMPACT
+  - <b> BuildOpenFoamModule </b>: builds the module to interface OpenFoam with IMPACT
     - first argument must be the full path to the top level ElmerFoamFSI directory
-  - PatchScript: patches some files within the the Elmer and OpenFoam sources in order for interfacing with IMPACT
+  - <b> PatchScript </b>: patches some files within the the Elmer and OpenFoam sources in order for interfacing with IMPACT
     - first argument must be the full path to the top level ElmerFoamFSI directory
 
-Two additional files are present in the BuildTools directory: BashSourceScript and CshellSourceScript. These two files provide the appropriate environment setup for building and running ElmerFoamFSI. Users should source the one appropriate for the shell they are using before running the code. Each takes the full path to the top level ElmerFoamFSI directory as the first argument. 
+Two additional files are present in the BuildTools directory: <b> BashSourceScript </b>  and <b> CshellSourceScript </b>. These two files provide the appropriate environment setup for building and running ElmerFoamFSI. Users should source the one appropriate for the shell they are using before running the code. Each takes the full path to the top level ElmerFoamFSI directory as the first argument. \n
+
+So for example, from the top level, the command could be (if using Bash):
+> Source ElmerFoamFSI/BuildTools/BashSourceScript /full/path/to/top/level/ElmerFoamFSI
 
 ###4. Troubleshooting
 

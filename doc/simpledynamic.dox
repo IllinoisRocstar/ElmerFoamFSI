@@ -1,0 +1,72 @@
+///
+/// @page simpledynamic Simple Dynamic Problem
+///
+/// 
+/// @section dynamicdescription Problem Description 
+///
+/// The Simple Dynamic problem tests the accuracy of the ElmerFoamFSI suite. Here we have a <b> viscous fluid (\f$ F \f$) </b>
+/// subjected to a velocity profile in order to generate a simple in-plane traction to the walls of the channel. \n
+/// One of these walls is a <b> cantilever bean (\f$ S \f$) </b> and friction-based traction is applied to the top face of the cantilever
+/// to create <b> axial deformation (\f$ \delta_z \f$)  </b>. \n
+/// The boundary conditions are motivated by axial deflection on the beam, therefore, the effect of the vertical deflection created by
+/// potential mornal pressure is negligible. \n
+/// Figure 1 below shows the geometry of the problem.
+///
+/// ![Figure 1. Domain and boundary conditions for simple dynamic verification problem](simpledynamicgeo.png)
+///
+/// The dimensions of the domain are \f$ L = 1.0 m \f$, \f$ h_s = 0.01 m \f$, and \f$ h_f = 0.9 m \f$. 
+/// The velocity profile is symmetric with \f$ U_{max} = 1.5 m/s \f$ with axis of symmetry at \f$ y = 0.46 m \f$. \n
+/// The out-of-plane dimension is selected to be 0.1 m for both domains, arbitrarily. The table below summarizes the properties of the 
+/// solid and fluid used in the simulation. \n The velocity profile is ramped from zeros to its final form with transition period of 
+/// \f$ T_{trans} = 0.1s \f$ and then kept constant for the rest of simulation. The total simulation time is selected to be \f$ T = 5 \f$.
+///
+/// ![Table 1. Properties of fluid and solid domains.](dynamictable.png)
+///
+/// @section inputs ElmerFoamFSI Inputs
+/// 
+/// In ElmerFoamFSI, OpenFOAM (finite-volume solver) is used as the fluid solver and Elmer (finite-element solver) is used as the structural solver. \n
+/// Here both weak and strong coupling appraches can be used to solve FSI problems. The simple dynamic problem currently utilizes a weak-coupling algorithm. \n
+/// Please take a look at \ref examples for further information regarding the structure of each input file.
+///
+/// @subsection elmerinput Elmer Input
+///
+/// Elmer can be used to find deformation of a solid object (\f$ U \f$) subjected to different types of loads. \n
+/// To capture large deformations of the solid ElmerFoamFSI uses the non-linear solver. Here the description of the problem starts with the input files. \n \n
+/// 
+/// The <b> .GRD </b> file provides the description of the geometry of the problem \n
+/// The <b> .SIF </b> file provides rest of the definitions, including material properties and boundary conditions \n
+/// * It's important to note that in the SIF file: 1, 2, 3 correspond to X, Y, Z direction in a cartesian grid \n
+/// * The <b> .SIF </b> file is read by the \b ELMERSOLVER_STARTINFO upon execution \n
+///
+/// @subsection foaminput OpenFOAM Input
+/// 
+/// Here, OpenFOAM acts as the fluid solver to solve for the fluid pressure (\f$ p \f$) and velocity (\f$ U \f$). \n
+/// To capture the deformations of the solid/fluid interface, OpenFOAM has to perform mesh update and re-meshing procedures to maintain the quality
+/// of the grid. \n OpenFOAM requires both the definition of the solid and the fluid sections of the grid (in ElmerFoamFSI, the solid definition is replaced
+/// by Elmer. \n To setup a fluid problem, a strict folder/file hierarchy must be followed. \n \n
+///
+/// There should be at-least three major sub-folders in the main fluid problem (\b ./fluid/ ): \n
+/// These sub-folders are:
+/// * <b> ./fluid/0/ </b> containing the initial and boundary conditions for the problem. We specify the initial and boundary conditions for the pressures,
+/// velocities and grid deformation in three separate files with proper names.
+/// * <b> ./fluid/system/ </b> containing a series of input files to specify which solvers and strategies should be used. 
+/// * <b> ./fluid/constant/ </b> containing the description of the grid and material properities. Here the folder contains info about the problem geometry.
+/// ** Within this folder is <b> blockMeshDict </b> (may not necessarily be named blockMeshDict depending on the example) which reads the geometric data.
+///
+/// @section runningdynamic Running The Simple Dynamic Problem
+///
+/// The requirements listed in this dynamic example are an extension of the instructions given in \ref main and should be completed before
+/// starting the following steps. \n
+/// In order to execute the simple dynamic verification problem with ElmerFoamFSI, Elmer input and ElmerFoamFSI input file should be copied to the ./fluid. folder of the OpenFOAM input hierachy. Following directions are steps to take to run a problem :
+/// * Obtain input_data files of SimpleDynamic problem.
+/// * Create a folder and copy Allclean, Allrun (scripts), /fluid/ and /solid/ folders into this folder, make sure to copy all sub-folders as well.
+/// > Make sure your folder has following files: Allclean, Allrun, AllrunPar, makeLinks, makeSerialLinks, removeSerialLinks (scripts so far), fluid(folder), solid(folder)
+/// * Copy elmer SIF, GRD and ELMERSOLVER_STARTINFO files to /fluid/.
+/// * Run <b> ./Allclean </b>  and <b> ./Allrun </b>  to clean-up and prepare input files for the OpenFOAM.
+/// * Go to ./fluid/ and type <b> ElmerGrid 1 2 name </b> where "name" should be replaced with the name of the GRD file for Elmer.
+/// * Run ElmerFoamFSI the FSI simulation by "elmerformfsi name" where name should be re-placed with the name of ElmerFoamFSI input file.
+/// > <b> ./path/to/elmerfoamfsi/elmerfoamfsi test.config </b> (typically found in the top level /build/bin folder)
+///
+/// As a result of simulation, you will obtain VTK,VTU outputs along with many log files. Output files can be further post processed by using tools such as Paraview.
+
+// source script

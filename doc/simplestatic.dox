@@ -11,8 +11,9 @@
 ///The dimensions of the domain are L = 1.0 m, hs = 0.1 m, and hf = 1.0 m. The out-of-plane dimension is selected to be 0.1 m for both domains, arbitrarily. The velocity is initialized to 0.0 m/s throughout the fluid domain and the pressure given a uniform value of 1.0 Pa.
 ///
 ///
-/// @section runningsimple Running Simple Static Problem
+/// @section runningsimple Running The Simple Static Problem
 ///
+/// The instructions here utilize \ref simpledynamic as a starting point in terms of the input files and their functions.
 /// In order to execute the simple static verification problem with ElmerFoamFSI, Elmer input and ElmerFoamFSI input file should be copied to the ./fluid. folder of the OpenFOAM input hierachy. Following directions are steps to take to run a problem :
 /// * Obtain input_data files of SimpleStatic problem.
 /// * Create a folder and copy Allclean, Allrun (scripts), /fluid/ and /solid/ folders into this folder, make sure to copy all sub-folders as well.
@@ -24,6 +25,4 @@
 /// > ./path/to/elmerfoamfsi/elmerfoamfsi test.config
 ///
 /// As a result of simulation, you will obtain VTK,VTU outputs along with many log files. Output files can be further post processed by using tools such as Paraview.
-
-
 

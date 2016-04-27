@@ -1,7 +1,9 @@
 ///
 /// @page examples Setting up Example Problems
 ///
-/// This page will talk about how to set up example problems in ElmerFoamFSI to solve fluid-structure interaction(FSI) phenomenon. ElmerFoamFSI uses a partitioned approach to solve FSI problems. OpenFoam is used as the fluid solver and Elmer is used as a structural sovler. Although ElmerFoamFSI can use both weak and strong coupling approaches, only weak-coupling algoritm is implemented into ElmerFoam FSI. 
+/// This page will talk about how to set up example problems in ElmerFoamFSI to solve fluid-structure interaction(FSI) phenomenon. ElmerFoamFSI uses a partitioned approach to solve FSI problems. OpenFoam is used as the fluid solver and Elmer is used as a structural sovler. Although ElmerFoamFSI can use both weak and strong coupling approaches, only weak-coupling algoritm is implemented into ElmerFoam FSI.
+///
+/// The page is adapted from <a href="PhysicsOfCoupling.pdf" target="_blank"><b>Here</b></a> should any further reference be needed.
 ///
 /// @section what_sets_what Elmer/OpenFOAM Input - What sets what
 ///
@@ -54,5 +56,5 @@
 /// There are multiple example problems ElmerFoamFSI can simulate; Simple static problem and simple dynamic problem. Here are problem-specific direction: \n
 /// 
 ///
-/// Here are the direction for @subpage simplestatic. \n
-/// Here are the direction for @subpage SimpleDynamic. \n
+/// Here are the directions for @subpage simpledynamic.\n
+/// Here are the directions for @subpage simplestatic. \n
