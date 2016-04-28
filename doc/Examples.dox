@@ -56,5 +56,6 @@
 /// There are multiple example problems ElmerFoamFSI can simulate; Simple static problem and simple dynamic problem. Here are problem-specific direction: \n
 /// 
 ///
-/// Here are the directions for @subpage simpledynamic.\n
-/// Here are the directions for @subpage simplestatic. \n
+/// Here are the directions for the @subpage simpledynamic.\n
+/// Here are the directions for the @subpage simplestatic. \n
+/// Here are the directions for the @subpage hronturek. \n

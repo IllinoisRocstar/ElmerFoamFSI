@@ -40,7 +40,7 @@
 ///
 /// @subsection foaminput OpenFOAM Input
 /// 
-/// Here, OpenFOAM acts as the fluid solver to solve for the fluid pressure (\f$ p \f$) and velocity (\f$ U \f$). \n
+/// Here, OpenFOAM acts as the fluid solver to solve for the fluid pressure (\f$ p \f$) and velocity (\f$ U \f$) found in <b> ./fluid/0/ </b>. \n
 /// To capture the deformations of the solid/fluid interface, OpenFOAM has to perform mesh update and re-meshing procedures to maintain the quality
 /// of the grid. \n OpenFOAM requires both the definition of the solid and the fluid sections of the grid (in ElmerFoamFSI, the solid definition is replaced
 /// by Elmer. \n To setup a fluid problem, a strict folder/file hierarchy must be followed. \n \n
@@ -49,9 +49,9 @@
 /// These sub-folders are:
 /// * <b> ./fluid/0/ </b> containing the initial and boundary conditions for the problem. We specify the initial and boundary conditions for the pressures,
 /// velocities and grid deformation in three separate files with proper names.
-/// * <b> ./fluid/system/ </b> containing a series of input files to specify which solvers and strategies should be used. 
-/// * <b> ./fluid/constant/ </b> containing the description of the grid and material properities. Here the folder contains info about the problem geometry.
-/// ** Within this folder is <b> blockMeshDict </b> (may not necessarily be named blockMeshDict depending on the example) which reads the geometric data.
+/// - <b> ./fluid/system/ </b> containing a series of input files to specify which solvers and strategies should be used. 
+/// - <b> ./fluid/constant/ </b> containing the description of the grid and material properities. Here the folder contains info about the problem geometry.
+///   - Within this folder is <b> blockMeshDict </b> (may not necessarily be named blockMeshDict depending on the example) which reads the geometric data.
 ///
 /// @section runningdynamic Running The Simple Dynamic Problem
 ///
@@ -69,4 +69,3 @@
 ///
 /// As a result of simulation, you will obtain VTK,VTU outputs along with many log files. Output files can be further post processed by using tools such as Paraview.
 
-// source script

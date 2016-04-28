@@ -1,0 +1,94 @@
+/**
+
+@page hronturek Hron-Turek Problem
+
+@section hronturekdescription Problem Description
+
+A series of benchmark fluid-solid interaction problems can be described by the Hron-Turek Problem.
+Here there is a laminar incompressible flow (\f$ F \f$) is entering a 2D channel from its left side \n with a parabolic
+(fully-developed) velocity profile. A cylinder with a cantilever beam attached to it (\f$ S \f$) is submerged into the fluid 
+in the middle fo the channel clost to its entry. \n A traction load applied by fluid motion develops on the faces of the cylinder 
+and cantilever beam and causes the beam to deform. \n The configuration of the problem is such that a self-induced oscillation 
+will develop in the fluid and the beam. \n Figure 1 shows the geometry below.
+
+![Figure 1. Domain and boundary conditions for the Hron-Turek verification problem](htfsigeo.png)
+
+Let's denote the deformation at the end-point of the beam by (\f$ \delta_y \f$). The objective here is to study how accurately
+the variation of this deformation can be captured. \n The velocity profile is ramped from zero to its final profile (\f$ \bar{U}=2 m/s \f$) in
+the transition period of \f$ T_{trans} = 0.1s \f$. Which is then kept constant for the rest of the simulation. \n
+The table below summarizes the properties of the solid and fluid used in the simulation.
+
+![Table 1. Properties of fluid and solid domains.](htfsitable.png)
+
+@section inputs ElmerFoamFSI Inputs
+ 
+In ElmerFoamFSI, OpenFOAM (finite-volume solver) is used as the fluid solver and Elmer (finite-element solver) is used as the structural solver. \n
+Here both weak and strong coupling appraches can be used to solve FSI problems. The simple dynamic problem currently utilizes a weak-coupling algorithm. \n
+Please take a look at \ref examples for further information regarding the structure of each input file.
+
+@subsection elmerinput Elmer Input
+
+Elmer can be used to find deformation of a solid object (\f$ U \f$) subjected to different types of loads. \n
+To capture large deformations of the solid ElmerFoamFSI uses the non-linear solver. Here the description of the problem starts with the input files. \n \n
+ 
+The <b> .GRD </b> file provides the description of the geometry of the problem \n
+The <b> .SIF </b> file provides rest of the definitions, including material properties and boundary conditions \n
+- It's important to note that in the SIF file: 1, 2, 3 correspond to X, Y, Z direction in a cartesian grid \n
+- The <b> .SIF </b> file is read by the \b ELMERSOLVER_STARTINFO upon execution \n
+
+@subsection foaminput OpenFOAM Input
+ 
+Here, OpenFOAM acts as the fluid solver to solve for the fluid pressure (\f$ p \f$) and velocity (\f$ U \f$) found in <b> ./fluid/0/ </b>. \n
+To capture the deformations of the solid/fluid interface, OpenFOAM has to perform mesh update and re-meshing procedures to maintain the quality
+of the grid. \n OpenFOAM requires both the definition of the solid and the fluid sections of the grid (in ElmerFoamFSI, the solid definition is replaced
+by Elmer. \n To setup a fluid problem, a strict folder/file hierarchy must be followed. \n \n
+
+There should be at-least three major sub-folders in the main fluid problem (\b ./fluid/ ): \n
+These sub-folders are:
+- <b> ./fluid/0/ </b> containing the initial and boundary conditions for the problem. We specify the initial and boundary conditions for the pressures,
+velocities and grid deformation in three separate files with proper names.
+- <b> ./fluid/system/ </b> containing a series of input files to specify which solvers and strategies should be used. 
+- <b> ./fluid/constant/ </b> containing the description of the grid and material properities. Here the folder contains info about the problem geometry.
+  - Within this folder is <b> blockMeshDict </b> (may not necessarily be named blockMeshDict depending on the example) which reads the geometric data.
+
+@section runninghtfsi Running The Hron-Turek Problem
+
+The requirements listed in this dynamic example are an extension of the instructions given in \ref main and should be completed before
+starting the following steps. \n
+In order to execute the simple dynamic verification problem with ElmerFoamFSI, Elmer input and ElmerFoamFSI input file should be copied to the ./fluid. folder of the OpenFOAM input hierachy. Following directions are steps to take to run a problem :
+- Obtain input_data files of SimpleDynamic problem.
+- Create a folder and copy Allclean, Allrun (scripts), /fluid/ and /solid/ folders into this folder, make sure to copy all sub-folders as well.
+> Make sure your folder has following files: Allclean, Allrun, AllrunPar, makeLinks, makeSerialLinks, removeSerialLinks (scripts so far), fluid(folder), solid(folder)
+- Copy elmer SIF, GRD and ELMERSOLVER_STARTINFO files to /fluid/.
+- Run <b> ./Allclean </b>  and <b> ./Allrun </b>  to clean-up and prepare input files for the OpenFOAM.
+- Go to ./fluid/ and type <b> ElmerGrid 1 2 name </b> where "name" should be replaced with the name of the GRD file for Elmer.
+- Run ElmerFoamFSI the FSI simulation by "elmerformfsi name" where name should be re-placed with the name of ElmerFoamFSI input file.
+> <b> ./path/to/elmerfoamfsi/elmerfoamfsi test.config </b> (typically found in the top level /build/bin folder)
+
+As a result of simulation, you will obtain VTK,VTU outputs along with many log files. Output files can be further post processed by using tools such as Paraview.
+
+@section htfsi_results Expected Results
+
+This problem does not have an exact solution. A reference solution provided by Turek and Hron (2006) will be used instead for comparison purposes. \n
+Here the problem is solved with ElmerFoamFSI which utilizes OpenFOAM for the fluid and Elmer for the solid calculations. The tractions, displacement and
+velocities are transmitted between the solver through IMPACT. \n The solid solver used in Elmer is a non-linear elastic solver to account for the large
+deformation, which is a reasonable assumption for the order of strains observed in this problem. The solid mesh for Elmer is generated by ElmerGrid.
+The simulation results below shows the contour plot for fluid velocity, pressure and the displacement history for the tip of the beam as obtained by ElmerFoamFSI.
+
+![](elmerFoam_htfsi3_ux.png)
+![](elmerFoam_htfsi3_p.png)
+![Figure 2. ElmerFoamFSI simulation results showing velocity contour (top), pressure contour for t = 5.0s (middle), displacement history for the tip of the beam (bottom).](elmerFoam_htfsi3_disp.png)
+
+@subsection htfsi_discussion Results and Discussion
+
+Since there is no exact solution available in this case. The ElmerFoamFSI solution is compared against what is reported in Turek and Hron (2006). \n The amplitude
+and period for the beam deflection \f$ \delta_y \f$ are about <i>0.035m</i> and <i>0.18s</i>, respectively. \n ElmerFoamFSI predictions for these quantities are approximately
+<i>0.038m</i> and <i>0.18s</i> that matches with the reference. \n The error for both ElmerFoamFSI can be acceptable because of:
+- Numerical errors associated to the discretization
+- The simple non-iterative nature of the solution scheme
+
+@section citation Citations
+
+Turek, S. and Hron, J. (2006). Fluid-Structure Interaction: Modelling, Simulation, Optimisation, chapter Proposal for Numerical Benchmarking of Fluid-Structure Interaction between an Elastic \n Object and Laminar Incompressible Flow, pages 371–385. Springer Berlin Heidelberg, Berlin, Heidelberg. \n
+
+*/
