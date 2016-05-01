@@ -83,7 +83,7 @@ namespace OpenFoamModuleDriver{
       // Print out the "long usage" (i.e. help) message to stdout
       if(do_stdout){
         std::cout << comline.LongUsage() << std::endl;
-        if(verblevel > 1)
+        if(verblevel > 2)
           std::cout << "OpenFoamModuleDriver::ParallelTest: Exiting test function (success)" 
                     << std::endl;
       }
@@ -116,7 +116,8 @@ namespace OpenFoamModuleDriver{
     std::string TestName(comline.GetOption("name"));
     std::string ListName(comline.GetOption("list"));
     std::string sverb(comline.GetOption("verblevel"));
-    
+    std::string SourcePath(comline.GetOption("source"));    
+
     // The following block parses and sets the verbosity level
     if(!sverb.empty()){
       verblevel = 1;
@@ -151,6 +152,11 @@ namespace OpenFoamModuleDriver{
     // Make an instance of the OpenFoamModuleDriver results object, OpenFoamModuleDriver::TestResults
     OpenFoamModuleDriver::TestResults results;
     
+    //Set the source directory for the testing object if it was input
+    if(!SourcePath.empty()){
+      test.SetSourceDirPath(SourcePath);
+    }
+
     // If the user specified a name, then run only the named test
     if(!TestName.empty()){
       // This call runs a test by name
@@ -179,15 +185,15 @@ namespace OpenFoamModuleDriver{
       test.Process(results);
     }
 
-    COM_finalize();
-    if(com_initialized_pass)
-    com_initialized_pass = (COM_initialized() <= 0);
-
     if(Out)
       *Out << results << std::endl;
     
     if(Out && Ouf)
       Ouf.close();
+
+    COM_finalize();
+    if(com_initialized_pass)
+    com_initialized_pass = (COM_initialized() <= 0);
 
     if((verblevel > 1) && Out)
       *Out << "OpenFoamModuleDriver::ParallelTest: Exiting test function (success)" << std::endl;

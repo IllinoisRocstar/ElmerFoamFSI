@@ -157,14 +157,15 @@ namespace OpenFoamModuleDriver{
       test.Process(results);
     }
 
-    COM_finalize();
-    if(com_initialized_pass)
-    com_initialized_pass = (COM_initialized() <= 0);
 
     *Out << results << std::endl;
     
     if(Ouf)
       Ouf.close();
+
+    COM_finalize();
+    if(com_initialized_pass)
+    com_initialized_pass = (COM_initialized() <= 0);
 
     if(verblevel > 2)
       *Out << "OpenFoamModuleDriver::Test: Exiting test function (success)" << std::endl;

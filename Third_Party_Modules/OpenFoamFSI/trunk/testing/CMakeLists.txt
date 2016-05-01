@@ -57,6 +57,7 @@ ADD_EXECUTABLE(OFModuleTest src/TestOpenFoamModuleDriver.C)
 target_link_libraries(OFModuleTest ${OF_FSILIB} ${FINITEVOL_LIB}
 ${LDUSOLVERS_LIB} ${FOAM_LIB} ${IMPACT_LIB} ${SolverUtils_LIB} ${IRAD_LIB})
 
+
 #IF(MPI_CXX_COMPILER)
 #  ADD_DEFINITIONS(-D_ELMERMODULEDRIVER_PARALLEL_)
 #  ADD_EXECUTABLE(elmermoduledriver_parallel_test src/ParallelTestOpenFoamModuleDriver.C)
@@ -162,26 +163,35 @@ ADD_TEST(TractionData:Correct ${TESTRESULT} TractionData:Correct testresults.txt
 #ADD_TEST(UnloadSolverModule:Works ${TESTRESULT} UnloadSolverModule:Works elmermoduledriver_testresults.txt)
 #ADD_TEST(OpenFoamUnitTests:Run ${TESTRESULT} OpenFoamUnitTests:Run elmermoduledriver_testresults.txt)
 
-#IF(MPI_CXX_COMPILER)
-#  # The parallel tests are actually run by this command
-# #ADD_TEST(RunParallelPlatformTests ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/parallel_platforms -o elmermoduledriver_testresults.txt)
-# ADD_TEST(RunParallelPlatformTests ${RUNTEST} -p
-#${PROJECT_SOURCE_DIR}/share/Platforms/parallel_platforms -s
-#${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -o elmermoduledriver_testresults.txt)
-#  # The remainder use "testresults" utility to check the results of the parallel tests run above
-#  ADD_TEST(ParallelExample:Runs ${TESTRESULT} PEPI:Runs elmermoduledriver_testresults.txt)
-#  ADD_TEST(ParallelExample:Works ${TESTRESULT} PEPI:Works elmermoduledriver_testresults.txt)
-#  ADD_TEST(ParallelTrapezoidQuadrature:Runs ${TESTRESULT} ParallelTrapezoidQuadrature:Runs elmermoduledriver_testresults.txt)
-#  ADD_TEST(ParallelTrapezoidQuadrature:Accurate ${TESTRESULT} ParallelTrapezoidQuadrature:Accurate elmermoduledriver_testresults.txt)
-#  ADD_TEST(ParallelTrapezoidQuadrature:Order ${TESTRESULT} ParallelTrapezoidQuadrature:Order2 elmermoduledriver_testresults.txt)
-#  ADD_TEST(ParallelTrapezoidQuadrature:WeakScaling ${TESTRESULT} ParallelTrapezoidQuadrature:WeakScaling elmermoduledriver_testresults.txt)
-#  ADD_TEST(ParallelTrapezoidQuadrature:StrongScaling ${TESTRESULT} ParallelTrapezoidQuadrature:StrongScaling elmermoduledriver_testresults.txt)
-#  ADD_TEST(ParallelMidPointQuadrature:Runs ${TESTRESULT} ParallelMidPointQuadrature:Runs elmermoduledriver_testresults.txt)
-#  ADD_TEST(ParallelMidPointQuadrature:Accurate ${TESTRESULT} ParallelMidPointQuadrature:Accurate elmermoduledriver_testresults.txt)
-#  ADD_TEST(ParallelMidPointQuadrature:Order ${TESTRESULT} ParallelMidPointQuadrature:Order2 elmermoduledriver_testresults.txt)
-#  ADD_TEST(ParallelMidPointQuadrature:WeakScaling ${TESTRESULT} ParallelMidPointQuadrature:WeakScaling elmermoduledriver_testresults.txt)
-#  ADD_TEST(ParallelMidPointQuadrature:StrongScaling ${TESTRESULT} ParallelMidPointQuadrature:StrongScaling elmermoduledriver_testresults.txt)
-#ENDIF()
+IF(MPI_CXX_COMPILER)
+   ADD_EXECUTABLE(OFModuleTestPar src/ParallelTestOpenFoamModuleDriver.C)
+   target_link_libraries(OFModuleTestPar ${IMPACT_LIB} ${SolverUtils_LIB} ${IRAD_LIB})
+   # The parallel unit/regression tests are actually run by following two lines
+   ADD_TEST(RunParallelPlatformUnitTests:Runs ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/parallel_platforms -s
+   ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -o testresults.txt)
+   ADD_TEST(RunParallelTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/testsPar.list -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o testresults.txt)
+   # The remainder use "testresults" utility to check the results of the parallel tests run above
+   ADD_TEST(ParOpenFoamFsiRegressionTest:Worksi ${TESTRESULT} ParOpenFoamFsiRegressionTest:Works testresults.txt)
+   ADD_TEST(ParOpenFoamModuleRegressionTest:Works ${TESTRESULT} ParOpenFoamModuleRegressionTest:Works testresults.txt)
+   ADD_TEST(ParCommunicatorPassToModule:Pass ${TESTRESULT} CommunicatorPassToModule:Pass testresults.txt)
+   ADD_TEST(LoadParSolverModule:Works ${TESTRESULT} LoadParSolverModule:Works testresults.txt)
+   ADD_TEST(UnloadParSolverModule:Works ${TESTRESULT} LoadParSolverModule:Works testresults.txt)
+   ADD_TEST(ParLoadUnitTestData:Works ${TESTRESULT} ParLoadUnitTestData:Works testresults.txt)
+   ADD_TEST(ParInitFunction:Exists ${TESTRESULT} ParInitFunction:Exists testresults.txt)
+   ADD_TEST(ParInitFunction:Runs ${TESTRESULT} ParInitFunction:Runs testresults.txt)
+   ADD_TEST(ParPressureData:Registered ${TESTRESULT} ParPressureData:Registered testresults.txt)
+   ADD_TEST(ParTractionData:Registered ${TESTRESULT} ParTractionData:Registered testresults.txt)
+   ADD_TEST(ParPressureData:Correct ${TESTRESULT} ParPressureData:Correct testresults.txt)
+   ADD_TEST(ParTractionData:Correct ${TESTRESULT} ParTractionData:Correct testresults.txt)
+   ADD_TEST(ParCoordinateData:Registered ${TESTRESULT} ParCoordinateData:Registered testresults.txt)
+   ADD_TEST(ParCoordinateData:Correct ${TESTRESULT} ParCoordinateData:Correct testresults.txt)
+   ADD_TEST(ParConnectivityData:Registered ${TESTRESULT} ParConnectivityData:Registered testresults.txt)
+   ADD_TEST(ParConnectivityData:Correct ${TESTRESULT} ParConnectivityData:Correct testresults.txt)
+   ADD_TEST(ParTimeData:Registered ${TESTRESULT} ParTimeData:Registered testresults.txt)
+   ADD_TEST(ParTimeData:Correct ${TESTRESULT} ParTimeData:Correct testresults.txt)
+   ADD_TEST(ParStepFluidFunction:Exists ${TESTRESULT} ParStepFluidFunction:Exists testresults.txt)
+   ADD_TEST(ParStepFluidFunction:Steps ${TESTRESULT} ParStepFluidFunction:Steps testresults.txt)
+ENDIF()
 
 INSTALL(TARGETS OFModuleTest RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 #IF(MPI_CXX_COMPILER)

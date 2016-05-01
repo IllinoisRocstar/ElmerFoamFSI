@@ -1,0 +1,64 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:  3.0                                   |
+|   \\  /    A nd           | Web:         http://www.extend-project.de       |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build    : 3.0-7a7445ead09d
+Exec     : fluent3DMeshToFoam solid.msh
+Date     : Apr 25 2016
+Time     : 19:13:22
+Host     : ilrocstar6
+PID      : 11022
+CtrlDict : /home/msafdari/foam/foam-extend-3.0/etc/controlDict
+Case     : /home/msafdari/codes/gitRepo/ElmerFoamFSI/Third_Party_Modules/OpenFoamFSI/trunk/testing/share/Testing/test_data/HronTurekFsiPar/solid
+nProcs   : 1
+SigFpe   : Enabling floating point exception trapping (FOAM_SIGFPE).
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Dimension of grid: 3
+Number of points: 830
+Number of cells: 328
+Number of faces: 1398
+PointGroup: 1 start: 0 end: 829 nComponents: 3.  Reading points...done.
+FaceGroup: 2 start: 0 end: 569.  Reading mixed faces...done.
+FaceGroup: 10 start: 570 end: 573.  Reading mixed faces...done.
+FaceGroup: 11 start: 574 end: 741.  Reading mixed faces...done.
+FaceGroup: 12 start: 742 end: 1397.  Reading mixed faces...done.
+CellGroup: 1 start: 0 end: 327 type: 1
+Zone: 1 name: fluid-1 type: fluid.  Reading zone data...done.
+Zone: 2 name: interior-1 type: interior.  Reading zone data...done.
+Zone: 10 name: plateFix type: wall.  Reading zone data...done.
+Zone: 11 name: plate type: wall.  Reading zone data...done.
+Zone: 12 name: frontAndBackPlanes type: pressure-outlet.  Reading zone data...done.
+
+FINISHED LEXING
+
+--> FOAM Warning : 
+    From function min(const UList<Type>&)
+    in file lnInclude/FieldFunctions.C at line 341
+    empty field, returning zero
+--> FOAM Warning : 
+    From function min(const UList<Type>&)
+    in file lnInclude/FieldFunctions.C at line 341
+    empty field, returning zero
+Creating patch 0 for zone: 10 name: plateFix type: wall
+Creating patch 1 for zone: 11 name: plate type: wall
+Creating patch 2 for zone: 12 name: frontAndBackPlanes type: pressure-outlet
+Creating cellZone 0 name: fluid-1 type: fluid
+Creating faceZone 0 name: interior-1 type: interior
+faceZone from Fluent indices: 0 to: 569 type: interior
+patch 0 from Fluent indices: 570 to: 573 type: wall
+patch 1 from Fluent indices: 574 to: 741 type: wall
+patch 2 from Fluent indices: 742 to: 1397 type: pressure-outlet
+
+    From function void polyMesh::initMesh()
+    in file meshes/polyMesh/polyMeshInitMesh.C at line 81
+    Truncating neighbour list at 570 for backward compatibility
+
+Writing mesh to "/home/msafdari/codes/gitRepo/ElmerFoamFSI/Third_Party_Modules/OpenFoamFSI/trunk/testing/share/Testing/test_data/HronTurekFsiPar/solid/constant/region0"
+
+End

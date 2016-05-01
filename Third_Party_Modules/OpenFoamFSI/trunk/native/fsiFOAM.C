@@ -2,9 +2,6 @@
 
 using namespace COM;
 
-// my includes
-//using namespace std;
-
 int fsifoam_module::Initialize(int argc,char *argv[])
 {
   sumLocalContErr = 0;

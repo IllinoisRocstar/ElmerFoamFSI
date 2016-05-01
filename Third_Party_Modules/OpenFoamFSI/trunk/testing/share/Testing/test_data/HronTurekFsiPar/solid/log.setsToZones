@@ -1,0 +1,35 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:  3.0                                   |
+|   \\  /    A nd           | Web:         http://www.extend-project.de       |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build    : 3.0-7a7445ead09d
+Exec     : setsToZones -noFlipMap
+Date     : Apr 25 2016
+Time     : 19:13:23
+Host     : ilrocstar6
+PID      : 11025
+CtrlDict : /home/msafdari/foam/foam-extend-3.0/etc/controlDict
+Case     : /home/msafdari/codes/gitRepo/ElmerFoamFSI/Third_Party_Modules/OpenFoamFSI/trunk/testing/share/Testing/test_data/HronTurekFsiPar/solid
+nProcs   : 1
+SigFpe   : Enabling floating point exception trapping (FOAM_SIGFPE).
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create polyMesh for time = 0
+
+Searched : "constant/polyMesh/sets"
+Found    : 
+1
+(
+plateZone
+)
+
+
+Adding set plateZone as a faceZone.
+Writing mesh.
+
+End

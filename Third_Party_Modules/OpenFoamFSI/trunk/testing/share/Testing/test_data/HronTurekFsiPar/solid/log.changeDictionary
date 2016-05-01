@@ -1,0 +1,71 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:  3.0                                   |
+|   \\  /    A nd           | Web:         http://www.extend-project.de       |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build    : 3.0-7a7445ead09d
+Exec     : changeDictionary
+Date     : Apr 25 2016
+Time     : 19:13:23
+Host     : ilrocstar6
+PID      : 11023
+CtrlDict : /home/msafdari/foam/foam-extend-3.0/etc/controlDict
+Case     : /home/msafdari/codes/gitRepo/ElmerFoamFSI/Third_Party_Modules/OpenFoamFSI/trunk/testing/share/Testing/test_data/HronTurekFsiPar/solid
+nProcs   : 1
+SigFpe   : Enabling floating point exception trapping (FOAM_SIGFPE).
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+Read dictionary changeDictionaryDict with replacements for dictionaries 
+1
+(
+boundary
+)
+
+Replacing entries in dictionary boundary
+Special handling of boundary as polyMesh/boundary file.
+Loaded dictionary boundary with entries 
+3
+(
+plateFix
+plate
+frontAndBackPlanes
+)
+
+Merging entries from 
+1
+(
+frontAndBackPlanes
+)
+
+fieldDict:
+{
+    plateFix
+    {
+        type            wall;
+        nFaces          4;
+        startFace       570;
+    }
+    plate
+    {
+        type            wall;
+        nFaces          168;
+        startFace       574;
+    }
+    frontAndBackPlanes
+    {
+        type            empty;
+        nFaces          656;
+        startFace       742;
+    }
+}
+
+Writing modified fieldDict boundary
+
+End
+
