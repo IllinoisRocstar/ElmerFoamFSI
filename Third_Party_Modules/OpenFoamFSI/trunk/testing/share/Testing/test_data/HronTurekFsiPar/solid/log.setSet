@@ -1,0 +1,37 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:  3.0                                   |
+|   \\  /    A nd           | Web:         http://www.extend-project.de       |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build    : 3.0-7a7445ead09d
+Exec     : setSet -batch batch.setSet
+Date     : Apr 25 2016
+Time     : 19:13:23
+Host     : ilrocstar6
+PID      : 11024
+CtrlDict : /home/msafdari/foam/foam-extend-3.0/etc/controlDict
+Case     : /home/msafdari/codes/gitRepo/ElmerFoamFSI/Third_Party_Modules/OpenFoamFSI/trunk/testing/share/Testing/test_data/HronTurekFsiPar/solid
+nProcs   : 1
+SigFpe   : Enabling floating point exception trapping (FOAM_SIGFPE).
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create polyMesh for time = 0
+
+Time:0  cells:328  faces:1398  points:830  patches:3  bb:(0.24899 0.19 -0.025334) (0.6 0.21 0.025334)
+
+Reading commands from file "batch.setSet"
+Please type 'help', 'quit' or a set command after prompt.
+Doing:"faceSet plateZone new patchToFace plate"
+    Set:plateZone  Size:0  Action:new
+    Adding all faces of patch plate ...
+    Found matching patch plate with 168 faces.
+    Writing plateZone (size 168) to "constant/polyMesh/sets/plateZone" and to vtk file "VTK/plateZone/plateZone_1.vtk"
+
+End of batch file
+
+End
+

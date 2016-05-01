@@ -1,0 +1,65 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:  3.0                                   |
+|   \\  /    A nd           | Web:         http://www.extend-project.de       |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build    : 3.0-7a7445ead09d
+Exec     : decomposePar
+Date     : Apr 25 2016
+Time     : 19:13:23
+Host     : ilrocstar6
+PID      : 11026
+CtrlDict : /home/msafdari/foam/foam-extend-3.0/etc/controlDict
+Case     : /home/msafdari/codes/gitRepo/ElmerFoamFSI/Third_Party_Modules/OpenFoamFSI/trunk/testing/share/Testing/test_data/HronTurekFsiPar/solid
+nProcs   : 1
+SigFpe   : Enabling floating point exception trapping (FOAM_SIGFPE).
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Time = 0
+Create mesh for region region0
+
+Calculating distribution of cells
+Selecting decompositionMethod simple
+
+Finished decomposition in 0 s
+
+Calculating original mesh data
+
+Distributing cells to processors
+
+Distributing faces to processors
+Preserving global face zone plateZone
+
+Calculating processor boundary addressing
+
+Distributing points to processors
+
+Constructing processor meshes
+
+Processor 0
+    Number of cells = 164
+    Number of faces shared with processor 1 = 4
+    Number of processor patches = 1
+    Number of processor faces = 4
+    Number of boundary faces = 414
+
+Processor 1
+    Number of cells = 164
+    Number of faces shared with processor 0 = 4
+    Number of processor patches = 1
+    Number of processor faces = 4
+    Number of boundary faces = 414
+
+Number of processor faces = 4
+Max number of processor patches = 1
+Max number of faces between processors = 4
+
+Processor 0: field transfer
+Processor 1: field transfer
+
+End.
+

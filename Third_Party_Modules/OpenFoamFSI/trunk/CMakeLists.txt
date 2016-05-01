@@ -1,3 +1,6 @@
+# for building, path following flags to cmake command
+# set -DCMAKE_LIBRARY_PATH=path_to_impact_irad_libraries 
+# set -DCMAKE_INCLUDE_PATH=path_to_impact_irad_surfmap_headers 
 cmake_minimum_required(VERSION 2.8)
 project(OpenFoamModuleDriver)
 
@@ -42,6 +45,9 @@ include_directories(${IRAD_INCPATH} include)
 
 FIND_LIBRARY(SolverUtils_LIB SolverUtils)
 FIND_LIBRARY(COM_LIB COMM)
+FIND_LIBRARY(SIMOUT_LIB SimOUT)
+FIND_LIBRARY(SURFMAP_LIB SurfMap)
+FIND_PATH(SURFMAP_INCPATH Rocmap.h)
 
 find_package(MPI)
 IF(MPI_CXX_COMPILER)
@@ -61,22 +67,14 @@ FIND_LIBRARY(IMPACT_LIB SITCOM)
 FIND_FILE(IMPACT_HDR comf90.h)
 GET_FILENAME_COMPONENT(IMPACT_LIBPATH ${IMPACT_LIB} PATH)
 GET_FILENAME_COMPONENT(IMPACT_INCPATH ${IMPACT_HDR} PATH)
-include_directories(${IMPACT_INCPATH} include)
-
-#FIND_LIBRARY(OF_FSILIB OpenFoamFSI)
-#FIND_LIBRARY(FINITEVOL_LIB finiteVolume)
-#FIND_LIBRARY(LDUSOLVERS_LIB lduSolvers)
-#FIND_LIBRARY(FOAM_LIB foam)
-#FIND_FILE(ICOFOAM_HDR wallFvPatch.H)
-#GET_FILENAME_COMPONENT(ICOFOAM_INCPATH ${ICOFOAM_HDR} PATH)
-#FIND_LIBRARY(WORD_HDR wordI.H)
-#GET_FILENAME_COMPONENT(WORD_INCPATH ${WORD_HDR} PATH)
-#include_directories(${ICOFOAM_INCPATH} ${WORD_INCPATH})
+include_directories(${IMPACT_INCPATH} ${SURFMAP_INCPATH} include)
 
 
 add_executable(OFModuleDriver src/OFModuleDriver.C)
 target_link_libraries(OFModuleDriver ${IMPACT_LIB} ${SolverUtils_LIB} ${IRAD_LIB})
 #target_link_libraries(OFModuleDriver ${OF_FSILIB} ${FINITEVOL_LIB} ${LDUSOLVERS_LIB} ${FOAM_LIB} ${IMPACT_LIB} ${SolverUtils_LIB} ${IRAD_LIB})
+add_executable(OFModuleDriverPar src/OFModuleDriverPar.C)
+target_link_libraries(OFModuleDriverPar ${IMPACT_LIB} ${SolverUtils_LIB} ${IRAD_LIB} ${SIMOUT_LIB} ${SURFMAP_LIB})
 
 #target_link_libraries(SolverModuleDriver ${IRAD_LIB} ${IMPACT_LIBF})
 
