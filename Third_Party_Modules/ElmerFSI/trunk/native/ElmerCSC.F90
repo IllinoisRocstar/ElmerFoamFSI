@@ -86,7 +86,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
 
    IF( MyVerbosity > 3) WRITE( *, * ) 'Calling ElmerInitialize'
 
-   CALL ElmerInitialize(runs)
+   CALL ElmerInitialize(runs, global%ElmerComm)
 
    global%MyModel => CurrentModel
 
@@ -907,7 +907,9 @@ SUBROUTINE ElmerCSC_LOAD_MODULE(name)
   glb%window_name = TRIM(name)
   glb%other_window_handle = -1
   glb%c_window_handle = -1
-  CALL COM_NEW_WINDOW(TRIM(name))
+  CALL COM_NEW_WINDOW(TRIM(name), MPI_COMM_NULL)
+
+  glb%ElmerComm = COM_GET_DEFAULT_COMMUNICATOR()
 
   CALL COM_new_dataitem(TRIM(name)//'.global','w',COM_F90POINTER,1,'')
   CALL COM_allocate_array(TRIM(name)//'.global')

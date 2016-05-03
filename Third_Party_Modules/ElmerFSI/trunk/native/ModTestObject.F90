@@ -21,6 +21,7 @@ MODULE TESTOBJECT
      INTEGER, POINTER :: Conn(:), verbosity(:)!, NodeMap(:)
      CHARACTER(80) :: MeshType 
      INTEGER, POINTER :: MyToElmerNodes(:)
+     INTEGER :: ElmerComm
   END TYPE t_global
 
   CONTAINS

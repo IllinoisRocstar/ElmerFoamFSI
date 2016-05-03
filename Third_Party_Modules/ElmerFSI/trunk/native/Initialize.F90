@@ -52,16 +52,18 @@
 !------------------------------------------------------------------------------
 !> The main program for Elmer. Solves the equations as defined by the input files.
 !------------------------------------------------------------------------------
-   SUBROUTINE ElmerInitialize(runs)
+   SUBROUTINE ElmerInitialize(runs, Comm)
 !------------------------------------------------------------------------------
      USE TESTOBJECT
      USE GeneralModule
+     USE Types
 !------------------------------------------------------------------------------
      IMPLICIT NONE
 !------------------------------------------------------------------------------
      
 !      INTEGER :: Initialize
-
+     INTEGER :: Comm
+ 
 !------------------------------------------------------------------------------
 !    Local variables
 !------------------------------------------------------------------------------
@@ -136,6 +138,9 @@
 
      ! If parallel execution requested, initialize parallel environment:
      !------------------------------------------------------------------
+     !Set ElmerModuleComm to our communicator (we patched Elmer so it will
+     !use this variable for a communicator instead of MPI_COMM_WORLD)
+     ElmerModuleComm = Comm
      ParallelEnv => ParallelInit()
      OutputPE = ParEnv % MyPE
 
