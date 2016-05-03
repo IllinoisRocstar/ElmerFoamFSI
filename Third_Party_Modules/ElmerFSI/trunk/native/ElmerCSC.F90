@@ -529,7 +529,6 @@ SUBROUTINE RUN(global, runs, tFinal)
       TimeIntervals = 2
       Timesteps(2) = 1
       IF (OutputIntervals(1) == 1) THEN
-        OutputIntervals(1) = 0
         OutputIntervals(2) = 1
       END IF
       IF (MyVerbosity > 3) THEN
