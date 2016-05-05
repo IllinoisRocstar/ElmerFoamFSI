@@ -14,9 +14,12 @@
 #include <stdlib.h>
 #include <sstream>
 #include "primitive_utilities.H"
-#include "SolverModuleDriver.H"
+#include "SolverModuleDriverParallel.H"
+#include "COMM.H"
 
-COM_EXTERN_MODULE( ElmerCSC);
+COM_EXTERN_MODULE( ElmerCSCParallel);
+
+typedef IRAD::Comm::CommunicatorObject IRADCommType;
 
 void SolverModuleDriver::usage(char *exec){
   std::cout << "SolverModuleDriver:usage: Usage: " << std::endl
@@ -33,8 +36,6 @@ void SolverModuleDriver::usage(char *exec){
 }
        
 int SolverModuleDriver::init(int argc, char *argv[]){
-
-  COM_init( &argc, &argv);
 
   std::cout << "SoverModuleDriver:init: After COM_init" << std::endl;
 
@@ -86,15 +87,31 @@ int SolverModuleDriver::init(int argc, char *argv[]){
       usage(argv[0]);
   }
 
-  COM_LOAD_MODULE_STATIC_DYNAMIC( ElmerCSC, "Window1");
+  COM_LOAD_MODULE_STATIC_DYNAMIC( ElmerCSCParallel, "Window1");
 
-  /// Get the handle for the initialize function and call it
-  int init_handle = COM_get_function_handle("Window1.Initialize");
-  bool init_func = (init_handle > 0);
-  int verb=3;
- runs = 0;
-  if(init_func){
+  MPI_Comm comm_check;
+  //Check the communicator that the window was loaded on
+  outfile << "Checking Window1" << std::endl;
+  outfile << "comm_check = " << comm_check << std::endl;
+  COM_get_communicator("Window1", &comm_check);
+  if(comm_check == newcomm)
+    outfile << "comm_check == newcomm!" << std::endl;
+  else if(comm_check == MPI_COMM_WORLD)
+    outfile << "comm_check == MPI_COMM_WORLD!" << std::endl;
+  else if(comm_check == MPI_COMM_SELF)
+    outfile << "comm_check == MPI_COMM_SELF!" << std::endl;
+  else
+    outfile << "comm_check == none!" << std::endl;
+
+  if(color == 0){ 
+    /// Get the handle for the initialize function and call it
+    int init_handle = COM_get_function_handle("Window1.Initialize");
+    bool init_func = (init_handle > 0);
+    int verb=3;
+    runs = 0;
+    if(init_func){
     COM_call_function(init_handle, &runs, &verb);
+    }
   }
 
   return 0;
@@ -169,7 +186,6 @@ int SolverModuleDriver::run(){
     }
   }
 
-  std::cout << "Line = " << __LINE__ << std::endl;
 
   //If we want to prescribe loads here's where we do it
   Loads = NULL;
@@ -195,7 +211,6 @@ int SolverModuleDriver::run(){
       }
     }
   }
-  std::cout << "SoverModuleDriver:run: Line = " << __LINE__ << std::endl;
 
   //Put the displacements and loads in the Solution object
   //so we can use its utilities and write a vtk file
@@ -211,17 +226,14 @@ int SolverModuleDriver::run(){
     WriteSolnMetaToStream(std::cout);
     std::cout << std::endl;
   }
-  std::cout << "SoverModuleDriver:run: Line = " << __LINE__ << std::endl;
   if((Disp && isFSI) || Loads){
     CreateSoln();
   }
-  std::cout << "SoverModuleDriver:run: Line = " << __LINE__ << std::endl;
   if(Disp && isFSI)
     Solution().SetFieldBuffer("displacement",DispPass);
   if(Loads && isFSI)
     Solution().SetFieldBuffer("loads",LoadsPass);
 
-  std::cout << "SoverModuleDriver:run: Line = " << __LINE__ << std::endl;
 
   //Write vtk file for timestep 0
   if(isFSI && Conn && Coord){
@@ -299,15 +311,16 @@ int SolverModuleDriver::run(){
 
 int SolverModuleDriver::finalize(){
 
-  /// Get the handle for the finalize function and call it
-  int final_handle = COM_get_function_handle("Window1.Finalize");
-  bool final_func = (final_handle > 0);
-  runs = 0;
-  if(final_func){
-    COM_call_function(final_handle,&runs);
+  if(color == 0){
+    /// Get the handle for the finalize function and call it
+    int final_handle = COM_get_function_handle("Window1.Finalize");
+    bool final_func = (final_handle > 0);
+    runs = 0;
+    if(final_func){
+      COM_call_function(final_handle,&runs);
+    }
   }
-
-  COM_UNLOAD_MODULE_STATIC_DYNAMIC( ElmerCSC, "Window1");
+  COM_UNLOAD_MODULE_STATIC_DYNAMIC( ElmerCSCParallel, "Window1");
 
   COM_finalize();
   std::cout << "SolverModuleDriver:finalize: After COM_finalize" << std::endl;
@@ -320,8 +333,44 @@ int main(int argc, char *argv[]){
 
   SolverModuleDriver driverObject;
 
+  MPI_Init(&argc, &argv);
+  COM_init(&argc, &argv);
+
+  MPI_Comm comm, comm_check;
+  int rank, size;
+
+  std::string outfile_name;
+  std::stringstream ss; 
+  std::string str_rank;
+
+  //Set up output files for parallel debugging
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  ss << rank;
+  ss >> str_rank;
+  outfile_name = "out" + str_rank + ".dat";
+  driverObject.outfile.open(outfile_name.c_str());
+
+  //Split our MPI_COMM_WORLD communicator so we can load
+  //Elmer on only a subset of processes
+  comm = MPI_COMM_WORLD;
+  IRADCommType communicator(comm);
+  IRADCommType newcommunicator;
+  size = communicator.Size();
+  driverObject.color=0;
+  //if(rank >= size/2) driverObject.color=1;
+  driverObject.outfile << "color = " << driverObject.color << std::endl;
+  driverObject.outfile << "rank = " << rank << std::endl;
+  communicator.Split(driverObject.color, rank, newcommunicator);
+  driverObject.outfile << "communicator.Size() = " << communicator.Size() << std::endl;
+  driverObject.outfile << "newcommunicator.Size() = " << newcommunicator.Size() << std::endl;
+  driverObject.newcomm = newcommunicator.GetCommunicator();
+  COM_set_default_communicator(driverObject.newcomm);
+  //COM_set_default_communicator(MPI_COMM_WORLD);
+ 
   driverObject.init(argc, argv);
-  driverObject.run();
+  if(driverObject.color == 0)
+    driverObject.run();
+  MPI_Barrier(MPI_COMM_WORLD);
   driverObject.finalize();
 
   std::ofstream Outfile;
@@ -331,6 +380,10 @@ int main(int argc, char *argv[]){
   Outfile << "howdy!" << std::endl;
   Outfile << "1.2 4.2 5.6 7.8" << std::endl;
   Outfile << "      blargity blarg blarg" << std::endl;
+
+  driverObject.outfile.close();
+  
+  MPI_Finalize();
 
   return 0;
 }

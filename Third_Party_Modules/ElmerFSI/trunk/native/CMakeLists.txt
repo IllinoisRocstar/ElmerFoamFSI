@@ -29,6 +29,7 @@ add_definitions(-DUSE_ISO_C_BINDINGS)
 set (BUILD_STATIC FALSE CACHE BOOL "Build static COM library")
 
 set (SolverMod_SRCS Finalize.F90    GeneralModule.F90      TimeStepper.F90  Initialize.F90 TimeModule.F90  ElmerCSC.F90 LoadFunctionLibrary.F90 ModTestObject.F90)
+set (SolverMod_Par_SRCS Finalize.F90    GeneralModule.F90      TimeStepper.F90  InitializeParallel.F90 TimeModule.F90  ElmerCSCParallel.F90 LoadFunctionLibrary.F90 ModTestObject.F90)
 set (Library_SRCS Finalize.F90    GeneralModule.F90      TimeStepper.F90  Initialize.F90 TimeModule.F90 LoadFunctionLibrary.F90 ModTestObject.F90)
 
 IF(NOT BUILD_STATIC)
@@ -47,3 +48,19 @@ target_link_libraries(ElmerCSC elmersolver ${IMPACT_FLIB} ${IMPACT_LIB})
 target_link_libraries(LoadFunctionLibrary elmersolver)
 
 INSTALL(TARGETS ElmerCSC LoadFunctionLibrary LIBRARY DESTINATION "lib") 
+
+IF(MPI_CXX_COMPILER)
+  ADD_DEFINITIONS(-D_ELMERCSC_PARALLEL_)
+  IF(NOT BUILD_STATIC)
+    add_library(ElmerCSCParallel SHARED ${SolverMod_Par_SRCS})
+  ELSE()
+    add_library(ElmerCSCParallel STATIC ${SolverMod_Par_SRCS})
+    add_definitions( -DSTATIC_LINK )
+  ENDIF()
+  SET_TARGET_PROPERTIES(ElmerCSCParallel PROPERTIES INSTALL_RPATH ${ELMERSOLVER_RPATH_STRING})
+  target_link_libraries(ElmerCSCParallel elmersolver ${IMPACT_FLIB} ${IMPACT_LIB})
+  
+  INSTALL(TARGETS ElmerCSCParallel LIBRARY DESTINATION "lib") 
+ENDIF()
+
+

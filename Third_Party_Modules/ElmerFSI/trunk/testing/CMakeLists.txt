@@ -64,11 +64,12 @@ ADD_TEST(RunTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_s
 #ADD_TEST(FSIobstacleRegressionTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/FSIobstacle.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmermoduledriver_testresults.txt)
 ADD_TEST(FSIobstacleRegressionTest:Runs ${RUNTEST} -f
 ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regression.csh -s
-${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o
+${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o
 elmermoduledriver_testresults.txt -a ${IRAD_EXEPATH})
 ADD_TEST(VortexRegressionTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/Vortex.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmermoduledriver_testresults.txt)
 ADD_TEST(ElasticBeam3DRegressionTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/ElasticBeam3D.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmermoduledriver_testresults.txt)
-ADD_TEST(HronTurekVerficationTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/HronTurekBeam.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmermoduledriver_testresults.txt)
+ADD_TEST(LoadedElasticBeamParallel:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/LoadedElasticBeamParallel.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o elmermoduledriver_testresults.txt)
+ADD_TEST(HronTurekVerficationTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/HronTurekBeam.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o elmermoduledriver_testresults.txt)
 
 ADD_TEST(RunPlatformSpecificTests ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/platforms -o elmermoduledriver_testresults.txt)
 ADD_TEST(RunSpecificTestScript    ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Platforms/test_stub.csh -o elmermoduledriver_testresults.txt)
@@ -95,6 +96,7 @@ ADD_TEST(LoadSolverModule:Works ${TESTRESULT} LoadSolverModule:Works elmermodule
 ADD_TEST(FSIregressionTest:Works ${TESTRESULT} FSIregressionTest:Works elmermoduledriver_testresults.txt)
 ADD_TEST(VortexRegressionTest:Works ${TESTRESULT} VortexRegressionTest:Works elmermoduledriver_testresults.txt)
 ADD_TEST(ElasticBeam3DRegressionTest:Works ${TESTRESULT} ElasticBeam3DRegressionTest:Works elmermoduledriver_testresults.txt)
+ADD_TEST(LoadedElasticBeamParallel:Works ${TESTRESULT} LoadedElasticBeamParallel:Works elmermoduledriver_testresults.txt)
 ADD_TEST(HronTurekBeam:Works ${TESTRESULT} HronTurekBeam:Works elmermoduledriver_testresults.txt)
 ADD_TEST(Initialize:Runs ${TESTRESULT} Initialize:Runs elmermoduledriver_testresults.txt)
 #ADD_TEST(ModuleFunctions:Runs ${TESTRESULT} ModuleFunctions:Runs elmermoduledriver_testresults.txt)

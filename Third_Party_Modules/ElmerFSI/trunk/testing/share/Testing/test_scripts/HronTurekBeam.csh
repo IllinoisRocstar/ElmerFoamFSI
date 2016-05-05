@@ -23,15 +23,23 @@ if( ! -e hronturektest.ep ) then
 endif
 tail -n 546 hronturektest.ep | cut -d " " -f 3 > yvals.txt
 
-$4/diffdatafiles yvals.txt yvals_gold.txt -t 1.0e-9 -n
+printf "HronTurekBeam:Works=" >> ${TmpOut}
+
+set STEST=`$4/diffdatafiles yvals.txt yvals_gold.txt -t 1.0e-9 -n`
+if( $status != 0 ) then
+  printf "0\n" >> ${TmpOut}
+  cat ${TmpOut} >> ../${OutFile}
+  cd ..
+  exit 1
+endif  
 
 @ result = 1
 
-if($? != 0) then
+if("$STEST" != "") then
   echo "Test data did not pass with tolerance of 1e-9."
   @ result = 0
 endif
-printf "HronTurekBeam:Works=${result}\n" >> ${TmpOut}
+printf "${result}\n" >> ${TmpOut}
 cat ${TmpOut} >> ../${OutFile}
 cd ../
 rm -r HronTurekBeam

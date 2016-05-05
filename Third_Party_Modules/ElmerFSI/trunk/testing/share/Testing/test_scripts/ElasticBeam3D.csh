@@ -26,9 +26,17 @@ endif
 #removing run time stamp from output file
 sed '2d' case.ep > case.ep.tmp
 
+printf "ElasticBeam3DRegressionTest:Works=" >> ${TmpOut}
+
 set STEST=`diff case.ep.tmp case.ep_check`
 
-printf "ElasticBeam3DRegressionTest:Works=" >> ${TmpOut}
+if( $status != 0 ) then
+  printf "0\n" >> ${TmpOut}
+  cat ${TmpOut} >> ../${OutFile}
+  cd ..
+  exit 1
+endif  
+
 if( "$STEST" == "") then
   printf "1\n" >> ${TmpOut}
   cat ${TmpOut} >> ../${OutFile}

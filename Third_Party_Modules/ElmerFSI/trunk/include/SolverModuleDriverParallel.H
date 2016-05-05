@@ -34,6 +34,11 @@ public:
   int init(int argc, char *argv[]);
   int run();
   int finalize();
+  int getColor(){return color;}
+  std::ofstream outfile;
+  MPI_Comm newcomm;
+  int color;
+
 };
   
 #endif

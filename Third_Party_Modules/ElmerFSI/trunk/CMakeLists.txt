@@ -58,6 +58,8 @@ IF(MPI_CXX_COMPILER)
   ADD_DEFINITIONS(-D_ELMERMODULEDRIVER_PARALLEL_)
   ADD_EXECUTABLE(pepi src/ExampleParallelProgram.C src/pepi.C)
   TARGET_LINK_LIBRARIES(pepi ElmerModuleDriver)
+  add_executable(SolverModuleDriverParallel src/SolverModuleDriverParallel.C)
+  target_link_libraries(SolverModuleDriverParallel ${SOLVERUTILS} ${IRAD_LIB} ${IMPACT_LIBF} ${IMPACT_LIB})
 ENDIF()
 
 # Information for ElmerModuleDriver CMake
@@ -101,7 +103,7 @@ IF(BUILD_DOCUMENTATION)
   INSTALL( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs DESTINATION share/ElmerModuleDriver )
 ENDIF()
 
-INSTALL(TARGETS SolverModuleDriver ElmerModuleDriver sep RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+INSTALL(TARGETS SolverModuleDriver SolverModuleDriverParallel ElmerModuleDriver sep RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 IF(MPI_CXX_COMPILER)
   INSTALL(TARGETS pepi RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 ENDIF()
