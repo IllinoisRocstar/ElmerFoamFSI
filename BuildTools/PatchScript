@@ -28,7 +28,7 @@ cd $topSourceDir
 
 # Copy the appropriate source files into elmer
 cd elmerfem/fem/src/
-cp -r $topSourceDir/Third_Party_Modules/ElmerFSI/trunk/native/ ElmerModule
+ln -s $topSourceDir/Third_Party_Modules/ElmerFSI/trunk/native/ ElmerModule
 if [ $? -ne 0 ]; then status=1; fi
 
 # Patch the elmer source
