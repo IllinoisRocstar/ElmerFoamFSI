@@ -9,5 +9,8 @@ if [ $? -ne 0 ]; then exit 1; fi
 cd $ElmerFoamTop/Third_Party_Modules/OpenFoamFSI/trunk/native
 wmake libso .
 if [ $? -ne 0 ]; then exit 1; fi
+cd $ElmerFoamTop/Third_Party_Modules/OpenFoamFSI/trunk/nativePar
+wmake libso .
+if [ $? -ne 0 ]; then exit 1; fi
 cd $topSourceDir
 

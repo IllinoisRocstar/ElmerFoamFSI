@@ -9,20 +9,10 @@ installDir="$topSourceDir/support_install"
 
 # Patch Openfoam build files
 
-cd foam/foam-extend-3.2/ThirdParty/rpmBuild/SPECS/
-cp $topSourceDir/Third_Party_Modules/OpenFoamFSI/trunk/SPECSPatch .
+cd foam/foam-extend-3.2/
+cp $topSourceDir/Third_Party_Modules/OpenFoamFSI/trunk/openFoamGitPatch .
 if [ $? -ne 0 ]; then status=1; fi
-patch < SPECSPatch
-if [ $? -ne 0 ]; then status=1; fi
-cd $topSourceDir
-cd foam/foam-extend-3.2/etc
-cp $topSourceDir/Third_Party_Modules/OpenFoamFSI/trunk/cshrcPatch .
-if [ $? -ne 0 ]; then status=1; fi
-patch < cshrcPatch
-if [ $? -ne 0 ]; then status=1; fi
-cp $topSourceDir/Third_Party_Modules/OpenFoamFSI/trunk/bashrcPatch .
-if [ $? -ne 0 ]; then status=1; fi
-patch < bashrcPatch
+git apply openFoamGitPatch
 if [ $? -ne 0 ]; then status=1; fi
 cd $topSourceDir
 

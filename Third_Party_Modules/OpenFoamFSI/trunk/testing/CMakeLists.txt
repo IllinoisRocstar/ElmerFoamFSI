@@ -171,7 +171,7 @@ IF(MPI_CXX_COMPILER)
    ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -o testresults.txt)
    ADD_TEST(RunParallelTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/testsPar.list -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o testresults.txt)
    # The remainder use "testresults" utility to check the results of the parallel tests run above
-   ADD_TEST(ParOpenFoamFsiRegressionTest:Worksi ${TESTRESULT} ParOpenFoamFsiRegressionTest:Works testresults.txt)
+   ADD_TEST(ParOpenFoamFsiRegressionTest:Works ${TESTRESULT} ParOpenFoamFsiRegressionTest:Works testresults.txt)
    ADD_TEST(ParOpenFoamModuleRegressionTest:Works ${TESTRESULT} ParOpenFoamModuleRegressionTest:Works testresults.txt)
    ADD_TEST(ParCommunicatorPassToModule:Pass ${TESTRESULT} CommunicatorPassToModule:Pass testresults.txt)
    ADD_TEST(LoadParSolverModule:Works ${TESTRESULT} LoadParSolverModule:Works testresults.txt)

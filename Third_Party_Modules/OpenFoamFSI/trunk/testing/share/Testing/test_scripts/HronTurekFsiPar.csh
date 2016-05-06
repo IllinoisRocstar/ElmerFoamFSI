@@ -15,12 +15,13 @@
 #  <test_root>:  the root of our testing file structure
 #  <build_binary>:  location of the IMPACT bin directory
 #
-echo "************************************"
+echo "***************************************"
 echo "Running HronTurekFsiPar regression test"
-echo "************************************"
+echo "***************************************"
 
 set OutFile=$1
 set TmpOut=${OutFile}_tmp.txt 
+set iradBinPath=$4
 
 # Regression test for OpenFoamFSI test case
 
@@ -69,7 +70,10 @@ endif
 # remove OpenFoam's header from the file
 (tail -n +19 fluid/processor0/0.005/accumulatedFluidInterfaceDisplacement) > fluid/processor0/0.005/accumulatedFluidInterfaceDisplacement_resultOnly
 set resultFile = "processor0/0.005/accumulatedFluidInterfaceDisplacement_resultOnly" 
-diff fluid/$resultFile archiveData/$resultFile
+# cleaning the files
+sed 's/[)(]//g' archiveData/$resultFile > archiveData/$resultFile
+sed 's/[)(]//g' fluid/$resultFile > fluid/$resultFile
+$iradBinPath/diffdatafiles -t 1e-8 fluid/$resultFile archiveData/$resultFile
 set STEST = $?
 
 # move back to top level
@@ -99,7 +103,7 @@ cp -r $2/share/Testing/test_data/HronTurekFsiPar/* .
 
 # setup IMPACT Version
 echo "Running IMPACT Parallel OpenFoam Driver"
-./AllrunParSetup
+./AllrunParDrvSetup
 cd fluid
 #$3/OFModuleDriverPar --driverRegression >& log.OFModuleDriver 
 mpirun -np 2 $3/OFModuleDriverPar --parallel > & log.OFModuleDrvPar
@@ -113,17 +117,22 @@ if( $? != 0 ) then
   echo "See the test results in HronTurekFsiParIMPACT for more details."
   exit 1
 endif
+cd ..
 
 # now compare the results of the two runs, for now just compare the
 # accumulatedFulidInterfaceDisplacement, if that is the same, the
 # rest is likely the same
 
-set resultFile = "processor0/0.005/accumulatedFluidInterfaceDisplacement" 
-diff $resultFile ../../HronTurekFsiPar/fluid/$resultFile
+# remove OpenFoam's header from the file
+(tail -n +19 fluid/processor0/0.005/accumulatedFluidInterfaceDisplacement) > fluid/processor0/0.005/accumulatedFluidInterfaceDisplacement_resultOnly
+set resultFile = "processor0/0.005/accumulatedFluidInterfaceDisplacement_resultOnly"
+sed 's/[)(]//g' archiveData/$resultFile > archiveData/$resultFile
+sed 's/[)(]//g' fluid/$resultFile > fluid/$resultFile
+$iradBinPath/diffdatafiles -t 1e-8 ../HronTurekFsiPar/fluid/$resultFile fluid/$resultFile
 set STEST = $?
 
 # move back to top level
-cd ../..
+cd ..
 printf "ParOpenFoamModuleRegressionTest:Works=" >> ${TmpOut}
 if( $STEST != 0 ) then
   echo "Results differ between parallel OpenFoam and parallel OFModuleDriver"

@@ -21,6 +21,7 @@ echo "************************************"
 
 set OutFile=$1
 set TmpOut=${OutFile}_tmp.txt 
+set iradBinPath=$4
 
 # Regression test for OpenFoamFSI test case
 
@@ -70,7 +71,11 @@ endif
 # remove OpenFoam's header from the file
 (tail -n +19 fluid/0.005/accumulatedFluidInterfaceDisplacement) > fluid/0.005/accumulatedFluidInterfaceDisplacement_resultOnly
 set resultFile = "0.005/accumulatedFluidInterfaceDisplacement_resultOnly" 
-$4/diffdatafiles  -n fluid/$resultFile archiveData/$resultFile
+# cleaning the files
+sed 's/[)(]//g' archiveData/$resultFile > archiveData/$resultFile
+sed 's/[)(]//g' fluid/$resultFile > fluid/$resultFile
+$iradBinPath/diffdatafiles -t 1e-8 fluid/$resultFile archiveData/$resultFile
+#$4/diffdatafiles  -n fluid/$resultFile archiveData/$resultFile
 set STEST = $?
 
 # move back to top level
@@ -107,6 +112,7 @@ echo "Done running IMPACT OpenFoam Driver"
 
 # check that everything finished 
 grep "End" log.OFModuleDriver > /dev/null
+cd ..
 
 if( $? != 0 ) then
   echo "Looks like OFModuleDriver failed to finish."
@@ -118,12 +124,14 @@ endif
 # accumulatedFulidInterfaceDisplacement, if that is the same, the
 # rest is likely the same
 
-set resultFile = "0.005/accumulatedFluidInterfaceDisplacement" 
-$4/diffdatafiles -n $resultFile ../../HronTurekFsi/fluid/$resultFile
+set resultFile = "0.005/accumulatedFluidInterfaceDisplacement_resultOnly" 
+sed 's/[)(]//g' archiveData/$resultFile > archiveData/$resultFile
+sed 's/[)(]//g' fluid/$resultFile >  fluid/$resultFile
+$iradBinPath/diffdatafiles -t 1e-8 ../HronTurekFsi/fluid/$resultFile fluid/$resultFile
 set STEST = $?
 
 # move back to top level
-cd ../..
+cd ..
 printf "HronTurekFsiRegressionTest:Works=" >> ${TmpOut}
 if( $STEST != 0 ) then
   echo "Results differ between OpenFoam and OFModuleDriver"

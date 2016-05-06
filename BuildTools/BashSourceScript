@@ -1,5 +1,7 @@
 # source the openfoam source file
 export ElmerFoamTop=$1
+# setting the env variables for openFoam installation
+export FOAM_INST_DIR=$1/foam
 source $ElmerFoamTop/foam/foam-extend-3.2/etc/bashrc
 if [ $? -ne 0 ]
 then
