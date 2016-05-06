@@ -54,12 +54,6 @@ TARGET_LINK_LIBRARIES(sep ElmerModuleDriver)
 ADD_EXECUTABLE(make_project src/MakeProject.C)
 TARGET_LINK_LIBRARIES(make_project ElmerModuleDriver)
 
-IF(MPI_CXX_COMPILER)
-  ADD_DEFINITIONS(-D_ELMERMODULEDRIVER_PARALLEL_)
-  ADD_EXECUTABLE(pepi src/ExampleParallelProgram.C src/pepi.C)
-  TARGET_LINK_LIBRARIES(pepi ElmerModuleDriver)
-ENDIF()
-
 # Information for ElmerModuleDriver CMake
 FIND_LIBRARY(IMPACT_LIBF SITCOMF)
 FIND_LIBRARY(IMPACT_LIB SITCOM)
@@ -74,6 +68,14 @@ FIND_LIBRARY(SOLVERUTILS SolverUtils)
 
 add_executable(SolverModuleDriver src/SolverModuleDriver.C)
 target_link_libraries(SolverModuleDriver ${SOLVERUTILS} ${IRAD_LIB} ${IMPACT_LIBF} ${IMPACT_LIB})
+
+IF(MPI_CXX_COMPILER)
+  ADD_DEFINITIONS(-D_ELMERMODULEDRIVER_PARALLEL_)
+  ADD_EXECUTABLE(pepi src/ExampleParallelProgram.C src/pepi.C)
+  TARGET_LINK_LIBRARIES(pepi ElmerModuleDriver)
+  add_executable(SolverModuleDriverParallel src/SolverModuleDriverParallel.C)
+  target_link_libraries(SolverModuleDriverParallel ${SOLVERUTILS} ${IRAD_LIB} ${IMPACT_LIBF} ${IMPACT_LIB})
+ENDIF()
 
 # Add target to build the documentation
 option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen)" ON)
@@ -103,7 +105,7 @@ ENDIF()
 
 INSTALL(TARGETS SolverModuleDriver ElmerModuleDriver sep RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 IF(MPI_CXX_COMPILER)
-  INSTALL(TARGETS pepi RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+  INSTALL(TARGETS SolverModuleDriverParallel RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
 ENDIF()
 # ========= USE IN EXISTING PROJECT ==============
 

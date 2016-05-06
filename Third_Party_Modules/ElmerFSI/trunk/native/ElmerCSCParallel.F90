@@ -63,7 +63,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
    CALL SET_STDIO_BUFS()
 #endif
 
-   WRITE(6,*) 'ElmerCSC:Initializer: Starting ...'
+   WRITE(6,*) 'ElmerCSCParallel:Initializer: Starting ...'
 
    !Allocate space for storing the verbosity
    ALLOCATE(global%verbosity(1))
@@ -86,7 +86,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
 
    IF( MyVerbosity > 3) WRITE( *, * ) 'Calling ElmerInitialize'
 
-   CALL ElmerInitialize(runs)
+   CALL ElmerInitialize(runs, global%ElmerComm)
 
    global%MyModel => CurrentModel
 
@@ -284,7 +284,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
           MyMesh % NumberOfBulkElements + &
           MyMesh % NumberOfBoundaryElements
 
-      !WRITE(*,*) "ElmerCSC element = ", t
+      !WRITE(*,*) "ElmerCSCParallel element = ", t
 
       MyCurrentElement => MyMesh % Elements(t)
       bc_id = GetBCId(MyCurrentElement)
@@ -456,7 +456,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
    END IF
 
 
-   WRITE(6,*) 'ElmerCSC:Initializer: Done.....'
+   WRITE(6,*) 'ElmerCSCParallel:Initializer: Done.....'
 
    NULLIFY(TempNodeList)
  
@@ -588,10 +588,10 @@ SUBROUTINE RUN(global, runs, tFinal)
    !Run is finished
    PreviousTime = FinalTime
 
-   WRITE(*,*) 'ElmerCSC:Run: runs = ',runs
-   WRITE(*,*) 'ElmerCSC:Run: CurrentModel%GetTestLoads = ',&
+   WRITE(*,*) 'ElmerCSCParallel:Run: runs = ',runs
+   WRITE(*,*) 'ElmerCSCParallel:Run: CurrentModel%GetTestLoads = ',&
               CurrentModel%GetTestLoads
-   WRITE(*,*) 'ElmerCSC:Run: CurrentModel%UDFUsed = ',&
+   WRITE(*,*) 'ElmerCSCParallel:Run: CurrentModel%UDFUsed = ',&
               CurrentModel%UDFUsed
    IF (runs == 1 .AND. CurrentModel%GetTestLoads .eqv. .TRUE. & 
       .AND. CurrentModel%UDFUsed .eqv. .TRUE.) THEN
@@ -616,7 +616,7 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
    DOUBLE PRECISION :: tFinal
    INTEGER :: nCount, counter, nCountMax
 
-   WRITE(*,*) 'ElmerCSC:UpdateDisplacements:',&
+   WRITE(*,*) 'ElmerCSCParallel:UpdateDisplacements:',&
               ' Reporting displacements to the fluid solver'
 
    !access the displacements here
@@ -829,7 +829,7 @@ SUBROUTINE Finalize(global, runs)
 
    CurrentModel => global%MyModel
 
-   WRITE(*,*) 'ElmerCSC:Finalize: Finishing simulation'
+   WRITE(*,*) 'ElmerCSCParallel:Finalize: Finishing simulation'
 
    CALL ElmerFinalize(runs)
 
@@ -845,13 +845,13 @@ SUBROUTINE Finalize(global, runs)
       END IF
    END IF
 
-   WRITE(6,*) 'ElmerCSC:Finalize: End Finalize. FirstTime = ',FirstTime 
+   WRITE(6,*) 'ElmerCSCParallel:Finalize: End Finalize. FirstTime = ',FirstTime 
 
 END SUBROUTINE Finalize
 
 ! ********************************************************************
 
-SUBROUTINE ElmerCSC_LOAD_MODULE(name)
+SUBROUTINE ElmerCSCParallel_LOAD_MODULE(name)
 
   USE TESTOBJECT
 
@@ -900,14 +900,16 @@ SUBROUTINE ElmerCSC_LOAD_MODULE(name)
   TYPE(t_global), POINTER :: glb
   
 
-  WRITE(*,'(A)') "Loading ElmerCSC: "//TRIM(name)
+  WRITE(*,'(A)') "Loading ElmerCSCParallel: "//TRIM(name)
   
 
   ALLOCATE(glb)
   glb%window_name = TRIM(name)
   glb%other_window_handle = -1
   glb%c_window_handle = -1
-  CALL COM_NEW_WINDOW(TRIM(name))
+  CALL COM_NEW_WINDOW(TRIM(name), MPI_COMM_NULL)
+
+  glb%ElmerComm = COM_GET_DEFAULT_COMMUNICATOR()
 
   CALL COM_new_dataitem(TRIM(name)//'.global','w',COM_F90POINTER,1,'')
   CALL COM_allocate_array(TRIM(name)//'.global')
@@ -931,10 +933,10 @@ SUBROUTINE ElmerCSC_LOAD_MODULE(name)
 
   CALL COM_set_pointer(name//'.global',glb,associate_pointer )
 
-END SUBROUTINE ElmerCSC_LOAD_MODULE
+END SUBROUTINE ElmerCSCParallel_LOAD_MODULE
 
 
-SUBROUTINE ElmerCSC_UNLOAD_MODULE(name)
+SUBROUTINE ElmerCSCParallel_UNLOAD_MODULE(name)
   USE TESTOBJECT
   IMPLICIT NONE
   INCLUDE "comf90.h"
@@ -950,7 +952,7 @@ SUBROUTINE ElmerCSC_UNLOAD_MODULE(name)
   TYPE(t_global), POINTER :: glb
   INTEGER :: window_handle,other_window_handle,c_window_handle, owlen
 
-  WRITE(*,'(A)') "Unloading ElmerCSC: "//TRIM(name)
+  WRITE(*,'(A)') "Unloading ElmerCSCParallel: "//TRIM(name)
   NULLIFY(glb)
   window_handle = COM_GET_WINDOW_HANDLE(TRIM(name))
   if(window_handle .gt. 0) then
@@ -962,7 +964,7 @@ SUBROUTINE ElmerCSC_UNLOAD_MODULE(name)
                 ' unloading external Fortran module '//TRIM(glb%other_window_name)//'.'
            other_window_handle = COM_GET_WINDOW_HANDLE(TRIM(glb%other_window_name))
            IF(other_window_handle .gt. 0) THEN
-              CALL COM_UNLOAD_MODULE("ElmerCSC",TRIM(glb%other_window_name))
+              CALL COM_UNLOAD_MODULE("ElmerCSCParallel",TRIM(glb%other_window_name))
            ENDIF
         endif
         if(glb%c_window_handle .gt. 0) then
@@ -970,14 +972,14 @@ SUBROUTINE ElmerCSC_UNLOAD_MODULE(name)
                 ' unloading external C module '//TRIM(glb%c_window_name)//'.'
            c_window_handle = COM_GET_WINDOW_HANDLE(TRIM(glb%c_window_name))
            IF(c_window_handle .gt. 0) THEN
-              CALL COM_UNLOAD_MODULE("ElmerCSC",TRIM(glb%c_window_name))
+              CALL COM_UNLOAD_MODULE("ElmerCSCParallel",TRIM(glb%c_window_name))
            ENDIF
         endif
 !        DEALLOCATE(glb)
      ENDIF
      CALL COM_DELETE_WINDOW(TRIM(name))
   endif
-END SUBROUTINE ElmerCSC_UNLOAD_MODULE
+END SUBROUTINE ElmerCSCParallel_UNLOAD_MODULE
 
 ! ******************************************************************************
 

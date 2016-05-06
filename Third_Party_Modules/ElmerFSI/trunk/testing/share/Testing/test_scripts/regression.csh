@@ -36,10 +36,17 @@ end
 @ result = 1
 
 #diff the new output file with the saved one to check
+printf "${TestName}=" >> ${TmpOut}
 @ i = 1
 foreach file (${Outputs})
-  $4/diffdatafiles ${file} $OutputsCheck[$i] -t 1.0e-10 -n
-  if($? != 0) then
+  set STEST=`$4/diffdatafiles ${file} $OutputsCheck[$i] -t 1.0e-10 -n`
+  if( $status != 0 ) then
+    printf "0\n" >> ${TmpOut}
+    cat ${TmpOut} >> ../${OutFile}
+    cd ..
+    exit 1
+  endif  
+  if("$STEST" != "") then
     echo "${file} differs from $OutputsCheck[$i]"
     @ result = 0
   endif
@@ -47,7 +54,6 @@ foreach file (${Outputs})
 end
 
 #print test results to OutFile
-printf "${TestName}=" >> ${TmpOut}
 printf "$result\n" >> ${TmpOut}
 cat ${TmpOut} >> ../${OutFile}
 cd ..
