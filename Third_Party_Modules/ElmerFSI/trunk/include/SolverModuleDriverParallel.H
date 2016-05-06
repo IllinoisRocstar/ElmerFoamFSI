@@ -25,6 +25,8 @@ class SolverModuleDriver : public SolverUtils::FEM::SolverAgent, public COM_Obje
   int LoadsSize;
   std::vector<double> LoadsPass;
   int runs;
+  int color;
+  MPI_Comm Comm;
 
 public:
 
@@ -35,9 +37,9 @@ public:
   int run();
   int finalize();
   int getColor(){return color;}
+  void setColor(int colorValue){color = colorValue;}
+  void setComm(MPI_Comm newComm){Comm = newComm;}
   std::ofstream outfile;
-  MPI_Comm newcomm;
-  int color;
 
 };
   

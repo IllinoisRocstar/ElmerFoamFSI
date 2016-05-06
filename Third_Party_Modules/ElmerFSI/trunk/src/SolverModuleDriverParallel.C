@@ -94,8 +94,8 @@ int SolverModuleDriver::init(int argc, char *argv[]){
   outfile << "Checking Window1" << std::endl;
   outfile << "comm_check = " << comm_check << std::endl;
   COM_get_communicator("Window1", &comm_check);
-  if(comm_check == newcomm)
-    outfile << "comm_check == newcomm!" << std::endl;
+  if(comm_check == Comm)
+    outfile << "comm_check == Comm!" << std::endl;
   else if(comm_check == MPI_COMM_WORLD)
     outfile << "comm_check == MPI_COMM_WORLD!" << std::endl;
   else if(comm_check == MPI_COMM_SELF)
@@ -336,8 +336,9 @@ int main(int argc, char *argv[]){
   MPI_Init(&argc, &argv);
   COM_init(&argc, &argv);
 
-  MPI_Comm comm, comm_check;
+  MPI_Comm comm, comm_check, newComm;
   int rank, size;
+  int color=0;
 
   std::string outfile_name;
   std::stringstream ss; 
@@ -356,19 +357,20 @@ int main(int argc, char *argv[]){
   IRADCommType communicator(comm);
   IRADCommType newcommunicator;
   size = communicator.Size();
-  driverObject.color=0;
+  driverObject.setColor(color);
   //if(rank >= size/2) driverObject.color=1;
-  driverObject.outfile << "color = " << driverObject.color << std::endl;
+  driverObject.outfile << "color = " << color << std::endl;
   driverObject.outfile << "rank = " << rank << std::endl;
-  communicator.Split(driverObject.color, rank, newcommunicator);
+  communicator.Split(color, rank, newcommunicator);
   driverObject.outfile << "communicator.Size() = " << communicator.Size() << std::endl;
   driverObject.outfile << "newcommunicator.Size() = " << newcommunicator.Size() << std::endl;
-  driverObject.newcomm = newcommunicator.GetCommunicator();
-  COM_set_default_communicator(driverObject.newcomm);
+  driverObject.setComm(newcommunicator.GetCommunicator());
+  newComm = newcommunicator.GetCommunicator();
+  COM_set_default_communicator(newComm);
   //COM_set_default_communicator(MPI_COMM_WORLD);
  
   driverObject.init(argc, argv);
-  if(driverObject.color == 0)
+  if(color == 0)
     driverObject.run();
   MPI_Barrier(MPI_COMM_WORLD);
   driverObject.finalize();
