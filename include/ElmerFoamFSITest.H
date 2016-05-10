@@ -20,6 +20,7 @@
 #include <vector>
 #include <cmath>
 #include "Driver.H"
+//#include <array>
 //#include "Parameters.H"
 //#include "InterfaceLayer.H"
 //#include "Orchestrator.H"
@@ -494,7 +495,6 @@ namespace ElmerFoamFSI {
     //Copied from ElmerDriver testing script
     virtual int GetInputData(std::string suffix,std::string TestDir){
 
-      std::cout << "In GetInputData" << std::endl;
       std::string DirName;
       std::string OrgDir;
 
@@ -612,31 +612,8 @@ namespace ElmerFoamFSI {
       
     }
       
-/*    void Test__ReadInputWorks(ResultsType &result){
 
-      int argc = 2;
-      char ** argv;
-      argv = new char*[3];
-      argv[0] = const_cast<char *>("elmerfoamfsi_test");
-      argv[1] = const_cast<char *>("test.config");
-      argv[2] = NULL;
-      std::cout << "Do I even get here? " << std::endl;       
-      ElmerFoamFSI::SerialDriverProgram MyProgram(argc,argv);
-      std::cout << "Do I even get here? 2" << std::endl;       
-      
-      int retval = MyProgram.Initialize();
-      if(retval){
-        MyProgram.ErrOut("Error in Prram initialization. \n");
-      }
-      std::cout << "Before Reading Input ! " << std::endl;       
-      MyProgram.ReadInput();
-      std::cout << "After  Reading Input ! " << std::endl;
-      int works = 0;
-      //result.UpdateResult("ReadInputWorks", works);
-    }
-*/
-
-    virtual void Test__fsiCoupler(ResultsType &result){
+    virtual void Test__FsiCoupler(ResultsType &result){
      
       double time_final = 0.05;
       double timestep = 2.0e-3;
@@ -652,7 +629,7 @@ namespace ElmerFoamFSI {
       if(!(IRAD::Sys::FILEEXISTS(fluidDir)||(IRAD::Sys::FILEEXISTS(simStaticDir)))){
         std::cout << "SimpleStatic / fluid Folders do not exists!" << std::endl;
         works = false;           
-        result.UpdateResult("fsiCoupler:Works",works);
+        result.UpdateResult("FsiCoupler:Works",works);
         return; 
       }
       else{
@@ -661,7 +638,7 @@ namespace ElmerFoamFSI {
           std::cout << "GetInputData Error: Could not change directory to " 
                     << fluidDir << ". Exiting (fail). " << std::endl;
           works = false;
-          result.UpdateResult("fsiCoupler:Works",works);
+          result.UpdateResult("FsiCoupler:Works",works);
         }
         std::system("chmod 755 Allclean Allrun AllrunPar makeLinks makeSerialLinks removeSerialLinks"); 
         std::system("./Allclean");
@@ -671,7 +648,7 @@ namespace ElmerFoamFSI {
           std::cout << "GetInputData Error: Could not change directory to " 
                     << fluidDir << ". Exiting (fail). " << std::endl;
           works = false;
-          result.UpdateResult("fsiCoupler:Works",works);
+          result.UpdateResult("FsiCoupler:Works",works);
         }
       }
       
@@ -718,18 +695,1116 @@ namespace ElmerFoamFSI {
           break;
         }
       }
-//      while (i < componentInterfaceNames.size()){
-//           if (componentInterfaceNames.at(i) != classInterfaceNames.at(i)){
-//                works = false;
-//                break;
-//           }
-//           i++;  
-//      }
 
       result.UpdateResult("fsiCoupler:Works",works);
       
     }
-    //virtual void Test__
+
+    /// Test for fsiCoupling::TrasferDisplacementsToFluid function.
+    ///
+    /// @param result ElmerFoamFSI::TestResults object to store test results.
+    ///
+    /// This function uses simple static problem data to test the transferagent->interpolate function.
+    /// Displacement vector for solid agent is set to be the value of linear function along 
+    /// the z direction. After interpolation, displacement vector for fluid agent should have 
+    /// similar values.
+    virtual void Test__TransferDisplacementsToFluid(ResultsType & result){
+
+      double time_final = 0.05;
+      double timestep = 2.0e-3;
+      int verblevel = 3;
+      bool works = true;
+      int IntDir;
+
+      // Copying the SimpleStatic data using getinputdata() helper function.
+      bool work =__helper();
+      std::string fluidDir;
+      std::string simStaticDir;
+      fluidDir = IRAD::Sys::CWD() + "/SimpleStatic/fluid";
+      simStaticDir = IRAD::Sys::CWD() + "/SimpleStatic";
+      if(!(IRAD::Sys::FILEEXISTS(fluidDir)||(IRAD::Sys::FILEEXISTS(simStaticDir)))){
+        std::cout << "SimpleStatic / fluid Folders do not exists!" << std::endl;
+        works = false;           
+        result.UpdateResult("fsiCoupler:Works",works);
+        return; 
+      }
+      else{
+        IntDir = IRAD::Sys::ChDir(simStaticDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          works = false;
+          result.UpdateResult("fsiCoupler:Works",works);
+        }
+        std::system("chmod 755 Allclean Allrun AllrunPar makeLinks makeSerialLinks removeSerialLinks"); 
+        std::system("./Allclean");
+        std::system("./Allrun");
+        IntDir = IRAD::Sys::ChDir(fluidDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          works = false;
+          result.UpdateResult("fsiCoupler:Works",works);
+        }
+      }
+      
+ 
+      fsicoupling fsiCoupler(global); 
+      std::string fluidSolverName("OpenFoamFSI");
+      std::string solidSolverName("ElmerCSC");
+      std::string transferServiceName("SurfX");
+      std::string runMode("1");
+
+
+      std::cout << "COM loading all this junks" << std::endl;
+      COM_load_module(fluidSolverName.c_str(),"FluidsComponentInterface");
+      COM_load_module(solidSolverName.c_str(),"StructuresComponentInterface");
+      COM_load_module("SurfUtil","SurfUtil");
+      COM_load_module("Simpal","Simpal");
+
+     
+      std::vector<std::string> componentInterfaceNames;
+      componentInterfaceNames.push_back("FluidsComponentInterface");
+      componentInterfaceNames.push_back("StructuresComponentInterface");
+      componentInterfaceNames.push_back("TransferInterface");
+      componentInterfaceNames.push_back("SurfUtil");
+      componentInterfaceNames.push_back("Simpal");
+ 
+      fsiCoupler.SetRunMode(runMode);
+      fsiCoupler.SetVerbLevel(verblevel);
+      
+      fsiCoupler.Initialize(componentInterfaceNames, time_final, timestep);  
+
+      // Mimicing FsiCoupler::run, intializing variables, etc.
+      int innerCount = 0;
+      int maxSubSteps = 1000;
+      int dumpinterval = 1;
+      int systemStep = 0;
+
+	  double *fluidDisp1 = NULL;
+	  double *fluidDisp2 = NULL;
+	  double *solidDisp1 = NULL;
+	  double *solidDisp2 = NULL;
+
+ 
+      // Get the displacement vector values for both solid and fluid domain.
+	  std::string fluidsCoordinateName(fsiCoupler.getFluidIntName()+".solidDisplacement");
+	  std::string solidsCoordinateName(fsiCoupler.getSolidIntName()+".Displacements");
+	  COM_get_array(fluidsCoordinateName.c_str(),(fsiCoupler.getFluidAgent())->PaneID(),&fluidDisp1);
+	  COM_get_array(solidsCoordinateName.c_str(),(fsiCoupler.getStructureAgent())->PaneID(),&solidDisp1);
+
+
+      // Setting Y-component of the displacement vector to be the linear function displacement 
+      // along z direction throughout nodes
+      for(int i = 0; i <fsiCoupler.getStructureAgent()->Coordinates().size()/3; i++){
+        solidDisp1[3*i+1] = fsiCoupler.getStructureAgent()->Coordinates()[3*i+2];
+      }
+ 
+	  if(!(fsiCoupler.getRunMode())){
+		fsiCoupler.TransferDisplacementsToFluid(fsiCoupler.getStructureAgent(),fsiCoupler.getFluidAgent());
+	  }
+      
+      // After transferDisplacementToFluids, get displacement vectors for both agents to compare
+      COM_get_array(fluidsCoordinateName.c_str(),(fsiCoupler.getFluidAgent())->PaneID(),&fluidDisp2);
+      COM_get_array(solidsCoordinateName.c_str(),(fsiCoupler.getStructureAgent())->PaneID(),&solidDisp2);
+
+      double totalFluidDis, totalSolidDis = 0;
+      // Calculate the total displacements for solid displacements and fluid displacements after transfer
+      for(int i=0; i < fsiCoupler.getStructureAgent()->Coordinates().size()/3; i++){
+        totalFluidDis += fluidDisp2[3*i+1];
+        totalSolidDis += solidDisp2[3*i+1];
+      }
+      
+      std::cout << "total fluid dis = " << totalFluidDis << std::endl;
+      std::cout << "total solid dis = " << totalSolidDis << std::endl;
+    
+      // Using Error % = (Experimented value - Theoretical value) / Theoretical value
+      double totalError = (totalFluidDis - totalSolidDis) / totalSolidDis;
+      // If the error % is greater than 5%, let's call it a fail.
+      std::cout << "total error = " << totalError << std::endl;
+      if(totalError  >= .05) works = false;
+     
+      result.UpdateResult("TransferDisplacementsToFluid:Works",works);
+    }
+    
+    /// Test for fluidAgent->Run() function.
+    virtual void Test__FluidAgentRun(ResultsType &result){
+    
+      double time_final = 0.05;
+      double timestep = 2.0e-3;
+      int verblevel = 3;
+      bool works = true;
+      int IntDir;
+
+      // Copying the SimpleStatic data using getinputdata() helper function.
+      bool work =__helper();
+      std::string fluidDir;
+      std::string simStaticDir;
+      fluidDir = IRAD::Sys::CWD() + "/SimpleStatic/fluid";
+      simStaticDir = IRAD::Sys::CWD() + "/SimpleStatic";
+      if(!(IRAD::Sys::FILEEXISTS(fluidDir)||(IRAD::Sys::FILEEXISTS(simStaticDir)))){
+        std::cout << "SimpleStatic / fluid Folders do not exists!" << std::endl;
+        works = false;           
+        result.UpdateResult("fsiCoupler:Works",works);
+        return; 
+      }
+      else{
+        IntDir = IRAD::Sys::ChDir(simStaticDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          works = false;
+          result.UpdateResult("fsiCoupler:Works",works);
+        }
+        std::system("chmod 755 Allclean Allrun AllrunPar makeLinks makeSerialLinks removeSerialLinks"); 
+        std::system("./Allclean");
+        std::system("./Allrun");
+        IntDir = IRAD::Sys::ChDir(fluidDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          works = false;
+          result.UpdateResult("fsiCoupler:Works",works);
+        }
+      }
+      
+      fsicoupling fsiCoupler(global); 
+      std::string fluidSolverName("OpenFoamFSI");
+      std::string solidSolverName("ElmerCSC");
+      std::string transferServiceName("SurfX");
+      std::string runMode("1");
+
+      std::cout << "COM loading all this junks" << std::endl;
+      COM_load_module(fluidSolverName.c_str(),"FluidsComponentInterface");
+      COM_load_module(solidSolverName.c_str(),"StructuresComponentInterface");
+      COM_load_module("SurfUtil","SurfUtil");
+      COM_load_module("Simpal","Simpal");
+     
+      std::vector<std::string> componentInterfaceNames;
+      componentInterfaceNames.push_back("FluidsComponentInterface");
+      componentInterfaceNames.push_back("StructuresComponentInterface");
+      componentInterfaceNames.push_back("TransferInterface");
+      componentInterfaceNames.push_back("SurfUtil");
+      componentInterfaceNames.push_back("Simpal");
+ 
+      fsiCoupler.SetRunMode(runMode);
+      fsiCoupler.SetVerbLevel(verblevel);      
+      fsiCoupler.Initialize(componentInterfaceNames, time_final, timestep);  
+
+      // Mimicing FsiCoupler::run, intializing variables, etc.
+      int innerCount = 0;
+      int maxSubSteps = 1000;
+      int dumpinterval = 1;
+      int systemStep = 0;
+
+	  double *fluidDisp1 = NULL;
+	  double *fluidDisp2 = NULL;
+	  double *solidDisp1 = NULL;
+	  double *solidDisp2 = NULL;
+ 
+      // Get the displacement vector values for both solid and fluid domain.
+	  std::string fluidsCoordinateName(fsiCoupler.getFluidIntName()+".solidDisplacement");
+	  std::string solidsCoordinateName(fsiCoupler.getSolidIntName()+".Displacements");
+	  COM_get_array(fluidsCoordinateName.c_str(),(fsiCoupler.getFluidAgent())->PaneID(),&fluidDisp1);
+	  COM_get_array(solidsCoordinateName.c_str(),(fsiCoupler.getStructureAgent())->PaneID(),&solidDisp1);
+
+	  if(!(fsiCoupler.getRunMode())){
+		fsiCoupler.TransferDisplacementsToFluid(fsiCoupler.getStructureAgent(),fsiCoupler.getFluidAgent());
+	  }
+      double simultime = fsiCoupler.getSimulationTime();
+
+     
+      std::cout << "simultime is =" << simultime << std::endl;
+      if(fsiCoupler.getRunMode() < 2){
+        fsiCoupler.getFluidAgent()->InitializeTimeStep(simultime);
+        fsiCoupler.getFluidAgent()->Run(fsiCoupler.getSimulationTime()+fsiCoupler.getSimulationFinalTime());
+      } 
+
+      int stride = 0;
+      int cap = 0;
+      double *tractions = NULL;
+      COM_get_array((fsiCoupler.getFluidIntName()+".traction").c_str(),101,&tractions,&stride,&cap);
+      int isize = cap*stride;
+      
+      /*for(int i = 0; i < isize/3 ; i++){
+		std::cout << "tractions[" << i << "] = " << tractions[3*i] << ",  " << tractions[3*i+1] << ",  " << tractions[3*i+2] << std::endl;
+      } */
+          
+      works = tractionCheck(tractions,isize);
+
+      result.UpdateResult("FluidAgentRun:Works",works);
+    }
+    bool tractionCheck(double * tractions, int isize){
+      double tractionSave[isize];
+
+      // Hard coding the value
+      tractionSave[0] = 0;
+	  tractionSave[1] = -1;
+	  tractionSave[2] = 2.63292e-18;
+	  tractionSave[3] = 0;
+	  tractionSave[4] = -1;
+	  tractionSave[5] = 1.32171e-18;
+	  tractionSave[6] = 0;
+	  tractionSave[7] = -1;
+	  tractionSave[8] = 3.64051e-21;
+	  tractionSave[9] = 0;
+	  tractionSave[10] = -1;
+	  tractionSave[11] = 6.63492e-19;
+	  tractionSave[12] = 0;
+	  tractionSave[13] = -1;
+	  tractionSave[14] = 1.98684e-18;
+	  tractionSave[15] = 0;
+	  tractionSave[16] = -1;
+	  tractionSave[17] = 1.98606e-18;
+	  tractionSave[18] = 0;
+	  tractionSave[19] = -1;
+	  tractionSave[20] = 1.98645e-18;
+	  tractionSave[21] = 0;
+	  tractionSave[22] = -1;
+	  tractionSave[23] = 1.32296e-18;
+	  tractionSave[24] = 0;
+	  tractionSave[25] = -1;
+	  tractionSave[26] = 6.63492e-19;
+	  tractionSave[27] = 0;
+	  tractionSave[28] = -1;
+	  tractionSave[29] = 1.97793e-18;
+	  tractionSave[30] = 0;
+	  tractionSave[31] = -1;
+	  tractionSave[32] = 1.31444e-18;
+	  tractionSave[33] = 0;
+	  tractionSave[34] = -1;
+	  tractionSave[35] = 1.31606e-18;
+	  tractionSave[36] = 0;
+	  tractionSave[37] = -1;
+	  tractionSave[38] = 1.31808e-18;
+	  tractionSave[39] = 0;
+	  tractionSave[40] = -1;
+	  tractionSave[41] = 6.61478e-19;
+	  tractionSave[42] = 0;
+	  tractionSave[43] = -1;
+	  tractionSave[44] = 2.01408e-21;
+	  tractionSave[45] = 0;
+	  tractionSave[46] = -1;
+	  tractionSave[47] = -6.56599e-19;
+	  tractionSave[48] = 0;
+	  tractionSave[49] = -1;
+	  tractionSave[50] = -6.58225e-19;
+	  tractionSave[51] = 0;
+	  tractionSave[52] = -1;
+	  tractionSave[53] = -6.56211e-19;
+	  tractionSave[54] = 0;
+	  tractionSave[55] = -1;
+	  tractionSave[56] = -6.58225e-19;
+	  tractionSave[57] = 0;
+	  tractionSave[58] = -1;
+	  tractionSave[59] = 6.65506e-19;
+	  tractionSave[60] = 0;
+	  tractionSave[61] = -1;
+	  tractionSave[62] = 1.32172e-18;
+	  tractionSave[63] = 0;
+	  tractionSave[64] = -1;
+	  tractionSave[65] = 6.61478e-19;
+	  tractionSave[66] = 0;
+	  tractionSave[67] = -1;
+	  tractionSave[68] = 2.32349e-79;
+	  tractionSave[69] = 0;
+	  tractionSave[70] = -1;
+	  tractionSave[71] = 2.01408e-21;
+	  tractionSave[72] = 0;
+	  tractionSave[73] = -1;
+	  tractionSave[74] = 1.55135e-84;
+	  tractionSave[75] = 0;
+	  tractionSave[76] = -1;
+	  tractionSave[77] = -2.01408e-21;
+	  tractionSave[78] = 0;
+	  tractionSave[79] = -1;
+	  tractionSave[80] = -6.56599e-19;
+	  tractionSave[81] = 0;
+	  tractionSave[82] = -1;
+	  tractionSave[83] = -6.4893e-19;
+	  tractionSave[84] = 0;
+	  tractionSave[85] = -1;
+	  tractionSave[86] = -6.43663e-19;
+	  tractionSave[87] = 0;
+	  tractionSave[88] = -1;
+	  tractionSave[89] = -1.96577e-18;
+	  tractionSave[90] = 0;
+	  tractionSave[91] = -1;
+	  tractionSave[92] = -6.44051e-19;
+	  tractionSave[93] = 0;
+	  tractionSave[94] = -1;
+	  tractionSave[95] = 1.05339e-20;
+	  tractionSave[96] = 0;
+	  tractionSave[97] = -1;
+	  tractionSave[98] = 6.89339e-21;
+	  tractionSave[99] = 0;
+	  tractionSave[100] = -1;
+	  tractionSave[101] = -6.59852e-19;
+	  tractionSave[102] = 0;
+	  tractionSave[103] = -1;
+	  tractionSave[104] = -6.66745e-19;
+	  tractionSave[105] = 0;
+	  tractionSave[106] = -1;
+	  tractionSave[107] = -6.72787e-19;
+	  tractionSave[108] = 0;
+	  tractionSave[109] = -1;
+	  tractionSave[110] = -6.75652e-19;
+	  tractionSave[111] = 0;
+	  tractionSave[112] = -1;
+	  tractionSave[113] = -1.29356e-20;
+	  tractionSave[114] = 0;
+	  tractionSave[115] = -1;
+	  tractionSave[116] = -1.33349e-18;
+	  tractionSave[117] = 0;
+	  tractionSave[118] = -1;
+	  tractionSave[119] = -2.64994e-18;
+	  tractionSave[120] = 0;
+	  tractionSave[121] = -1;
+	  tractionSave[122] = -3.31142e-18;
+	  tractionSave[123] = 0;
+	  tractionSave[124] = -1;
+	  tractionSave[125] = -1.98645e-18;
+	  tractionSave[126] = 0;
+	  tractionSave[127] = -1;
+	  tractionSave[128] = -1.32296e-18;
+	  tractionSave[129] = 0;
+	  tractionSave[130] = -1;
+	  tractionSave[131] = 8.21297e-134;
+	  tractionSave[132] = 0;
+	  tractionSave[133] = -1;
+	  tractionSave[134] = 2.07766e-136;
+	  tractionSave[135] = 0;
+	  tractionSave[136] = -1;
+	  tractionSave[137] = -5.26695e-21;
+	  tractionSave[138] = 0;
+	  tractionSave[139] = -1;
+	  tractionSave[140] = -6.61478e-19;
+	  tractionSave[141] = 0;
+	  tractionSave[142] = -1;
+	  tractionSave[143] = -6.89339e-21;
+	  tractionSave[144] = 0;
+	  tractionSave[145] = -1;
+	  tractionSave[146] = -8.89947e-21;
+	  tractionSave[147] = 0;
+	  tractionSave[148] = -1;
+	  tractionSave[149] = -6.6386e-19;
+       
+      //When comparing double, exact comparison might not do the job. Hence im giving 5% error margin. 
+      for(int i = 0; i < isize; i++){
+        if( !(double_equals(tractions[i],tractionSave[i]))){
+          return false;
+        }
+      }
+      return true;
+    }
+    // Helper function to compare two doubles with allowed margin of error (.1%)
+    bool double_equals(double a, double b, double epsilon = .001){
+      return (std::abs(a-b) < epsilon);
+    }
+
+    // Helper function that computes the average coordinates of a point, given four coordinates points
+    std::vector<double> avgCoord(int first, int second, int third, int fourth, fluidagent*  fluidAgent ){
+      std::vector<double> Cord(3);
+      // X direction
+	  Cord[0] = (fluidAgent->Coordinates()[3*first] + fluidAgent->Coordinates()[3*second] + fluidAgent->Coordinates()[3*third] + fluidAgent->Coordinates()[3*fourth] ) / 4; 
+      // Y direction
+      Cord[1] = (fluidAgent->Coordinates()[3*first+1] + fluidAgent->Coordinates()[3*second+1] + fluidAgent->Coordinates()[3*third+1] + fluidAgent->Coordinates()[3*fourth+1] ) / 4;
+      // Z direction
+      Cord[2] = (fluidAgent->Coordinates()[3*first+2] + fluidAgent->Coordinates()[3*second+2] + fluidAgent->Coordinates()[3*third+2] + fluidAgent->Coordinates()[3*fourth+2] ) / 4;
+      return Cord;
+    }
+
+
+    /// Test for TransferLoadsToStructures() function.
+    virtual void Test__TransferLoadsToStructures(ResultsType &result){
+    
+      double time_final = 0.05;
+      double timestep = 2.0e-3;
+      int verblevel = 3;
+      bool works = true;
+      int IntDir;
+
+      // Copying the SimpleStatic data using getinputdata() helper function.
+      bool work =__helper();
+      std::string fluidDir;
+      std::string simStaticDir;
+      fluidDir = IRAD::Sys::CWD() + "/SimpleStatic/fluid";
+      simStaticDir = IRAD::Sys::CWD() + "/SimpleStatic";
+      if(!(IRAD::Sys::FILEEXISTS(fluidDir)||(IRAD::Sys::FILEEXISTS(simStaticDir)))){
+        std::cout << "SimpleStatic / fluid Folders do not exists!" << std::endl;
+        works = false;           
+        result.UpdateResult("fsiCoupler:Works",works);
+        return; 
+      }
+      else{
+        IntDir = IRAD::Sys::ChDir(simStaticDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          works = false;
+          result.UpdateResult("fsiCoupler:Works",works);
+        }
+        std::system("chmod 755 Allclean Allrun AllrunPar makeLinks makeSerialLinks removeSerialLinks"); 
+        std::system("./Allclean");
+        std::system("./Allrun");
+        IntDir = IRAD::Sys::ChDir(fluidDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          works = false;
+          result.UpdateResult("fsiCoupler:Works",works);
+        }
+      }
+      
+      fsicoupling fsiCoupler(global); 
+      std::string fluidSolverName("OpenFoamFSI");
+      std::string solidSolverName("ElmerCSC");
+      std::string transferServiceName("SurfX");
+      std::string runMode("1");
+
+      COM_load_module(fluidSolverName.c_str(),"FluidsComponentInterface");
+      COM_load_module(solidSolverName.c_str(),"StructuresComponentInterface");
+      COM_load_module("SurfUtil","SurfUtil");
+      COM_load_module("Simpal","Simpal");
+     
+      std::vector<std::string> componentInterfaceNames;
+      componentInterfaceNames.push_back("FluidsComponentInterface");
+      componentInterfaceNames.push_back("StructuresComponentInterface");
+      componentInterfaceNames.push_back("TransferInterface");
+      componentInterfaceNames.push_back("SurfUtil");
+      componentInterfaceNames.push_back("Simpal");
+ 
+      fsiCoupler.SetRunMode(runMode);
+      fsiCoupler.SetVerbLevel(verblevel);      
+      fsiCoupler.Initialize(componentInterfaceNames, time_final, timestep);  
+
+      // Mimicing FsiCoupler::run, intializing variables, etc.
+      int innerCount = 0;
+      int maxSubSteps = 1000;
+      int dumpinterval = 1;
+      int systemStep = 0;
+
+ 
+	  if(!(fsiCoupler.getRunMode())){
+		fsiCoupler.TransferDisplacementsToFluid(fsiCoupler.getStructureAgent(),fsiCoupler.getFluidAgent());
+	  }
+      double simultime = fsiCoupler.getSimulationTime();
+
+     
+      std::cout << "simultime is =" << simultime << std::endl;
+      if(fsiCoupler.getRunMode() < 2){
+        fsiCoupler.getFluidAgent()->InitializeTimeStep(simultime);
+        fsiCoupler.getFluidAgent()->Run(fsiCoupler.getSimulationTime()+fsiCoupler.getSimulationFinalTime());
+      }
+     
+      int * conn= NULL;
+      int  connStride, connCap=0;
+      COM_get_array( (fsiCoupler.getFluidIntName()+".:q4:").c_str(),101, &conn,&connStride,&connCap);
+      std::cout << "connStride , connCap = " << connStride << ", " << connCap << std::endl;
+      for (int i =0; i < connCap; i++){
+         std::cout << "Conn Coordinates[" << i << "] = " << conn[4*i] << ", " << conn[4*i+1] << ", " << conn[4*i+2] << ", " << conn[4*i+3] << std::endl;
+      }
+
+
+     
+      std::vector<double> cellCoordVec(connCap*3);
+      std::vector<double> avgCoor(3);
+      for(int i =0; i < connCap; i++){ 
+		  
+          avgCoor = avgCoord(conn[4*i]-1,conn[4*i+1]-1,conn[4*i+2]-1,conn[4*i+3]-1, fsiCoupler.getFluidAgent());
+		  cellCoordVec[3*i] = avgCoor[0];
+		  cellCoordVec[3*i+1] = avgCoor[1];
+		  cellCoordVec[3*i+2] = avgCoor[2];
+		  std::cout << "CellCoordVec[" << i << "] = " << cellCoordVec[3*i] << ", " << cellCoordVec[3*i+1] << ", " << cellCoordVec[3*i+2] << std::endl;
+		  avgCoor.clear();
+      }
+ 
+
+      double * tractions;
+      int stride = 0;
+      int cap = 0;
+      // Get the traction vector values for fluid domain.
+	  COM_get_array((fsiCoupler.getFluidIntName()+".traction").c_str(),101,&tractions,&stride,&cap);
+      std::cout << "stride and cap = " << stride << "," << cap << std::endl;
+      //traction becomes Ycoord * 3 + 2
+      int isize = cap * stride ;
+      for(int i = 0; i < isize/3 ; i++){
+        //tractions[3*i+1] = 3*fsiCoupler.getFluidAgent()->Coordinates()[3*i+2]+2;
+        //tractions[3*i+1] = fsiCoupler.getFluidAgent()->Coordinates()[3*i+2];
+        //tractions[3*i+1] = 1;
+        tractions[3*i+1] = cellCoordVec[3*i+2];
+		std::cout << "tractions[" << i << "] = " << tractions[3*i] << ",  " << tractions[3*i+1] << ",  " << tractions[3*i+2] << ",  Coordinates are = " << cellCoordVec[3*i] << ", " << cellCoordVec[3*i+1] << ", " << cellCoordVec[3*i+2] <<  std::endl;
+      }
+ 
+      double * solidLoads1 = NULL;
+      int solidLoadStride1 = 0;
+      int solidLoadCap1 =0;
+      // Get the load vector from solid domain
+      COM_get_array((fsiCoupler.getSolidIntName()+".Loads").c_str(),11,&solidLoads1,&solidLoadStride1,&solidLoadCap1);
+      int solidLoadSize1 = solidLoadCap1*solidLoadStride1;
+      
+      // Execute Transfer LoadsToStructures
+      if(!fsiCoupler.getRunMode()) fsiCoupler.TransferLoadsToStructures(fsiCoupler.getFluidAgent(), fsiCoupler.getStructureAgent());
+  
+      double * solidLoads = NULL;
+      int solidLoadStride = 0;
+      int solidLoadCap =0;
+      // Get the load vector from solid domain
+      COM_get_array((fsiCoupler.getSolidIntName()+".Loads").c_str(),11,&solidLoads,&solidLoadStride,&solidLoadCap);
+      int solidLoadSize = solidLoadCap*solidLoadStride;
+      
+      std::cout << "solidLoadCap = " << solidLoadCap << ", solidLoadStride = " << solidLoadStride << std::endl;
+      for(int i = 0; i < solidLoadSize/3; i++){
+        std::cout << "solidLoads(" << i <<") = " << solidLoads[3*i] << ", " << solidLoads[3*i+1] << ", " << solidLoads[3*i+2] << " Where coordinate is = " << fsiCoupler.getStructureAgent()->Coordinates()[3*i] << ", " << fsiCoupler.getStructureAgent()->Coordinates()[3*i+1] << ", " << fsiCoupler.getStructureAgent()->Coordinates()[3*i+2]  << std::endl;   
+      }
+
+
+      double totalTraction, totalLoad = 0;
+      for(int i = 0; i < solidLoadSize; i++)  totalLoad += solidLoads[i];
+      totalLoad = totalLoad/2;
+      for(int i = 0; i < isize/3 ; i++) totalTraction +=tractions[3*i+1];   
+      
+      
+      std::cout << "total loads = " << totalLoad << std::endl;
+      std::cout << "total tractions = " << totalTraction << std::endl;
+    
+      // Using Error % = (Experimented value - Theoretical value) / Theoretical value
+      double totalError = (totalLoad - totalTraction) / totalTraction;
+      // If the error % is greater than 5%, let's call it a fail.
+      std::cout << "total error = " << totalError << std::endl;
+      if(totalError  >= .05) works = false;
+
+      double maxError = 0;
+      double errr = 0;
+      for(int i = 0; i < isize/3 ; i++){
+        for(int j = 0; j <= 9; j = j + 3){
+          //std::cout << "tractions = " << tractions[3*i+1] << std::endl;
+          //std::cout << "solidLoads = " << solidLoads[7*i+1-i+j] << std::endl;
+          errr = std::abs( (  solidLoads[7*i+1-i+j] - tractions[3*i+1]) / tractions[3*i+1] );
+          if(errr >= maxError){
+            maxError = errr;
+            std::cout << "maxError = " << maxError << std::endl;
+            std::cout << "Happens at i,j = " << i << ", " << j << std::endl;
+          }
+        }
+      }
+      std::cout << "Max error = " << maxError << std::endl;
+      result.UpdateResult("TransferLoadsToStructures:Works",works);
+    }
+
+
+    /// Test for solidAgent->Run() function.
+    virtual void Test__SolidAgentRun(ResultsType &result){
+
+    
+      double time_final = 0.05;
+      double timestep = 2.0e-3;
+      int verblevel = 3;
+      bool works = true;
+      int IntDir;
+
+      // Copying the SimpleStatic data using getinputdata() helper function.
+      bool work =__helper();
+      std::string fluidDir;
+      std::string simStaticDir;
+      fluidDir = IRAD::Sys::CWD() + "/SimpleStatic/fluid";
+      simStaticDir = IRAD::Sys::CWD() + "/SimpleStatic";
+      if(!(IRAD::Sys::FILEEXISTS(fluidDir)||(IRAD::Sys::FILEEXISTS(simStaticDir)))){
+        std::cout << "SimpleStatic / fluid Folders do not exists!" << std::endl;
+        works = false;           
+        result.UpdateResult("fsiCoupler:Works",works);
+        return; 
+      }
+      else{
+        IntDir = IRAD::Sys::ChDir(simStaticDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          works = false;
+          result.UpdateResult("fsiCoupler:Works",works);
+        }
+        std::system("chmod 755 Allclean Allrun AllrunPar makeLinks makeSerialLinks removeSerialLinks"); 
+        std::system("./Allclean");
+        std::system("./Allrun");
+        IntDir = IRAD::Sys::ChDir(fluidDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          works = false;
+          result.UpdateResult("fsiCoupler:Works",works);
+        }
+      }
+      
+      fsicoupling fsiCoupler(global); 
+      std::string fluidSolverName("OpenFoamFSI");
+      std::string solidSolverName("ElmerCSC");
+      std::string transferServiceName("SurfX");
+      std::string runMode("1");
+
+      COM_load_module(fluidSolverName.c_str(),"FluidsComponentInterface");
+      COM_load_module(solidSolverName.c_str(),"StructuresComponentInterface");
+      COM_load_module("SurfUtil","SurfUtil");
+      COM_load_module("Simpal","Simpal");
+     
+      std::vector<std::string> componentInterfaceNames;
+      componentInterfaceNames.push_back("FluidsComponentInterface");
+      componentInterfaceNames.push_back("StructuresComponentInterface");
+      componentInterfaceNames.push_back("TransferInterface");
+      componentInterfaceNames.push_back("SurfUtil");
+      componentInterfaceNames.push_back("Simpal");
+ 
+      fsiCoupler.SetRunMode(runMode);
+      fsiCoupler.SetVerbLevel(verblevel);      
+      fsiCoupler.Initialize(componentInterfaceNames, time_final, timestep);  
+
+      // Mimicing FsiCoupler::run, intializing variables, etc.
+      int innerCount = 0;
+      int maxSubSteps = 1000;
+      int dumpinterval = 1;
+      int systemStep = 0;
+
+ 
+	  if(!(fsiCoupler.getRunMode())){
+		fsiCoupler.TransferDisplacementsToFluid(fsiCoupler.getStructureAgent(),fsiCoupler.getFluidAgent());
+	  }
+      double simultime = fsiCoupler.getSimulationTime();
+
+     
+      std::cout << "simultime is =" << simultime << std::endl;
+      if(fsiCoupler.getRunMode() < 2){
+        fsiCoupler.getFluidAgent()->InitializeTimeStep(simultime);
+        fsiCoupler.getFluidAgent()->Run(fsiCoupler.getSimulationTime()+fsiCoupler.getSimulationFinalTime());
+      }
+
+      // setting a traction value so that you have bigger numbers for solid displacement later
+      double * tractions;
+      int stride = 0;
+      int cap = 0;
+      // Get the traction vector values for fluid domain.
+	  COM_get_array((fsiCoupler.getFluidIntName()+".traction").c_str(),101,&tractions,&stride,&cap);
+      std::cout << "stride and cap = " << stride << "," << cap << std::endl;
+      //traction becomes Ycoord * 3 + 2
+      int isize = cap * stride ;
+      for(int i = 0; i < isize/3 ; i++){
+        //tractions[3*i+1] = 3*fsiCoupler.getFluidAgent()->Coordinates()[3*i+2]+2;
+        //tractions[3*i+1] = fsiCoupler.getFluidAgent()->Coordinates()[3*i+2];
+        //tractions[3*i+1] = 1;
+        tractions[3*i+1] = 50000;
+		std::cout << "tractions[" << i << "] = " << tractions[3*i] << ",  " << tractions[3*i+1] << ",  " << tractions[3*i+2] << std::endl;
+      } 
+
+
+      if(!fsiCoupler.getRunMode()) fsiCoupler.TransferLoadsToStructures(fsiCoupler.getFluidAgent(), fsiCoupler.getStructureAgent());
+
+
+      // Solid Agent Run executing
+      if( fsiCoupler.getRunMode() !=1){
+        fsiCoupler.getStructureAgent()->InitializeTimeStep(simultime);
+        fsiCoupler.getStructureAgent()->Run(fsiCoupler.getSimulationTime()+fsiCoupler.getSimulationFinalTime());
+      }     
+
+	  double *solidDisp = NULL;
+ 
+      // Get the displacement vector values for solid.
+	  std::string solidsCoordinateName(fsiCoupler.getSolidIntName()+".Displacements");
+	  COM_get_array(solidsCoordinateName.c_str(),(fsiCoupler.getStructureAgent())->PaneID(),&solidDisp);
+      
+      
+      works = DisplacementCheck(solidDisp, 300);
+      result.UpdateResult("SolidAgentRun:Works",works);
+    }
+
+    bool DisplacementCheck(double * disp, int size){
+      double solidDisSave[size];
+
+      // Hard coding the value	 
+	  solidDisSave[0] = 6.37522e-28;
+	  solidDisSave[1] = 0.000298136;
+	  solidDisSave[2] = 5.90759e-05;
+	  solidDisSave[3] = 6.37522e-28;
+	  solidDisSave[4] = 0.000298136;
+	  solidDisSave[5] = 5.90759e-05;
+	  solidDisSave[6] = 4.50796e-28;
+	  solidDisSave[7] = 0.000291629;
+	  solidDisSave[8] = 5.25282e-05;
+	  solidDisSave[9] = 4.50796e-28;
+	  solidDisSave[10] = 0.000291629;
+	  solidDisSave[11] = 5.25282e-05;
+	  solidDisSave[12] = 4.50796e-28;
+	  solidDisSave[13] = 0.000286197;
+	  solidDisSave[14] = 4.63341e-05;
+	  solidDisSave[15] = 8.55785e-28;
+	  solidDisSave[16] = 0.000286197;
+	  solidDisSave[17] = 4.63341e-05;
+	  solidDisSave[18] = 4.50796e-28;
+	  solidDisSave[19] = 0.000282032;
+	  solidDisSave[20] = 4.07105e-05;
+	  solidDisSave[21] = 4.50796e-28;
+	  solidDisSave[22] = 0.000282032;
+	  solidDisSave[23] = 4.07105e-05;
+	  solidDisSave[24] = 4.50796e-28;
+	  solidDisSave[25] = 0.000278934;
+	  solidDisSave[26] = 3.56933e-05;
+	  solidDisSave[27] = 4.50796e-28;
+	  solidDisSave[28] = 0.000278934;
+	  solidDisSave[29] = 3.56933e-05;
+	  solidDisSave[30] = 4.50796e-28;
+	  solidDisSave[31] = 0.0002767;
+	  solidDisSave[32] = 3.12723e-05;
+	  solidDisSave[33] = 8.55785e-28;
+	  solidDisSave[34] = 0.0002767;
+	  solidDisSave[35] = 3.12723e-05;
+	  solidDisSave[36] = 4.50796e-28;
+	  solidDisSave[37] = 0.000275146;
+	  solidDisSave[38] = 2.74114e-05;
+	  solidDisSave[39] = 4.50796e-28;
+	  solidDisSave[40] = 0.000275146;
+	  solidDisSave[41] = 2.74114e-05;
+	  solidDisSave[42] = 4.50796e-28;
+	  solidDisSave[43] = 0.000274116;
+	  solidDisSave[44] = 2.40609e-05;
+	  solidDisSave[45] = 4.50796e-28;
+	  solidDisSave[46] = 0.000274116;
+	  solidDisSave[47] = 2.40609e-05;
+	  solidDisSave[48] = 8.55785e-28;
+	  solidDisSave[49] = 0.000273477;
+	  solidDisSave[50] = 2.11655e-05;
+	  solidDisSave[51] = 4.50796e-28;
+	  solidDisSave[52] = 0.000273477;
+	  solidDisSave[53] = 2.11655e-05;
+	  solidDisSave[54] = 8.55785e-28;
+	  solidDisSave[55] = 0.000273123;
+	  solidDisSave[56] = 1.86691e-05;
+	  solidDisSave[57] = 4.50796e-28;
+	  solidDisSave[58] = 0.000273123;
+	  solidDisSave[59] = 1.86691e-05;
+	  solidDisSave[60] = 4.50796e-28;
+	  solidDisSave[61] = 0.00027297;
+	  solidDisSave[62] = 1.65176e-05;
+	  solidDisSave[63] = 4.50796e-28;
+	  solidDisSave[64] = 0.00027297;
+	  solidDisSave[65] = 1.65176e-05;
+	  solidDisSave[66] = 4.50796e-28;
+	  solidDisSave[67] = 0.000272951;
+	  solidDisSave[68] = 1.46611e-05;
+	  solidDisSave[69] = 4.50796e-28;
+	  solidDisSave[70] = 0.000272951;
+	  solidDisSave[71] = 1.46611e-05;
+	  solidDisSave[72] = 4.50796e-28;
+	  solidDisSave[73] = 0.000273019;
+	  solidDisSave[74] = 1.30543e-05;
+	  solidDisSave[75] = 4.50796e-28;
+	  solidDisSave[76] = 0.000273019;
+	  solidDisSave[77] = 1.30543e-05;
+	  solidDisSave[78] = 4.50796e-28;
+	  solidDisSave[79] = 0.000273137;
+	  solidDisSave[80] = 1.16571e-05;
+	  solidDisSave[81] = 4.50796e-28;
+	  solidDisSave[82] = 0.000273137;
+	  solidDisSave[83] = 1.16571e-05;
+	  solidDisSave[84] = 4.50796e-28;
+	  solidDisSave[85] = 0.000273281;
+	  solidDisSave[86] = 1.04348e-05;
+	  solidDisSave[87] = 8.55785e-28;
+	  solidDisSave[88] = 0.000273281;
+	  solidDisSave[89] = 1.04348e-05;
+	  solidDisSave[90] = 8.55785e-28;
+	  solidDisSave[91] = 0.000273436;
+	  solidDisSave[92] = 9.35745e-06;
+	  solidDisSave[93] = 8.55785e-28;
+	  solidDisSave[94] = 0.000273436;
+	  solidDisSave[95] = 9.35745e-06;
+	  solidDisSave[96] = 8.55785e-28;
+	  solidDisSave[97] = 0.000273593;
+	  solidDisSave[98] = 8.39999e-06;
+	  solidDisSave[99] = 4.50796e-28;
+	  solidDisSave[100] = 0.000273593;
+	  solidDisSave[101] = 8.39999e-06;
+	  solidDisSave[102] = 8.55785e-28;
+	  solidDisSave[103] = 0.000273749;
+	  solidDisSave[104] = 7.54154e-06;
+	  solidDisSave[105] = 8.55785e-28;
+	  solidDisSave[106] = 0.000273749;
+	  solidDisSave[107] = 7.54154e-06;
+	  solidDisSave[108] = 8.55785e-28;
+	  solidDisSave[109] = 0.000273907;
+	  solidDisSave[110] = 6.76512e-06;
+	  solidDisSave[111] = 8.55785e-28;
+	  solidDisSave[112] = 0.000273907;
+	  solidDisSave[113] = 6.76512e-06;
+	  solidDisSave[114] = 4.50796e-28;
+	  solidDisSave[115] = 0.000274069;
+	  solidDisSave[116] = 6.05734e-06;
+	  solidDisSave[117] = 4.50796e-28;
+	  solidDisSave[118] = 0.000274069;
+	  solidDisSave[119] = 6.05734e-06;
+	  solidDisSave[120] = 8.55785e-28;
+	  solidDisSave[121] = 0.000274242;
+	  solidDisSave[122] = 5.40816e-06;
+	  solidDisSave[123] = 4.50796e-28;
+	  solidDisSave[124] = 0.000274242;
+	  solidDisSave[125] = 5.40816e-06;
+	  solidDisSave[126] = 8.55785e-28;
+	  solidDisSave[127] = 0.000274433;
+	  solidDisSave[128] = 4.81074e-06;
+	  solidDisSave[129] = 4.50796e-28;
+	  solidDisSave[130] = 0.000274433;
+	  solidDisSave[131] = 4.81074e-06;
+	  solidDisSave[132] = 4.50796e-28;
+	  solidDisSave[133] = 0.000274649;
+	  solidDisSave[134] = 4.26143e-06;
+	  solidDisSave[135] = 8.55785e-28;
+	  solidDisSave[136] = 0.000274649;
+	  solidDisSave[137] = 4.26143e-06;
+	  solidDisSave[138] = 8.55785e-28;
+	  solidDisSave[139] = 0.000274897;
+	  solidDisSave[140] = 3.75988e-06;
+	  solidDisSave[141] = 8.55785e-28;
+	  solidDisSave[142] = 0.000274897;
+	  solidDisSave[143] = 3.75988e-06;
+	  solidDisSave[144] = 4.50796e-28;
+	  solidDisSave[145] = 0.000275182;
+	  solidDisSave[146] = 3.30926e-06;
+	  solidDisSave[147] = 4.50796e-28;
+	  solidDisSave[148] = 0.000275182;
+	  solidDisSave[149] = 3.30926e-06;
+	  solidDisSave[150] = 4.50796e-28;
+	  solidDisSave[151] = 0.000275506;
+	  solidDisSave[152] = 2.91661e-06;
+	  solidDisSave[153] = 4.50796e-28;
+	  solidDisSave[154] = 0.000275506;
+	  solidDisSave[155] = 2.91661e-06;
+	  solidDisSave[156] = 4.50796e-28;
+	  solidDisSave[157] = 0.000275867;
+	  solidDisSave[158] = 2.59325e-06;
+	  solidDisSave[159] = 4.50796e-28;
+	  solidDisSave[160] = 0.000275867;
+	  solidDisSave[161] = 2.59325e-06;
+	  solidDisSave[162] = 4.50796e-28;
+	  solidDisSave[163] = 0.000276258;
+	  solidDisSave[164] = 2.3553e-06;
+	  solidDisSave[165] = 8.55785e-28;
+	  solidDisSave[166] = 0.000276258;
+	  solidDisSave[167] = 2.3553e-06;
+	  solidDisSave[168] = 4.50796e-28;
+	  solidDisSave[169] = 0.000276662;
+	  solidDisSave[170] = 2.22417e-06;
+	  solidDisSave[171] = 4.50796e-28;
+	  solidDisSave[172] = 0.000276662;
+	  solidDisSave[173] = 2.22417e-06;
+	  solidDisSave[174] = 4.50796e-28;
+	  solidDisSave[175] = 0.000277053;
+	  solidDisSave[176] = 2.22707e-06;
+	  solidDisSave[177] = 8.55785e-28;
+	  solidDisSave[178] = 0.000277053;
+	  solidDisSave[179] = 2.22707e-06;
+	  solidDisSave[180] = 8.55785e-28;
+	  solidDisSave[181] = 0.000277391;
+	  solidDisSave[182] = 2.3973e-06;
+	  solidDisSave[183] = 4.50796e-28;
+	  solidDisSave[184] = 0.000277391;
+	  solidDisSave[185] = 2.3973e-06;
+	  solidDisSave[186] = 4.50796e-28;
+	  solidDisSave[187] = 0.000277621;
+	  solidDisSave[188] = 2.77441e-06;
+	  solidDisSave[189] = 4.50796e-28;
+	  solidDisSave[190] = 0.000277621;
+	  solidDisSave[191] = 2.77441e-06;
+	  solidDisSave[192] = 8.55785e-28;
+	  solidDisSave[193] = 0.000277665;
+	  solidDisSave[194] = 3.40386e-06;
+	  solidDisSave[195] = 4.50796e-28;
+	  solidDisSave[196] = 0.000277665;
+	  solidDisSave[197] = 3.40386e-06;
+	  solidDisSave[198] = 4.50796e-28;
+	  solidDisSave[199] = 0.000277422;
+	  solidDisSave[200] = 4.33615e-06;
+	  solidDisSave[201] = 4.50796e-28;
+	  solidDisSave[202] = 0.000277422;
+	  solidDisSave[203] = 4.33615e-06;
+	  solidDisSave[204] = 4.50796e-28;
+	  solidDisSave[205] = 0.000276762;
+	  solidDisSave[206] = 5.62512e-06;
+	  solidDisSave[207] = 4.50796e-28;
+	  solidDisSave[208] = 0.000276762;
+	  solidDisSave[209] = 5.62512e-06;
+	  solidDisSave[210] = 4.50796e-28;
+	  solidDisSave[211] = 0.000275523;
+	  solidDisSave[212] = 7.32512e-06;
+	  solidDisSave[213] = 4.50796e-28;
+	  solidDisSave[214] = 0.000275523;
+	  solidDisSave[215] = 7.32512e-06;
+	  solidDisSave[216] = 4.50796e-28;
+	  solidDisSave[217] = 0.000273506;
+	  solidDisSave[218] = 9.48674e-06;
+	  solidDisSave[219] = 4.50796e-28;
+	  solidDisSave[220] = 0.000273506;
+	  solidDisSave[221] = 9.48674e-06;
+	  solidDisSave[222] = 4.50796e-28;
+	  solidDisSave[223] = 0.000270473;
+	  solidDisSave[224] = 1.21506e-05;
+	  solidDisSave[225] = 4.50796e-28;
+	  solidDisSave[226] = 0.000270473;
+	  solidDisSave[227] = 1.21506e-05;
+	  solidDisSave[228] = 4.50796e-28;
+	  solidDisSave[229] = 0.000266148;
+	  solidDisSave[230] = 1.53391e-05;
+	  solidDisSave[231] = 4.50796e-28;
+	  solidDisSave[232] = 0.000266148;
+	  solidDisSave[233] = 1.53391e-05;
+	  solidDisSave[234] = 4.50796e-28;
+	  solidDisSave[235] = 0.000260217;
+	  solidDisSave[236] = 1.90445e-05;
+	  solidDisSave[237] = 8.55785e-28;
+	  solidDisSave[238] = 0.000260217;
+	  solidDisSave[239] = 1.90445e-05;
+	  solidDisSave[240] = 4.50796e-28;
+	  solidDisSave[241] = 0.000252337;
+	  solidDisSave[242] = 2.32151e-05;
+	  solidDisSave[243] = 8.55785e-28;
+	  solidDisSave[244] = 0.000252337;
+	  solidDisSave[245] = 2.32151e-05;
+	  solidDisSave[246] = 4.50796e-28;
+	  solidDisSave[247] = 0.000242147;
+	  solidDisSave[248] = 2.77362e-05;
+	  solidDisSave[249] = 8.55785e-28;
+	  solidDisSave[250] = 0.000242147;
+	  solidDisSave[251] = 2.77362e-05;
+	  solidDisSave[252] = 4.50796e-28;
+	  solidDisSave[253] = 0.00022929;
+	  solidDisSave[254] = 3.24075e-05;
+	  solidDisSave[255] = 8.55785e-28;
+	  solidDisSave[256] = 0.00022929;
+	  solidDisSave[257] = 3.24075e-05;
+	  solidDisSave[258] = 8.55785e-28;
+	  solidDisSave[259] = 0.000213439;
+	  solidDisSave[260] = 3.69166e-05;
+	  solidDisSave[261] = 4.50796e-28;
+	  solidDisSave[262] = 0.000213439;
+	  solidDisSave[263] = 3.69166e-05;
+	  solidDisSave[264] = 4.50796e-28;
+	  solidDisSave[265] = 0.000194344;
+	  solidDisSave[266] = 4.08076e-05;
+	  solidDisSave[267] = 4.50796e-28;
+	  solidDisSave[268] = 0.000194344;
+	  solidDisSave[269] = 4.08076e-05;
+	  solidDisSave[270] = 4.50796e-28;
+	  solidDisSave[271] = 0.000171881;
+	  solidDisSave[272] = 4.34459e-05;
+	  solidDisSave[273] = 4.50796e-28;
+	  solidDisSave[274] = 0.000171881;
+	  solidDisSave[275] = 4.34459e-05;
+	  solidDisSave[276] = 8.55785e-28;
+	  solidDisSave[277] = 0.000146113;
+	  solidDisSave[278] = 4.39784e-05;
+	  solidDisSave[279] = 4.50796e-28;
+	  solidDisSave[280] = 0.000146113;
+	  solidDisSave[281] = 4.39784e-05;
+	  solidDisSave[282] = 4.50796e-28;
+	  solidDisSave[283] = 0.000117336;
+	  solidDisSave[284] = 4.1277e-05;
+	  solidDisSave[285] = 8.55785e-28;
+	  solidDisSave[286] = 0.000117336;
+	  solidDisSave[287] = 4.1277e-05;
+	  solidDisSave[288] = 4.50796e-28;
+	  solidDisSave[289] = 8.60282e-05;
+	  solidDisSave[290] = 3.38566e-05;
+	  solidDisSave[291] = 4.50796e-28;
+	  solidDisSave[292] = 8.60282e-05;
+	  solidDisSave[293] = 3.38566e-05;
+	  solidDisSave[294] = 4.50796e-28;
+	  solidDisSave[295] = 5.2381e-05;
+	  solidDisSave[296] = 1.96674e-05;
+	  solidDisSave[297] = 4.50796e-28;
+	  solidDisSave[298] = 5.2381e-05;
+	  solidDisSave[299] = 1.96674e-05;
+
+      //When comparing double, exact comparison might not do the job. Hence im giving 5% error margin. 
+      for(int i = 0; i < size; i++){
+        if( !(double_equals(disp[i],solidDisSave[i]))){
+          return false;
+        }
+      }
+      return true;
+    }
+    virtual void Test__SolidAgentFinalize(ResultsType &result){
+    
+
+      // Setting up the variable   
+      double time_final = 0.05;
+      double timestep = 2.0e-3;
+      int verblevel = 3;
+      bool works = true;
+      int IntDir;
+
+      // Copying the SimpleStatic data using getinputdata() helper function.
+      bool work =__helper();
+      std::string fluidDir;
+      std::string simStaticDir;
+      fluidDir = IRAD::Sys::CWD() + "/SimpleStatic/fluid";
+      simStaticDir = IRAD::Sys::CWD() + "/SimpleStatic";
+      if(!(IRAD::Sys::FILEEXISTS(fluidDir)||(IRAD::Sys::FILEEXISTS(simStaticDir)))){
+        std::cout << "SimpleStatic / fluid Folders do not exists!" << std::endl;
+        works = false;           
+        result.UpdateResult("fsiCoupler:Works",works);
+        return; 
+      }
+      else{
+        IntDir = IRAD::Sys::ChDir(simStaticDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          works = false;
+          result.UpdateResult("fsiCoupler:Works",works);
+        }
+        std::system("chmod 755 Allclean Allrun AllrunPar makeLinks makeSerialLinks removeSerialLinks"); 
+        std::system("./Allclean");
+        std::system("./Allrun");
+        IntDir = IRAD::Sys::ChDir(fluidDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          works = false;
+          result.UpdateResult("fsiCoupler:Works",works);
+        }
+      }
+      
+      fsicoupling fsiCoupler(global); 
+      std::string fluidSolverName("OpenFoamFSI");
+      std::string solidSolverName("ElmerCSC");
+      std::string transferServiceName("SurfX");
+      std::string runMode("1");
+
+      COM_load_module(fluidSolverName.c_str(),"FluidsComponentInterface");
+      COM_load_module(solidSolverName.c_str(),"StructuresComponentInterface");
+      COM_load_module("SurfUtil","SurfUtil");
+      COM_load_module("Simpal","Simpal");
+     
+      std::vector<std::string> componentInterfaceNames;
+      componentInterfaceNames.push_back("FluidsComponentInterface");
+      componentInterfaceNames.push_back("StructuresComponentInterface");
+      componentInterfaceNames.push_back("TransferInterface");
+      componentInterfaceNames.push_back("SurfUtil");
+      componentInterfaceNames.push_back("Simpal");
+ 
+      fsiCoupler.SetRunMode(runMode);
+      fsiCoupler.SetVerbLevel(verblevel);      
+      fsiCoupler.Initialize(componentInterfaceNames, time_final, timestep);  
+      
+      // Testing the Elmer finalize
+      fsiCoupler.getStructureAgent()->Finalize();
+      
+      COM_unload_module(solidSolverName.c_str(),"StructuresComponentInterface");       
+      int h = COM_get_window_handle("StructuresComponentInterface");
+      if(h > 0 ){
+        std::cout << "After unloading, COM_get_window_handle(\"StructuresComponentInerface\") returns "                    << h << std::endl;
+        works = false;
+      }
+
+      result.UpdateResult("SolidAgentFinalize:Works",works);
+      
+    }
+
     // WK : End
  
     ///
@@ -751,9 +1826,12 @@ namespace ElmerFoamFSI {
       // MS: End
       // WK: Start
       Test__ElmerHandlesCheck(result);
-      Test__GetInput(result);
-      //Test__ReadInputWorks(result);
-      Test__fsiCoupler(result);
+      Test__FsiCoupler(result);
+      Test__TransferDisplacementsToFluid(result);
+      Test__FluidAgentRun(result);
+	  Test__TransferLoadsToStructures(result);
+      Test__SolidAgentRun(result);
+      Test__SolidAgentFinalize(result);
       // WK: End
       Epilogue();
     }
@@ -786,12 +1864,18 @@ namespace ElmerFoamFSI {
       // WK: Start
       else if(name == "ElmerHandlesCheck")
         Test__ElmerHandlesCheck(result);
-      else if(name == "GetInput")
-        Test__GetInput(result);
-      //else if(name == "ReadInputWorks")
-      //  Test__ReadInputWorks(result);
-      else if(name == "fsiCoupler")
-        Test__fsiCoupler(result);
+      else if(name == "FsiCoupler")
+        Test__FsiCoupler(result);
+      else if(name == "TransferDisplacementsToFluid")
+        Test__TransferDisplacementsToFluid(result);
+      else if(name == "FluidAgentRun")
+        Test__FluidAgentRun(result);
+      else if(name == "TransferLoadsToStructures")
+        Test__TransferLoadsToStructures(result);
+      else if(name == "SolidAgentRun")
+        Test__SolidAgentRun(result);
+      else if(name == "SolidAgentFinalize")
+        Test__SolidAgentFinalize(result);
       // WK: End
       Epilogue();
     }

@@ -68,20 +68,22 @@ public:
           outString << crdVecSolid1[i*3] << " " 
                     << crdVecSolid1[i*3+1] << " " 
                     << crdVecSolid1[i*3+2] << std::endl;
-       StdOut(outString.str(),3, true);
+       //StdOut(outString.str(),0, true);
+       std::cout << outString.str() << std::endl;
        outString.clear();
-       outString.str("");
+       outString.str(""); 
        outString << " Fluid Coodinates are : " << std::endl;
        for (int i = 0; i < crdVecFluid1.size()/3; i++)
           outString << crdVecFluid1[i*3]   << " " 
                     << crdVecFluid1[i*3+1] << " " 
                     << crdVecFluid1[i*3+2] << std::endl;
-       StdOut(outString.str(),3,true);
+       //StdOut(outString.str(),0,true);
+       std::cout << outString.str() << std::endl;
        outString.clear();
-       outString.str("");
+       outString.str(""); 
     }
     // Masoud: End
-    
+   
     // Masoud: Checking quality of displacement transfer
     double *fluidDisp1 = NULL;
     double *fluidDisp2 = NULL;
@@ -99,21 +101,24 @@ public:
           outString << fluidDisp1[i*3] << " " 
                     << fluidDisp1[i*3+1] << " " 
                     << fluidDisp1[i*3+2] << std::endl;
-      StdOut(outString.str(),3,true);
+     //StdOut(outString.str(),0,true);
+      std::cout << outString.str() << std::endl;
       outString.clear();
       outString.str("");
-      outString << " Solid displacements for node 0: " << std::endl;
+      outString << " Solid displacements before transfer " << std::endl;
       outString << "Number of nodes: " << numberSolidNodes  << std::endl;
       for (int i = 0; i < numberSolidNodes; i++)
           outString << solidDisp1[i*3] << " " 
                     << solidDisp1[i*3+1] << " " 
                     << solidDisp1[i*3+2] << std::endl;
-      StdOut(outString.str(),3,true);
+      //StdOut(outString.str(),0,true);
+      std::cout << outString.str() << std::endl;
       outString.clear();
       outString.str("");
     }    
 
     transferAgent->Interpolate("Displacements","solidDisplacement");
+    //transferAgent->Interpolate("solidDisplacement","Displacements");
 
     if (verblevel >= 3){
       COM_get_array(fluidsCoordinateName.c_str(),fluidsAgent->PaneID(),&fluidDisp2);
@@ -121,10 +126,17 @@ public:
       outString << "Number of fluid nodes: " << numberFluidNodes  <<std::endl;
       outString << "Fluid displacements after transfer : " << std::endl;
       for (int i = 0; i < numberFluidNodes; i++)
-          outString << fluidDisp2[0*3] << " " 
-                    << fluidDisp2[0*3+1] << " " 
-                    << fluidDisp2[0*3+2] << std::endl;
-      StdOut(outString.str(),3,true);
+          outString << fluidDisp2[i*3] << " " 
+                    << fluidDisp2[i*3+1] << " " 
+                    << fluidDisp2[i*3+2] << std::endl;
+      //StdOut(outString.str(),0,true);
+      outString << "Number of solid nodes: " << numberFluidNodes  <<std::endl;
+      outString << "solid displacements after transfer : " << std::endl;
+      for (int i = 0; i < numberSolidNodes; i++)
+          outString << solidDisp2[i*3] << " " 
+                    << solidDisp2[i*3+1] << " " 
+                    << solidDisp2[i*3+2] << std::endl;
+	  std::cout << outString.str() << std::endl;
       outString.clear();
       outString.str("");
   
@@ -139,7 +151,8 @@ public:
                     << crdVecFluid2[i+1] - crdVecFluid1[i+1]<< " " 
                     << crdVecFluid2[i+2] - crdVecFluid1[i+2]<< std::endl;
       }
-      StdOut(outString.str(),3,true);
+      //StdOut(outString.str(),0,true);
+      std::cout << outString.str() << std::endl;
       outString.clear();
       outString.str("");
       outString << "Solid Coodinate Updates : " << std::endl;
@@ -149,7 +162,8 @@ public:
                     << crdVecSolid2[i+1] - crdVecSolid1[i+1]<< " " 
                     << crdVecSolid2[i+2] - crdVecSolid1[i+2]<< std::endl;
       }
-      StdOut(outString.str(),3,true);
+      //StdOut(outString.str(),0,true);
+      std::cout << outString.str() << std::endl;
       outString.clear();
       outString.str("");
     }
@@ -496,37 +510,25 @@ public:
     
     if(componentInterfaceNames.size() < 2)
       return(1);
-    //WK
-    std::cout << "am I here?" << std::endl;
-    //WK   
+  
     fluidsInterfaceName     = componentInterfaceNames[0];
     structuresInterfaceName = componentInterfaceNames[1];
     transferInterfaceName   = componentInterfaceNames[2];
-    surfUtilInterfaceName     = componentInterfaceNames[3];
-    simpalInterfaceName      = componentInterfaceNames[4];
+    surfUtilInterfaceName   = componentInterfaceNames[3];
+    simpalInterfaceName     = componentInterfaceNames[4];
 
     fluidsAgent     = new fluidagent;
     structuresAgent = new solidagent;
     transferAgent   = new transferagent(transferInterfaceName);
     
-    //WK
-    std::cout << "runmode = " << runMode << std::endl;
-    std::cout << "am I here? 2" << std::endl;
-    //WK   
     // Initialize the fluids module
     if(runMode != 2)
       fluidsAgent->Initialize(fluidsInterfaceName, verblevel);
 
-    //WK
-    std::cout << "am I here? 3" << std::endl;
-    //WK   
     // Initialize the structures module
     if(runMode != 1)
       structuresAgent->Initialize(structuresInterfaceName, verblevel);
 
-    //WK
-    std::cout << "am I here? 4" << std::endl;
-    //WK   
     // Initialize the transfer module's common refinement
     if(runMode == 0) {
       transferAgent->Overlay(structuresInterfaceName,fluidsInterfaceName);
@@ -686,7 +688,7 @@ public:
     return(0);
   }
   
-
+  
   //WK NS
   /// Helper function that allows access to protected data members.
   std::vector<std::string> getVariable(){
@@ -698,6 +700,17 @@ public:
     varVector.push_back(this->simpalInterfaceName);
     return varVector;
   }
+
+  double getSimulationTime() {return this->simulationTime;}
+  double getSimulationFinalTime() {return this->simulationFinalTime;}
+  int getRunMode() {return this->runMode;}
+
+  fluidagent * getFluidAgent() {return this->fluidsAgent;}
+  solidagent * getStructureAgent() {return this->structuresAgent;}
+
+  std::string getFluidIntName() {return this->fluidsInterfaceName;}
+  std::string getSolidIntName() {return this->structuresInterfaceName;}
+
   //WK NS    
 };
 
