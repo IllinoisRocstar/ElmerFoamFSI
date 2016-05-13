@@ -21,8 +21,10 @@ public:
       return(1);
     }
     componentFunctionHandles[RUN] = fluidsStepHandle;
-    WriteOut("Calling OpenFOAM Initialization.\n");
    
+    
+    WriteOut("Calling OpenFOAM Initialization.\n");
+
     int argc_dupe = 1;
     char *argv[2];
     argv[0] = const_cast<char *>("test");
