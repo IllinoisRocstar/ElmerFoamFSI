@@ -58,6 +58,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
    INTEGER, POINTER :: TempNodeList(:)
    LOGICAL :: NodePresent
    INTEGER :: LastFSIElement
+   INTEGER :: paneId
 !   INTEGER, POINTER :: Conn2(:)
 #if defined(MINGW32)
    CALL SET_STDIO_BUFS()
@@ -84,7 +85,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
      CALL FLUSH(6)
    END IF
 
-   IF( MyVerbosity > 3) WRITE( *, * ) 'Calling ElmerInitialize'
+   IF( MyVerbosity > 3) WRITE( *, * ) 'Calling ElmerInitialize ... '
 
    CALL ElmerInitialize(runs, global%ElmerComm)
 
@@ -129,7 +130,11 @@ SUBROUTINE Initializer(global, runs, verbIn)
    global%nElem = 0
 
    !Allocate a temporay array to avoid repeating nodes 
+   WRITE (*,*) "Number of Bulk elemenets = ", MyMesh % NumberOfBulkElements
+   WRITE (*,*) "Number of Boundary elemenets = ", MyMesh % NumberOfBoundaryElements
+
    t = MyMesh % NumberOfBulkElements
+   !WRITE (*,*) "Regular Element DIM = ", MyMesh % Elements(t) % TYPE % DIMENSION     
    MyCurrentElement => MyMesh % Elements(t+1)
    t = MyCurrentElement % TYPE % DIMENSION
    counter = (MyMesh % NumberOfBoundaryElements)*(t + 1)
@@ -144,7 +149,8 @@ SUBROUTINE Initializer(global, runs, verbIn)
 
       MyCurrentElement => MyMesh % Elements(t)
       bc_id = GetBCId(MyCurrentElement)
-
+      !WRITE (*,*) "Boundary Element DIM = ", MyCurrentElement % TYPE % DIMENSION     
+ 
       IF ( bc_id == global%FSIbcId ) THEN
          LastFSIElement = t
          IF( MyVerbosity > 3) THEN 
@@ -386,11 +392,13 @@ SUBROUTINE Initializer(global, runs, verbIn)
       WRITE(*,*) 'window.mesh = ', &
               TRIM(global%window_name)//'.'//TRIM(global%MeshType)
    END IF
-   CALL COM_SET_SIZE(TRIM(global%window_name)//'.nc',11,global%nNodes)
-   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.nc',11,global%Coords,3)
-   CALL COM_SET_SIZE(TRIM(global%window_name)//'.'//TRIM(global%MeshType),11,&
+   !Register data to pane starting from 100
+   paneId = 100 + global % procId
+   CALL COM_SET_SIZE(TRIM(global%window_name)//'.nc',paneId,global%nNodes)
+   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.nc',paneId,global%Coords,3)
+   CALL COM_SET_SIZE(TRIM(global%window_name)//'.'//TRIM(global%MeshType),paneId,&
                      global%nElem)
-   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.'//TRIM(global%MeshType),11,&
+   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.'//TRIM(global%MeshType),paneId,&
                       global%Conn, global%nConn) 
 
    !CALL COM_SET_SIZE('Window1.:b2:real', 11,global%nElem)
@@ -400,37 +408,37 @@ SUBROUTINE Initializer(global, runs, verbIn)
 
    !Set the displacments array with COM now that the mesh is registered
    CALL COM_NEW_DATAITEM(TRIM(global%window_name)//'.Displacements', 'n', COM_DOUBLE_PRECISION, 3, 'm')
-   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.Displacements',11,&
+   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.Displacements',paneId,&
                       global%NodeDisplacements,3)
    !Masoud
    ! n: means node quantity, 3: number of columns, 11: window number (currently
    ! default used everywhere), 'm': is units of the quanitity
    CALL COM_NEW_DATAITEM(TRIM(global%window_name)//'.PreviousDisplacements', 'n', COM_DOUBLE_PRECISION, 3, 'm')
-   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.PreviousDisplacements',11,&
+   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.PreviousDisplacements',paneId,&
                       global%PreviousNodeDisplacements,3)
    !Masoud End
 
    !Set the loads array with COM now that the mesh is registered
    CALL COM_NEW_DATAITEM(TRIM(global%window_name)//'.Loads', 'n', COM_DOUBLE_PRECISION, 3, '')
-   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.Loads',11,&
+   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.Loads',paneId,&
                       global%NodeLoads,3)
 
    !Set the loads array with COM now that the mesh is registered
    CALL COM_NEW_DATAITEM(TRIM(global%window_name)//'.NodePressures',&
                          'n', COM_DOUBLE_PRECISION, 1, '')
-   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.NodePressures',11,&
+   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.NodePressures',paneId,&
                       global%NodePressures,1)
 
    !Set the pressures array with COM now that the mesh is registered
    CALL COM_NEW_DATAITEM(TRIM(global%window_name)//'.Pressures', 'e',&
                          COM_DOUBLE_PRECISION, 1, '')
-   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.Pressures',11,&
+   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.Pressures',paneId,&
                       global%FacePressures,1)
 
    !Set the face loads array with COM now that the mesh is registered
    CALL COM_NEW_DATAITEM(TRIM(global%window_name)//'.FaceLoads', 'e',&
                          COM_DOUBLE_PRECISION, 3, '')
-   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.FaceLoads',11,&
+   CALL COM_SET_ARRAY(TRIM(global%window_name)//'.FaceLoads',paneId,&
                       global%FaceLoads,3)
 
    !Set the verbosity with COM 
@@ -705,21 +713,6 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
                      global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)
                      global%NodeDisplacements(3*(nCount-1) + 3) = 0.0d0
                  ELSE IF ( StressSol % DOFs == 3 ) THEN
-                     ! Original
-                     !global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
-                     !global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)
-                     !global%NodeDisplacements(3*(nCount-1) + 3) = Displacement(nk+3)
-                     ! Original: End
-
-                     ! Masoud
-                     !Printing old and new displacements for the user
-                     !WRITE(*,*) '----------------------'
-                     !WRITE(*,*) ' new disps= ', Displacement(nk+1),&
-                     !           Displacement(nk+2), Displacement(nk+3)
-                     !WRITE(*,*) ' old disps= ',&
-                     !global%PreviousNodeDisplacements(3*(nCount-1) + 1),&
-                     !global%PreviousNodeDisplacements(3*(nCount-1) + 2), &
-                     !global%PreviousNodeDisplacements(3*(nCount-1) + 3)
                      !Calculating displacement differences to pass to fluid solver
                      global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)&
                      - global%PreviousNodeDisplacements(3*(nCount-1) + 1)
@@ -747,48 +740,6 @@ SUBROUTINE UpdateDisplacements(global,runs, tFinal)
                END IF
                ! Masoud:  End
 
-               ! Original: uses a funny update order with dubplicates
-               !!IF( MyVerbosity > 3) THEN
-               !  WRITE(6,*) 'Updating NodeDisplacement(',nCount,')'
-               !!END IF
-
-               !IF ( StressSol % DOFs == 1 ) THEN
-               !   IF( MyVerbosity > 3) WRITE(*,*) Displacement(nk+1), 0.0, 0.0
-               !   global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
-               !   global%NodeDisplacements(3*(nCount-1) + 2) = 0.0d0
-               !   global%NodeDisplacements(3*(nCount-1) + 3) = 0.0d0
-               !ELSE IF ( StressSol % DOFs == 2 ) THEN
-               !   IF( MyVerbosity > 3) WRITE(*,*) Displacement(nk+1), Displacement(nk+2)
-               !   global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
-               !   global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)
-               !   global%NodeDisplacements(3*(nCount-1) + 3) = 0.0d0
-               !ELSE IF ( StressSol % DOFs == 3 ) THEN
-               !   ! Masoud
-               !   !WRITE(*,*) '----------------------'
-               !   WRITE(*,*) ' new = ', Displacement(nk+1),&
-               !              Displacement(nk+2), Displacement(nk+3)
-               !   WRITE(*,*) ' old = ', global%NodeDisplacements(3*(nCount-1) + 1),&
-               !   global%NodeDisplacements(3*(nCount-1) + 2), &
-               !   global%NodeDisplacements(3*(nCount-1) + 3)
-               !   ! Masoud : end 
-
-               !   ! Original
-               !   global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1)
-               !   global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2)
-               !   global%NodeDisplacements(3*(nCount-1) + 3) = Displacement(nk+3)
-               !   ! Original: End
-
-               !   !WRITE(*,*) '----------------------'
-               !   !global%NodeDisplacements(3*(nCount-1) + 1) = Displacement(nk+1) - global%NodeDisplacements(3*(nCount-1) + 1)
-               !   !global%NodeDisplacements(3*(nCount-1) + 2) = Displacement(nk+2) - global%NodeDisplacements(3*(nCount-1) + 2)
-               !   !global%NodeDisplacements(3*(nCount-1) + 3) = Displacement(nk+3) - global%NodeDisplacements(3*(nCount-1) + 3)
-               !   ! Masoud : End
-               !ELSE
-               !   WRITE(*,*) 'StressSol % DOFs = ', StressSol % DOFs
-               !   WRITE(*,*) 'DOFs are assumed to be <= 3'
-               !   CALL Fatal( ' ', 'StressSol DOFs are greater than 3 ' )
-               !END IF
-               ! Original : End
             END IF
 
          END DO                
@@ -898,7 +849,8 @@ SUBROUTINE ElmerCSCParallel_LOAD_MODULE(name)
   CHARACTER(*),intent(in) :: name
   INTEGER :: com_types(7)
   TYPE(t_global), POINTER :: glb
-  
+  INTEGER :: iError
+  INTEGER, target :: nProc, procId
 
   WRITE(*,'(A)') "Loading ElmerCSCParallel: "//TRIM(name)
   
@@ -910,9 +862,16 @@ SUBROUTINE ElmerCSCParallel_LOAD_MODULE(name)
   CALL COM_NEW_WINDOW(TRIM(name), MPI_COMM_NULL)
 
   glb%ElmerComm = COM_GET_DEFAULT_COMMUNICATOR()
+  CALL MPI_COMM_SIZE(glb%ElmerComm, nProc, iError)
+  glb%nProc = nProc
+  CALL MPI_COMM_RANK(glb%ElmerComm, procId, iError)
+  glb%procId = procId
 
   CALL COM_new_dataitem(TRIM(name)//'.global','w',COM_F90POINTER,1,'')
   CALL COM_allocate_array(TRIM(name)//'.global')
+  CALL COM_NEW_DATAITEM(TRIM(name)//'.nProc','w',COM_INTEGER,1,'')
+  CALL COM_set_size(TRIM(name)//'.nProc',0,1)
+  CALL COM_SET_ARRAY(name//'.nProc', 0, glb%nProc)
 
   com_types(1) = COM_F90POINTER
   com_types(2) = COM_INTEGER

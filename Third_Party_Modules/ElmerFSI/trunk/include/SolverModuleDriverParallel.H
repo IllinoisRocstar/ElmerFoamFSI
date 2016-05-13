@@ -4,43 +4,62 @@
 #include "SolverAgent.H"
 #include "InterfaceLayer.H"
 
-class SolverModuleDriver : public SolverUtils::FEM::SolverAgent, public COM_Object
-{
-  std::vector<double> tNext;
-  std::stringstream ss;
-  double var;
-  bool isNum, isFSI, changeLoads;
-  double* Disp;
-  int DispSize;
-  std::vector<double> DispPass;
-  double* Coord;
-  int* Conn;
-  int coord_handle;
-  int CoordSize;
-  bool coordData;
-  bool connCorrect;
-  int ConnSize;
-  std::vector<unsigned int> elems;
-  double* Loads;
-  int LoadsSize;
-  std::vector<double> LoadsPass;
-  int runs;
-  int color;
-  MPI_Comm Comm;
+namespace COM {
+   class SolverModuleDriver : public SolverUtils::FEM::SolverAgent, public COM_Object
+   {
+     std::stringstream ss;
+     bool isFSI, changeLoads;
+     int runs;
+     int color;
+     MPI_Comm Comm;
+     SolverAgent myAgent;
+     bool myAgentIsInit;
 
-public:
+   public:
+     // member data
+     int myRank;
+     int myPaneId;
+     std::vector<double> tNext;
+     double* Disp; // displacements
+     int nDisp;
+     char locDisp;
+     int typeDisp;
+     double* Coord;
+     int nNodes;
+     int* Conn;
+     int nConn;
+     double* Loads; // loads
+     int nLoads;    // number of components 
+     char locLoads; // location on mesh
+     int typeLoads; // COM type 
+     double* Press; // pressures
+     int nPress;
+     char locPress;
+     int typePress;
+     int nElem;
+     int nElemNodes;
+     std::ofstream outfile;
 
-  SolverModuleDriver(){};
-  virtual ~SolverModuleDriver(){};
-  void usage(char *exec);     
-  int init(int argc, char *argv[]);
-  int run();
-  int finalize();
-  int getColor(){return color;}
-  void setColor(int colorValue){color = colorValue;}
-  void setComm(MPI_Comm newComm){Comm = newComm;}
-  std::ofstream outfile;
-
+     // member functions
+     SolverModuleDriver(): myAgentIsInit(false), isFSI(false), changeLoads(false), Disp(NULL), nDisp(0),
+                           Loads(NULL), nLoads(0), Press(NULL), nPress(0), Coord(NULL), Conn(NULL)
+                           {}
+     virtual ~SolverModuleDriver(){};
+     void usage(char *exec);    
+     bool isStreamer(){return(myRank==0);} 
+     int init(int argc, char *argv[]);
+     int run();
+     int updateSolution();
+     int finalize();
+     int getColor(){return color;}
+     void setColor(int colorValue){color = colorValue;}
+     void setRank(int rankValue){myRank = rankValue;}
+     void setComm(MPI_Comm newComm){Comm = newComm;}
+     int vtkDump(double timeMark);
+     bool isFSISim(){return isFSI;}
+     bool isChangeLoad(){return changeLoads;}
+   
+   };
 };
   
 #endif

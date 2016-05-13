@@ -30,7 +30,7 @@ sed '2d' beam3d/case.ep.2 > case.ep.2.tmp
 sed '2d' beam3d/case.ep.3 > case.ep.3.tmp
 
 
-printf "LoadedElasticBeamParallel:Works=" >> ${TmpOut}
+printf "ParLoadedElasticBeam:Works=" >> ${TmpOut}
 
 echo "DiffPath = $4"
 set STEST0=`$4/diffdatafiles -p 2  case.ep.0.tmp PureElmerOutput/case.ep.0_check`
