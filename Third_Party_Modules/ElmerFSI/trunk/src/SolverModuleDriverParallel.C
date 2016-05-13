@@ -14,379 +14,581 @@
 #include <stdlib.h>
 #include <sstream>
 #include "primitive_utilities.H"
+#include "SolverAgent.H"
+#include "InterfaceLayer.H"
 #include "SolverModuleDriverParallel.H"
 #include "COMM.H"
+#include <algorithm>
+
 
 COM_EXTERN_MODULE( ElmerCSCParallel);
 
-typedef IRAD::Comm::CommunicatorObject IRADCommType;
 
-void SolverModuleDriver::usage(char *exec){
-  std::cout << "SolverModuleDriver:usage: Usage: " << std::endl
-            << exec << " -com-mpi timeNext timeNext ... timeFinal" << std::endl
-            << "where at least -com-mpi and timeFinal is required." << std::endl
-            << "NOTES:" << std::endl
-            << "*currently it is required to use the -com-mpi flag" << std::endl
-            << "*steady state problems will always use a timestep" << std::endl
-            << " of 1.0, and should only have a timeFinal" << std::endl
-            << "*each time must be greater than the previous time" << std::endl
-            << " because the simulation begins at the previous time and runs" << std::endl
-            << " to the current time" << std::endl;
-   std::exit(1);
-}
-       
-int SolverModuleDriver::init(int argc, char *argv[]){
-
-  std::cout << "SoverModuleDriver:init: After COM_init" << std::endl;
-
-  isNum =  isFSI = changeLoads = false;
-  Disp = NULL;
-  DispSize = 0;
-  Coord = NULL;
-  Conn = NULL;
-  coord_handle = -1;
-  CoordSize=0;
-  coordData = false;
-  connCorrect = true;
-  ConnSize = 0;
-  Loads = NULL;
-  LoadsSize = 0;
-  
-  std::string arg;
-
-  if(argc > 1){
-    for(int i=1; i < argc; i++){
-        ss.clear();
-        ss.str("");
-        ss << argv[i];
-        if(ss.str() == "-com-mpi")
-          continue;
-        if(ss.str() == "-fsi"){
-          isFSI = true;
-          continue;
-        }
-        if(ss.str() == "-loads"){
-          changeLoads = true;
-          continue;
-        }
-        for(int j=0; j < ss.str().size(); j++){
-          if(!isdigit(ss.str()[j]) && ss.str()[j] != 'e' 
-             && ss.str()[j] != 'E' && ss.str()[j] != '-'
-             && ss.str()[j] != '.')
-            usage(argv[0]);
-        }
-        ss >> var;
-        tNext.push_back(var);
-    }
-  }      
-  else
-    usage(argv[0]);
-
-  for(int i=1; i < tNext.size(); i++){
-    if(tNext[i] <= tNext[i-1])
-      usage(argv[0]);
-  }
-
-  COM_LOAD_MODULE_STATIC_DYNAMIC( ElmerCSCParallel, "Window1");
-
-  MPI_Comm comm_check;
-  //Check the communicator that the window was loaded on
-  outfile << "Checking Window1" << std::endl;
-  outfile << "comm_check = " << comm_check << std::endl;
-  COM_get_communicator("Window1", &comm_check);
-  if(comm_check == Comm)
-    outfile << "comm_check == Comm!" << std::endl;
-  else if(comm_check == MPI_COMM_WORLD)
-    outfile << "comm_check == MPI_COMM_WORLD!" << std::endl;
-  else if(comm_check == MPI_COMM_SELF)
-    outfile << "comm_check == MPI_COMM_SELF!" << std::endl;
-  else
-    outfile << "comm_check == none!" << std::endl;
-
-  if(color == 0){ 
-    /// Get the handle for the initialize function and call it
-    int init_handle = COM_get_function_handle("Window1.Initialize");
-    bool init_func = (init_handle > 0);
-    int verb=3;
-    runs = 0;
-    if(init_func){
-    COM_call_function(init_handle, &runs, &verb);
-    }
-  }
-
-  return 0;
-}
-
-int SolverModuleDriver::run(){
-  if(isFSI){
-    //////////////////////////////////////////////////
-    // Check coordinate values
-    //////////////////////////////////////////////////
-    coord_handle = COM_get_dataitem_handle("Window1.nc");
-    CoordSize=0;
-    coordData = (coord_handle > 0);
-    std::cout << "SoverModuleDriver:run: coord_handle = " << coord_handle << std::endl;
-    if(coordData){
-      COM_get_size("Window1.nc",11,&CoordSize);
-      // Get the FSI mesh from the structures solver and print
-      // it out to check
-      COM_get_array("Window1.nc",11,&Coord);
-      std::cout << "SoverModuleDriver:run: Coord: " << std::endl;
-      for(int i=0; i < CoordSize; i++){
-        for(int j=0; j < 3; j++){
-          std::cout << Coord[i*3+j] << " ";
-        }
-        std::cout << std::endl;
-      }
-      Mesh().nc.init(CoordSize, Coord);
-    }
-
-    //////////////////////////////////////////////////
-    // Check connectivity values
-    //////////////////////////////////////////////////
-    connCorrect = true;
-    ConnSize = 0;
+namespace COM {
+    // typedef for CommunicatorObject
+    typedef IRAD::Comm::CommunicatorObject CommType;
     
-    // Get the FSI mesh from the structures solver
-    COM_get_array("Window1.:b2:",11,&Conn);
-    if(Conn){
-      // Get the FSI mesh size from the structures solver
-      COM_get_size("Window1.:b2:",11,&ConnSize);
-      // check the values
-      std::cout << "SoverModuleDriver:run: Conn: " << std::endl;
-      for(int i=0; i < ConnSize; i++){
-        for(int j=0; j < 2; j++){
-          std::cout << Conn[i*2+j] << " ";
-          elems.push_back(Conn[i*2+j]);
-        }
-        std::cout << std::endl;
-      }
-      Mesh().con.AddElements(ConnSize,2,elems);
+    void SolverModuleDriver::usage(char *exec){
+      std::cout << std::endl 
+                << "Usage: " << std::endl << std::endl
+                << "  " << exec << "   [-com-mpi]  [-fsi] [-loads] time[0] [time[1]   ...   time[Final]]" 
+                << std::endl
+                << "   where at least  timeFinal is required. Here is the description of switches :" 
+                << std::endl << std::endl
+                << " -com-mpi:" << std::endl
+                << "   It is not required to use the -com-mpi flag." << std::endl << std::endl
+                << " -fsi :" << std::endl
+                << "   Should be used for fluid-solid interaction (FSI) problems to register" << std::endl
+                << "   mesh and solution for each given timestep. A vtk file will be created" << std::endl
+                << "   for each timestep containing FSI surface mesh and solution values." << std::endl 
+                << "   It is assumed that all processes share FSI boundaries." << std::endl<<std::endl
+                << " -loads :" << std::endl
+                << "   Should be used to change loads during simulaiton" << std::endl<< std::endl
+                << " time[i], i>0:" << std::endl
+                << "   At least one timestep should be given. For steady state problem a timestep" << std::endl
+                << "   of 1.0 is enough. Values given should increase monotonically." << std::endl;
+       std::exit(1);
     }
-
-    if(Conn && coordData){
-      std::cout << "SoverModuleDriver:run: WriteMeshToStream: " << std::endl;
-      WriteMeshToStream(std::cout);
-      std::cout << std::endl;
-    }
-    // Check displacement data
-    COM_get_array("Window1.Displacements",11,&Disp);
-    if (Disp){
-      // Get the FSI displacement size from the structures solver
-      COM_get_size("Window1.Displacements",11,&DispSize);
-
-      std::cout << "SoverModuleDriver:run: Checking displacements" << std::endl;
-      for(int i=0; i < DispSize; i++){
-         for(int j=0; j < 3; j++){
-            std::cout << Disp[i*3+j] << " ";
-            DispPass.push_back(Disp[i*3+j]);
-         }
-         std::cout << std::endl;
-      }
-    }
-  }
-
-
-  //If we want to prescribe loads here's where we do it
-  Loads = NULL;
-  LoadsSize = 0;
-  
-  // Get the FSI loads from the structures solver
-  if(isFSI && changeLoads){
-    COM_get_array("Window1.Loads",11,&Loads);
-    if(Loads){
-      std::cout << "SoverModuleDriver:run: Loads not NULL" << std::endl;
-      // Get the FSI load size from the structures solver
-      COM_get_size("Window1.Loads",11,&LoadsSize);
-      // Check load data
-
-      std::cout << "SoverModuleDriver:run: Checking loads" << std::endl;
-      for(int i=0; i < LoadsSize; i++){
-         for(int j=0; j < 3; j++){
-            Loads[i*3 + j] = double(i*3 + j);
-            std::cout << Loads[i*3+j] << " ";
-            LoadsPass.push_back(Loads[i*3+j]);
-         }
-         std::cout << std::endl;
-      }
-    }
-  }
-
-  //Put the displacements and loads in the Solution object
-  //so we can use its utilities and write a vtk file
-  if(Disp && isFSI){ 
-    Solution().Meta().AddField("displacement",'n',3,8,"m");
-    std::cout << "SoverModuleDriver:run: WriteSolnMetaToStream:" << std::endl;
-    WriteSolnMetaToStream(std::cout);
-    std::cout << std::endl;
-  }
-  if(Loads && isFSI){
-    Solution().Meta().AddField("loads",'n',3,8,"");
-    std::cout << "SoverModuleDriver:run: WriteSolnMetaToStream:" << std::endl;
-    WriteSolnMetaToStream(std::cout);
-    std::cout << std::endl;
-  }
-  if((Disp && isFSI) || Loads){
-    CreateSoln();
-  }
-  if(Disp && isFSI)
-    Solution().SetFieldBuffer("displacement",DispPass);
-  if(Loads && isFSI)
-    Solution().SetFieldBuffer("loads",LoadsPass);
-
-
-  //Write vtk file for timestep 0
-  if(isFSI && Conn && Coord){
-    std::ofstream Ouf;
-    std::string filename;
-    filename = "fsi0.vtk";
-    Ouf.open(filename.c_str());
-    if(!Ouf){
-        std::cerr << "SoverModuleDriver:run: SolverModuleDriver::DumpSolution:Error: Could not open output file, "
-                  << filename << "." << std::endl;
-        return -1;
-      }   
-      std::cout << "SoverModuleDriver:run: WriteVTKToStream time 0" << std::endl;
-      SolverUtils::WriteVTKToStream("Window1",*this,Ouf);
-      Ouf.close();
-  }
- 
-
-  /// Get the handle for the run function and call it
-  int run_handle = COM_get_function_handle("Window1.Run");
-  bool run_func = (run_handle > 0);
-  runs = 0;
-  if(run_func){
-    int timestep = 0;
-    for(int i=0; i < tNext.size(); i++){
-      //Change the load values as a test
-      if(Loads && isFSI){
-         std::cout << "SoverModuleDriver:run: Changing load values" << std::endl;
-         for(int k=0; k < LoadsSize; k++){
-            for(int j=0; j < 3; j++){
-               Loads[k*3 + j] = double(k*3 + j) + tNext[i];
-               std::cout << Loads[k*3 + j] << " ";
-               LoadsPass[k*3 + j] = Loads[k*3 + j];
+           
+    int SolverModuleDriver::init(int argc, char *argv[]){
+      std::cout << "SoverModuleDriver: running initializer ... " << std::endl;
+      // processing command-line flags
+      std::string arg;    
+      double tmpTime;
+      if(argc > 1){
+        for(int i=1; i < argc; i++){
+            ss.clear();
+            ss.str("");
+            ss << argv[i];
+            if(ss.str() == "-com-mpi")
+              continue;
+            if(ss.str() == "-fsi"){
+              isFSI = true;
+              continue;
             }
-            std::cout << std::endl;
-         }
-      }
-
-      std::cout << "SoverModuleDriver:run: Calling run function from driver" << std::endl;
-      COM_call_function(run_handle,&runs,&tNext[i]);
-
-      //Update Solution's displacments for writing vtk file
-      if(isFSI && Disp){
-        std::cout << "SoverModuleDriver:run: Checking displacements" << std::endl;
-        for(int k=0; k < DispSize; k++){
-           for(int j=0; j < 3; j++){
-              std::cout << Disp[k*3+j] << " ";
-              DispPass[k*3+j] = Disp[k*3+j];
-           }
-           std::cout << std::endl;
+            if(ss.str() == "-loads"){
+              changeLoads = true;
+              continue;
+            }
+            for(int j=0; j<ss.str().size(); j++){
+              if(!isdigit(ss.str()[j]) && ss.str()[j] != 'e' 
+                 && ss.str()[j] != 'E' && ss.str()[j] != '-'
+                 && ss.str()[j] != '.')
+                usage(argv[0]);
+            }            
+            ss >> tmpTime;
+            tNext.push_back(tmpTime);
+        }
+      }      
+      else
+        usage(argv[0]);
+    
+      for(int i=1; i < tNext.size(); i++){
+        if(tNext[i] <= tNext[i-1]){
+          usage(argv[0]);
+          exit(1);
         }
       }
-      timestep++;
-      //Write vtk file for timestep
-      if(isFSI && Conn && Coord){
-        std::ofstream Ouf;
-        ss.clear();
-        ss.str("");
-        ss << timestep;
-        std::string filename;
-        filename = "fsi" + ss.str() + ".vtk";
-        Ouf.open(filename.c_str());
-        if(!Ouf){
-            std::cerr << "SolverModuleDriver::DumpSolution:Error: Could not open output file, "
+
+      // loading ElmerParallel module
+      COM_LOAD_MODULE_STATIC_DYNAMIC(ElmerCSCParallel, "ELMModule");
+    
+      // check the communicator that the window was loaded on
+      MPI_Comm comm_check;
+      outfile << "Checking ELMModule" << std::endl;
+      outfile << "comm_check = " << comm_check << std::endl;
+      COM_get_communicator("ELMModule", &comm_check);
+      if(comm_check == Comm)
+        outfile << "comm_check == Comm!" << std::endl;
+      else if(comm_check == MPI_COMM_WORLD)
+        outfile << "comm_check == MPI_COMM_WORLD!" << std::endl;
+      else if(comm_check == MPI_COMM_SELF)
+        outfile << "comm_check == MPI_COMM_SELF!" << std::endl;
+      else
+        outfile << "comm_check == None!" << std::endl;
+
+      // calling module initializer     
+      if(color == 0){ 
+        /// get the handle for the initialize function and call it
+        int init_handle = COM_get_function_handle("ELMModule.Initialize");
+        bool init_func = (init_handle > 0);
+        int verb=1;
+        runs = 0;
+        if(init_func)
+           COM_call_function(init_handle, &runs, &verb);
+      }
+
+      // FSI problems will register mesh data, accessing them  
+      if(isFSI){ 
+         char getDataItemLoc;
+         COM_Type getDataItemType;
+         std::string getDataItemUnits;
+         // getting node coordinates  
+         COM_get_array("ELMModule.nc", myPaneId, &Coord);
+         // check for expected number of nodes
+         COM_get_size("ELMModule.nc", myPaneId, &nNodes);
+         // get connectivity tables for paneIds
+         // :q4: is quad element
+         std::string stringNames;
+         COM_get_connectivities("ELMModule", myPaneId, &nConn, stringNames);
+         std::istringstream ConnISS(stringNames);
+         std::vector<std::string> connNames;
+         for (int i=0; i<nConn; ++i) {
+            std::string name;
+            ConnISS >> name;
+            connNames.push_back(name);
+            std::cout << "Rank #" << myRank
+                      << ", ELMModuleDriver:main: Connectivity Table # " << i+1 << ": " << name << std::endl;
+         }
+         // number of nodes per element
+         std::string fullConnName("ELMModule."+connNames[0]);
+         COM_get_dataitem(fullConnName, &getDataItemLoc, &getDataItemType,
+                          &nElemNodes, &getDataItemUnits);
+         std::cout << "Rank #" << myRank
+                   << ", ELMModuleDriver:main: getDataItemLoc " << getDataItemLoc << std::endl;
+         std::cout << "Rank #" << myRank
+                   << ", ELMModuleDriver:main: getDataItemType " << getDataItemType << std::endl;
+         std::cout << "Rank #" << myRank
+                   << ", ELMModuleDriver:main: nElemNodes " << nElemNodes << std::endl;
+         std::cout << "Rank #" << myRank
+                   << ", ELMModuleDriver:main: getDataItemUnits " << getDataItemUnits << std::endl;
+         // get connectivities        
+         COM_get_array(fullConnName.c_str(), myPaneId, &Conn);
+         COM_get_size(fullConnName, myPaneId, &nElem);
+      }
+
+      return 0;
+    }
+    
+    int SolverModuleDriver::run(){
+      //If we want to prescribe loads here's where we do it
+
+      /*
+      // set FSI loads for the structures solver
+      std::cout << "isFSI =  " << isFSI << std::endl;
+      if(isFSI && changeLoads){
+        std::cout << "Rank #" << myRank 
+                  << ", Applying loads ... " << std::endl;
+        COM_get_array("ELMModule.Loads", myPaneId, &Loads);
+        if(Loads){
+          // Get the FSI load size from the structures solver
+          COM_get_size("ELMModule.Loads", myPaneId, &nLoads);
+          std::cout << "Load size = " << nLoads << std::endl;
+          std::cout << "SoverModuleDriver:run: Checking loads" << std::endl;
+          for(int i=0; i < nLoads; i++){
+             for(int j=0; j < 3; j++){
+                Loads[i*3 + j] = double(i*3 + j);
+                std::cout << Loads[i*3+j] << " ";
+             }
+             std::cout << std::endl;
+          }
+        }
+      }
+      std::cout << "Rank #" << myRank 
+                << ", Finished applying loads." << std::endl;
+      */
+
+      /// Get the handle for the run function and call it
+      int run_handle = COM_get_function_handle("ELMModule.Run");
+      bool run_func = (run_handle > 0);
+      runs = 0;
+      if(run_func){
+        int timestep = 0;
+        for(int i=0; i < tNext.size(); i++){
+          // call run function
+          std::cout << "SoverModuleDriver:run: Calling run function from driver" << std::endl;
+          COM_call_function(run_handle,&runs,&tNext[i]);
+          // dump solution to vtk
+          vtkDump(tNext[i]);
+          // update time 
+          timestep++;
+        }
+      }
+      return 0;
+    }
+
+    int SolverModuleDriver::updateSolution(){
+      // only for FSI problems
+      if (!isFSI)
+        return(0);
+      char getDataItemLoc;
+      COM_Type getDataItemType;
+      std::string getDataItemUnits;
+      // get displacements
+      std::string name;
+      int myDataItemType;
+      name = "ELMModule.Displacements";
+      COM_get_dataitem(name, &getDataItemLoc, &getDataItemType,
+                       &nDisp, &getDataItemUnits);
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: Displacement Get DataItem" 
+                << std::endl;
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: getDataItemLoc: " << getDataItemLoc << std::endl;
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: getDataItemType: " << getDataItemType << std::endl;
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: arrayLength: " << nDisp << std::endl;
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: getDataItemUnits: " << getDataItemUnits << std::endl;
+      // translate element (e) to cell (c)
+      char myDataItemLoc;
+      if (getDataItemLoc == 'e' || getDataItemLoc == 'E') {
+          locDisp = 'c';
+      } else if (getDataItemLoc == 'n' || getDataItemLoc == 'N') {
+          locDisp = 'n';
+      } else {
+          std::cout << "ELMModuleDriver:main: Unknown Data Item Location" << std::endl;
+          exit(1);
+      }
+      if (getDataItemType == COM_DOUBLE_PRECISION) {
+          typeDisp = 8;
+      } else {
+          std::cout << "ELMModuleDriver:main: Unknown Data Item Type" << std::endl;
+          exit(1);
+      }
+      // acquire dataitem from COM
+      COM_get_array("ELMModule.Displacements", myPaneId, &Disp);
+      // get loads
+      name = "ELMModule.Loads";
+      COM_get_dataitem(name, &getDataItemLoc, &getDataItemType,
+                       &nLoads, &getDataItemUnits);
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: Load Get DataItem" 
+                << std::endl;
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: getDataItemLoc: " << getDataItemLoc << std::endl;
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: getDataItemType: " << getDataItemType << std::endl;
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: arrayLength: " << nLoads << std::endl;
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: getDataItemUnits: " << getDataItemUnits << std::endl;
+      // translate element (e) to cell (c)
+      if (getDataItemLoc == 'e' || getDataItemLoc == 'E') {
+          locLoads = 'c';
+      } else if (getDataItemLoc == 'n' || getDataItemLoc == 'N') {
+          locLoads = 'n';
+      } else {
+          std::cout << "ELMModuleDriver:main: Unknown Data Item Location" << std::endl;
+          exit(1);
+      }
+      if (getDataItemType == COM_DOUBLE_PRECISION) {
+          typeLoads = 8;
+      } else {
+          std::cout << "ELMModuleDriver:main: Unknown Data Item Type" << std::endl;
+          exit(1);
+      }
+      // acquire dataitem from COM
+      COM_get_array("ELMModule.Loads", myPaneId, &Loads);
+      // get pressures
+      name = "ELMModule.Pressures";
+      COM_get_dataitem(name, &getDataItemLoc, &getDataItemType,
+                       &nPress, &getDataItemUnits);
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: Pressures Get DataItem" 
+                << std::endl;
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: getDataItemLoc: " << getDataItemLoc << std::endl;
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: getDataItemType: " << getDataItemType << std::endl;
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: arrayLength: " << nPress << std::endl;
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: getDataItemUnits: " << getDataItemUnits << std::endl;
+      // translate element (e) to cell (c)
+      if (getDataItemLoc == 'e' || getDataItemLoc == 'E') {
+          locPress = 'c';
+      } else {
+          std::cout << "ELMModuleDriver:main: Unknown Data Item Location" << std::endl;
+          exit(1);
+      }
+      if (getDataItemType == COM_DOUBLE_PRECISION) {
+          typePress = 8;
+      } else {
+          std::cout << "ELMModuleDriver:main: Unknown Data Item Type" << std::endl;
+          exit(1);
+      }
+      COM_get_array(name.c_str(), myPaneId, &Press);
+
+    }
+
+    
+    int SolverModuleDriver::finalize(){
+      if(color == 0){
+        /// Get the handle for the finalize function and call it
+        int final_handle = COM_get_function_handle("ELMModule.Finalize");
+        bool final_func = (final_handle > 0);
+        runs = 0;
+        if(final_func){
+          COM_call_function(final_handle,&runs);
+        }
+      }
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC( ElmerCSCParallel, "ELMModule");
+      return 0;
+
+    }
+
+    int SolverModuleDriver::vtkDump(double timeMark){
+      // only for FSI problems
+      if (!isFSI)
+         return(0);
+      char getDataItemLoc;
+      COM_Type getDataItemType;
+      std::string getDataItemUnits;
+      // creating solverAgent if not yet
+      if (!myAgentIsInit) {
+          myAgentIsInit = true;
+          // put elements into a vector so we can build the solver agent
+          std::vector<unsigned int> connVector;
+          for (int i=0; i<nElem; ++i) {
+            for (int j=0; j<nElemNodes; ++j) {
+              connVector.push_back((Conn[i*nElemNodes+j]));
+            }
+          }    
+          // make a solverAgent to store our data
+          myAgent.Solution().Meta().AddField("time", 's', 1, 8, "s");
+          myAgent.Solution().Meta().AddField("endTime", 's', 1, 8, "s");
+          myAgent.Mesh().nc.init(nNodes, Coord);
+          myAgent.Mesh().con.AddElements(nElem, nElemNodes, connVector);
+      }
+      // updating datastructures
+      updateSolution();
+      // displacements
+      myAgent.Solution().Meta().AddField("Displacement", locDisp, nDisp, 
+                                  typeDisp, "");
+      // loads
+      myAgent.Solution().Meta().AddField("Load", locLoads, nLoads, 
+                                           typeLoads, "");
+      // get pressures
+      myAgent.Solution().Meta().AddField("Pressure", locPress, nPress,
+                                         typePress, "");
+      // create buffers for the actual data
+      myAgent.CreateSoln();
+      unsigned int nnodes = myAgent.Mesh().nc.NNodes();
+      unsigned int nelem = myAgent.Mesh().con.Nelem();
+      // reset the buffers to be our own local buffers
+      myAgent.Solution().SetFieldBuffer("Displacement", Disp);
+      myAgent.Solution().SetFieldBuffer("Load", Loads);
+      myAgent.Solution().SetFieldBuffer("Pressure", Press);
+      // write initial mesh data out to a VTK file
+      std::ofstream Ouf;
+      ss.clear();
+      ss.str("");
+      ss << timeMark
+         << "_proc_"
+         << myRank;
+      std::string filename;
+      filename = "fsi_" + ss.str() +".vtk";
+      Ouf.open(filename.c_str());
+      if(!Ouf){
+            std::cerr << "ELMModuleDriver:main: DumpSolution: Error: Could not open output file, "
                       << filename << "." << std::endl;
             return -1;
-          }   
-          SolverUtils::WriteVTKToStream("Window1",*this,Ouf);
-          Ouf.close();
       }
+      std::cout << "Rank #" << myRank 
+                << ", ELMModuleDriver:main: WriteVTKToStream for " << timeMark << std::endl;
+      SolverUtils::WriteVTKToStream("ELMModule", myAgent, Ouf);
+      Ouf.close();
     }
-  }
-  return 0;
+
+    int parallelProgram(int argc, char *argv[]){
+         int parErr;
+         // instantiating IRAD's communicatorObject
+         // this constructor calls MPI_init internally and
+         // sets up everthing with MPI
+         std::cout <<"ElmerModuleDriver:Main: Setting up parallel communicator..." << std::endl;
+         CommType communicator(&argc,&argv);
+         MPI_Comm masterComm = communicator.GetCommunicator();
+         int rank = communicator.Rank();
+         int nproc = communicator.Size();
+         int color = 0;
+         std::cout << "ElmerModuleDriver:Main:Rank #"
+                   << rank
+                   << ", I see "
+                   << nproc
+                   << " proccesses."
+                   << std::endl;
+         // initializing COM 
+         COM_init( &argc, &argv);
+
+         // instantiating solver driver object
+         SolverModuleDriver driverObject;
+         driverObject.setRank(rank);
+         driverObject.myPaneId=100+rank;
+
+         // checking streamer process
+         if (driverObject.isStreamer())
+            std::cout << "Hi, I am a streamer ..." << std::endl;
+
+         // setting up output files for parallel debugging
+         std::string outfile_name;
+         std::stringstream ss; 
+         std::string str_rank;
+         ss << rank;
+         ss >> str_rank;
+         outfile_name = "out" + str_rank + ".dat";
+         driverObject.outfile.open(outfile_name.c_str());
+         
+         // setting color for the driver object
+         driverObject.setColor(color);
+         driverObject.outfile << "color = " << color << std::endl;
+         driverObject.outfile << "rank = " << rank << std::endl;
+         CommType newCommunicator;
+         communicator.Split(color, rank, newCommunicator);
+         driverObject.outfile << "communicator.Size() = " << communicator.Size() << std::endl;
+         driverObject.outfile << "newCommunicator.Size() = " << newCommunicator.Size() << std::endl;
+         driverObject.setComm(newCommunicator.GetCommunicator());
+         MPI_Comm newComm;
+         newComm = newCommunicator.GetCommunicator();
+         COM_set_default_communicator(newComm);
+
+         // calling initializer, for FSI problems mesh and solution
+         // related datastructures will be automatically registered
+         driverObject.init(argc, argv);
+
+         // get information about what was registered in this window
+         int numDataItems=0;
+         std::string output;
+         COM_get_dataitems("ELMModule", &numDataItems, output);
+         std::istringstream Istr(output);
+         std::vector<std::string> dataItemNames;  
+         for (int i=0; i<numDataItems; ++i) {
+           std::string name;
+           Istr >> name;
+           dataItemNames.push_back(name);
+           std::cout << "Rank #" << rank
+                     << ", ElmerModuleDriver:main: DataItem # " << i << ": " << name << std::endl;
+         }
+         // list of panes for this process: each process creates a single pane
+         // with paneId = 100 + rank
+         int numPanes;
+         int* paneList;
+         COM_get_panes("ELMModule", &numPanes, &paneList);
+         std::cout << "Rank #" << rank
+                   << ", ELMModuleDriver:main: Number of Panes " << numPanes << std::endl;
+         for (int i=0; i<numPanes; ++i)
+           std::cout << "Rank #" << rank
+                     << ", ELMModuleDriver:main: Pane ID # " << i+1 << "=" << paneList[i] << std::endl;
+         
+         // updating solution
+         driverObject.updateSolution();
+
+         // dumping intial conditions to vtk
+         //if (driverObject.isFSISim())
+         //   driverObject.vtkDump(0); 
+         
+         // scattering FSI loads to the structures solver processes
+         // only for FSI problesm
+         if(driverObject.isFSISim() && driverObject.isChangeLoad()){
+            std::vector<int> nLoadsVec;
+            std::vector<int> nLoadsTotVec;
+            std::vector<int> nRecvAllVec;
+            nLoadsVec.push_back(driverObject.nNodes*driverObject.nLoads);
+            std::cout << "Rank #"<<rank
+                      <<", nLoadsVec["<<rank<<"] = "<<nLoadsVec[rank]<<std::endl;
+            parErr = newCommunicator.Gatherv(nLoadsVec, nLoadsTotVec, nRecvAllVec);
+            if (parErr)
+               std::cout << "Error in gathering information from processes." << std::endl;
+            if (rank == 0){
+               for (int iProc=0; iProc<nLoadsTotVec.size(); iProc++)
+                  std::cout << "Rank #"<<rank
+                            <<", nLoadsTotVec["<<iProc<<"] = "<<nLoadsTotVec[iProc]<<std::endl;
+            }
+            // defining new loads
+            std::vector<double> loadsVec;
+            std::vector<double> loadsTotVec;
+            int nLoadsTot = 0;
+            if (rank == 0){
+              for (int iProc=0; iProc < nLoadsTotVec.size(); iProc++){
+                 nLoadsTot += nLoadsTotVec[iProc];
+              }
+              loadsTotVec.resize(nLoadsTot,0.0);
+              for (int iLoad=1; iLoad < nLoadsTot; iLoad+=3)
+                  loadsTotVec[iLoad] = 1.0;
+              std::cout << "Size of loadsTotVec = " << loadsTotVec.size() << std::endl;
+            }
+            // parallel scattering
+            parErr = newCommunicator.Scatterv(loadsTotVec, nLoadsTotVec, loadsVec);
+            if (parErr)
+               std::cout << "Error in scattering information to processes." << std::endl;
+            std::cout << "Rank #" << rank
+                      << ", number of load components I received = " << loadsVec.size()
+                      << std::endl;
+            // applying loads for each process
+            for (int iLoad=0; iLoad<(driverObject.nLoads*driverObject.nNodes); ++iLoad){
+               driverObject.Loads[iLoad] = loadsVec[iLoad];
+               std::cout << "Rank #" << rank
+                         << ", driverObject.Loads ["<<iLoad<<"] = " 
+                         << driverObject.Loads[iLoad] << std::endl;
+            }
+            // setting a barrier here
+            std::cout << "Rank #"<<rank<<"...Reaching to barrier"<<std::endl;
+            newCommunicator.Barrier();
+         }
+
+         // calling run step
+         driverObject.run();
+         newCommunicator.Barrier();
+         
+         // gathering all displacements in root
+         // only for FSI problesm
+         if(driverObject.isFSISim() && driverObject.isChangeLoad()){
+            std::vector<double> dispVec;
+            std::vector<double> dispTotVec;
+            std::vector<int> nSendAllVec;
+            for (int iDisp=0; iDisp<(driverObject.nDisp*driverObject.nNodes); ++iDisp){
+               dispVec.push_back(driverObject.Disp[iDisp]);
+               std::cout << "Rank #" << rank
+                         << ", dispVec ["<<iDisp<<"] = " << dispVec[iDisp] << std::endl;
+            }
+            std::cout << "Rank #" << rank
+                      << ", dispVec size = " << dispVec.size() << std::endl;
+            // parallel gathering
+            parErr =  newCommunicator.Gatherv(dispVec, dispTotVec, nSendAllVec);
+            if (parErr)
+               std::cout << "Error in gathering information from processes." << std::endl;
+            std::cout << "Rank #" << rank
+                      << ", size of dispTotVec = " << dispTotVec.size()
+                      << std::endl;         
+            // setting a barrier here
+            std::cout << "Rank #"<<rank<<"...Reaching to barrier"<<std::endl;
+            newCommunicator.Barrier();
+            // checking gather data vector
+            if (rank == 0){
+               double maxDisp = 0.0;
+               double minDisp = 0.0;
+               for (int iDisp=0; iDisp<dispTotVec.size(); iDisp++){
+                  maxDisp = std::max(dispTotVec[iDisp], maxDisp);
+                  minDisp = std::min(dispTotVec[iDisp], minDisp);
+                  std::cout << "Rank #0, dispTotVec [" << iDisp << "] = " 
+                            << dispTotVec[iDisp] << std::endl;
+               }
+               outfile_name = "maxMinDisp.dat";
+               std::ofstream testFile;
+               testFile.open(outfile_name.c_str());
+               testFile << maxDisp << std::endl << minDisp << std::endl;
+               testFile.close();
+            }
+         }
+                  
+         // calling finalize
+         driverObject.finalize();
+  
+         // closing log file for the driver object
+         driverObject.outfile.close();
+
+         // finalize comm
+         COM_finalize();
+
+         // finalizing communicator
+         communicator.Finalize();
+      return 0;
+    }
 }
 
-int SolverModuleDriver::finalize(){
-
-  if(color == 0){
-    /// Get the handle for the finalize function and call it
-    int final_handle = COM_get_function_handle("Window1.Finalize");
-    bool final_func = (final_handle > 0);
-    runs = 0;
-    if(final_func){
-      COM_call_function(final_handle,&runs);
-    }
-  }
-  COM_UNLOAD_MODULE_STATIC_DYNAMIC( ElmerCSCParallel, "Window1");
-
-  COM_finalize();
-  std::cout << "SolverModuleDriver:finalize: After COM_finalize" << std::endl;
-
-  return 0;
-
-}
-
-int main(int argc, char *argv[]){
-
-  SolverModuleDriver driverObject;
-
-  MPI_Init(&argc, &argv);
-  COM_init(&argc, &argv);
-
-  MPI_Comm comm, comm_check, newComm;
-  int rank, size;
-  int color=0;
-
-  std::string outfile_name;
-  std::stringstream ss; 
-  std::string str_rank;
-
-  //Set up output files for parallel debugging
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  ss << rank;
-  ss >> str_rank;
-  outfile_name = "out" + str_rank + ".dat";
-  driverObject.outfile.open(outfile_name.c_str());
-
-  //Split our MPI_COMM_WORLD communicator so we can load
-  //Elmer on only a subset of processes
-  comm = MPI_COMM_WORLD;
-  IRADCommType communicator(comm);
-  IRADCommType newcommunicator;
-  size = communicator.Size();
-  driverObject.setColor(color);
-  //if(rank >= size/2) driverObject.color=1;
-  driverObject.outfile << "color = " << color << std::endl;
-  driverObject.outfile << "rank = " << rank << std::endl;
-  communicator.Split(color, rank, newcommunicator);
-  driverObject.outfile << "communicator.Size() = " << communicator.Size() << std::endl;
-  driverObject.outfile << "newcommunicator.Size() = " << newcommunicator.Size() << std::endl;
-  driverObject.setComm(newcommunicator.GetCommunicator());
-  newComm = newcommunicator.GetCommunicator();
-  COM_set_default_communicator(newComm);
-  //COM_set_default_communicator(MPI_COMM_WORLD);
- 
-  driverObject.init(argc, argv);
-  if(color == 0)
-    driverObject.run();
-  MPI_Barrier(MPI_COMM_WORLD);
-  driverObject.finalize();
-
-  std::ofstream Outfile;
-  
-  Outfile.open("out.dat");
-
-  Outfile << "howdy!" << std::endl;
-  Outfile << "1.2 4.2 5.6 7.8" << std::endl;
-  Outfile << "      blargity blarg blarg" << std::endl;
-
-  driverObject.outfile.close();
-  
-  MPI_Finalize();
-
-  return 0;
+int main(int argc, char** argv) {
+  //std::cout << "Calling parallelProgram ... " << std::endl;
+  return(COM::parallelProgram(argc, argv));
 }
 

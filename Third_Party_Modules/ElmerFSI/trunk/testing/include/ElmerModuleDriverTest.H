@@ -24,6 +24,7 @@
 #include "UnixUtils.H"
 
 COM_EXTERN_MODULE( ElmerCSC );
+COM_EXTERN_MODULE( ElmerCSCParallel );
 
 namespace ElmerModuleDriver {
 
@@ -844,6 +845,8 @@ namespace ElmerModuleDriver {
       result.UpdateResult("ElmerUnitTests:Run", ItAllWorks);
 
     }
+
+
     ///*****************************************************************************
     ///*****************************************************************************
 
@@ -1483,6 +1486,54 @@ namespace ElmerModuleDriver {
       result.UpdateResult("ParallelMidPointQuadrature:Order2",order2);
     }
 
+    ///*****************************************************************************
+    /// Function to test if parallel communicator for Elmer module is set properly
+    ///
+    /// @param result ElmerModuleDriver::TestResults object to store test results.
+    ///
+    ///*****************************************************************************
+    virtual void Test__ParCommunicatorPassToModule(ResultsType &result){
+      std::cout << "Running Test__ParCommunicatorPassToModule" << std::endl;
+      bool commSets = false;
+      bool commSize = false;
+      bool commPass = false;
+      int rank = (GetCommunicator()).Rank();
+      int nProc = (GetCommunicator()).Size();
+      MPI_Comm comm_check, comm_orig;
+      // check communicator
+      comm_orig = (GetCommunicator()).GetCommunicator();
+      // changing default communicator for COM
+      COM_set_default_communicator((GetCommunicator()).GetCommunicator());
+      // loading parallel Elmer module   
+      COM_LOAD_MODULE_STATIC_DYNAMIC( ElmerCSCParallel, "ElmerModule");
+      // cheking default communicator
+      COM_get_communicator("ElmerModule", &comm_check);
+      if (comm_check == comm_orig)
+         commSets = true;
+      else
+         std::cout << "Rank #" << rank << ", "
+                   << "Default communicator for window is not set properly. It supposed to be "
+                   << comm_orig << ", but it is set to " << comm_check << std::endl; 
+      // cheking the number of processors
+      int* nProcWindow;
+      COM_get_array("ElmerModule.nProc", 0, &nProcWindow);
+      if (nProc == *nProcWindow)
+         commSize = true;
+      else
+         std::cout << "Rank #" << rank << ", "
+                   << "Size of the communicator for window is not correct. It supposed to be "
+                   << nProc << ", but it is set to " << *nProcWindow << std::endl; 
+      // cheking communicator
+      if (commSize && commSets)
+        commPass = true; 
+      // unloading the module
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC( ElmerCSCParallel, "ElmerModule");
+      // setting test flag
+      result.UpdateResult("ParCommunicatorSetToModule:Works", commSets);
+      result.UpdateResult("ParCommunicatorSizeToModule:Works", commSets);
+      result.UpdateResult("ParCommunicatorPassToModule:Works", commPass);
+    }
+
     ///************************************************************************
     /// Functions to call Parallel tests
     ///************************************************************************
@@ -1495,6 +1546,7 @@ namespace ElmerModuleDriver {
       Prologue();
       Test__ParallelTrapezoidQuadrature(result);
       Test__ParallelMidPointQuadrature(result);
+      Test__ParCommunicatorPassToModule(result);
       Epilogue();
     }
     
@@ -1510,6 +1562,8 @@ namespace ElmerModuleDriver {
         Test__ParallelTrapezoidQuadrature(result);
       if(name == "ParallelMidPointQuadrature")
         Test__ParallelMidPointQuadrature(result);
+      if(name == "ParCommunicatorPassToModule")
+        Test__ParCommunicatorPassToModule(result);
     }
 
     ///

@@ -22,6 +22,8 @@ MODULE TESTOBJECT
      CHARACTER(80) :: MeshType 
      INTEGER, POINTER :: MyToElmerNodes(:)
      INTEGER :: ElmerComm
+     INTEGER :: nProc
+     INTEGER :: procId
   END TYPE t_global
 
   CONTAINS
