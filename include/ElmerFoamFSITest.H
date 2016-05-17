@@ -721,7 +721,7 @@ namespace ElmerFoamFSI {
 */
 		///
 		/// Test the functionality of the fsiCoupler
-    virtual void Test__fsiCoupler(ResultsType &result){
+    virtual void Test__FsiCoupler(ResultsType &result){
       double time_final = 0.05;
       double timestep = 2.0e-3;
       bool works = true;
