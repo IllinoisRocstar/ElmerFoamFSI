@@ -600,7 +600,7 @@ namespace ElmerFoamFSI {
       std::string OrgDir, TestDir;     
 
       //call GetInputData to copy input test data to temp directory for running tests.
-      std::string suffix = "/share/Testing/test_data/SimpleStatic";
+      std::string suffix = "/testing/share/Testing/test_data/SimpleStatic";
   
       //Make path for directory to run the test in
       TestDir = IRAD::Sys::CWD() + "/SimpleStatic";
@@ -721,7 +721,7 @@ namespace ElmerFoamFSI {
 */
 		///
 		/// Test the functionality of the fsiCoupler
-    virtual void Test__fsiCoupler(ResultsType &result){
+    virtual void Test__FsiCoupler(ResultsType &result){
       double time_final = 0.05;
       double timestep = 2.0e-3;
       bool works = true;
@@ -1953,10 +1953,10 @@ namespace ElmerFoamFSI {
       Test__ExampleFunction(result);
       Test__TrapezoidQuadrature(result);
       Test__MidPointQuadrature(result);
-      //Test__FluidsInitialize(result);
+      Test__FluidsInitialize(result);
       // MS: Start
       Test__ScaffoldUnitTestFun(result);
-      for (int i=0; i<10; i++)
+      //for (int i=0; i<10; i++)
 	      Test__ElmerModuleLoad(result);
       Test__OFModuleLoad(result);
       // MS: End

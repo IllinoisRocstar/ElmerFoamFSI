@@ -42,7 +42,7 @@ include_directories( include ${CMAKE_BINARY_DIR}/include ../include ${IRAD_INCPA
 
 
 # This line runs the unit tests from the "com_test" executable
-ADD_TEST(RunElmerFoamFSIUnitTests ${EXECUTABLE_OUTPUT_PATH}/elmerfoamfsi_test -s ${CMAKE_SOURCE_DIR}/  -o elmerfoamfsi_testresults.txt)
+ADD_TEST(RunElmerFoamFSIUnitTests ${EXECUTABLE_OUTPUT_PATH}/elmerfoamfsi_test -s ${CMAKE_SOURCE_DIR}  -o elmerfoamfsi_testresults.txt)
 ADD_TEST(RunTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/tests.list -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt)
 ADD_TEST(RunPlatformSpecificTests ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/platforms -s ${PROJECT_SOURCE_DIR} -b ${PROJECT_BINARY_DIR}/bin -o elmerfoamfsi_testresults.txt)
 ADD_TEST(RunSpecificTestScript    ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Platforms/test_stub.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -o elmerfoamfsi_testresults.txt)
