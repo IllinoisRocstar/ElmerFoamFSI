@@ -116,6 +116,7 @@ namespace ElmerModuleDriver{
     std::string TestName(comline.GetOption("name"));
     std::string ListName(comline.GetOption("list"));
     std::string sverb(comline.GetOption("verblevel"));
+    std::string SourcePath(comline.GetOption("source"));   
     
     // The following block parses and sets the verbosity level
     if(!sverb.empty()){
@@ -150,6 +151,11 @@ namespace ElmerModuleDriver{
     ElmerModuleDriver::ParallelTestingObject<ElmerModuleDriver::CommType,ElmerModuleDriver::TestResults> test(communicator);
     // Make an instance of the ElmerModuleDriver results object, ElmerModuleDriver::TestResults
     ElmerModuleDriver::TestResults results;
+
+    //Set the source directory for the testing object if it was input
+    if(!SourcePath.empty()){
+      test.SetSourceDirPath(SourcePath);
+    }
     
     // If the user specified a name, then run only the named test
     if(!TestName.empty()){
