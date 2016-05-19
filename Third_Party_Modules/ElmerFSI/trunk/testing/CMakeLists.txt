@@ -55,7 +55,6 @@ IF(MPI_CXX_COMPILER)
   TARGET_LINK_LIBRARIES(elmermoduledriver_parallel_test ElmerModuleDriver ${IMPACT_LIB} ${IMPACT_LIBF} ${IRAD_LIB})
 ENDIF()
 
-
 # The 3 tests below actually run all the tests
 ADD_TEST(RunElmerModuleDriverUnitTests ${EXECUTABLE_OUTPUT_PATH}/elmermoduledriver_test -s ${PROJECT_SOURCE_DIR} -com-mpi -o elmermoduledriver_testresults.txt)
 ADD_TEST(RunElasticBeam3DUnitTests
@@ -68,14 +67,11 @@ ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o
 elmermoduledriver_testresults.txt -a ${IRAD_EXEPATH})
 ADD_TEST(VortexRegressionTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/Vortex.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmermoduledriver_testresults.txt)
 ADD_TEST(ElasticBeam3DRegressionTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/ElasticBeam3D.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmermoduledriver_testresults.txt)
-ADD_TEST(LoadedElasticBeamParallel:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/LoadedElasticBeamParallel.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o elmermoduledriver_testresults.txt)
 ADD_TEST(HronTurekVerficationTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/HronTurekBeam.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o elmermoduledriver_testresults.txt)
-
 ADD_TEST(RunPlatformSpecificTests ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/platforms -o elmermoduledriver_testresults.txt)
 ADD_TEST(RunSpecificTestScript    ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Platforms/test_stub.csh -o elmermoduledriver_testresults.txt)
 
 # Simple test of return code of a program
-
 message("EXECUTABLE_OUTPUT_PATH = ${EXECUTABLE_OUTPUT_PATH}")
 message("PROJECT_SOURCE_DIR = ${PROJECT_SOURCE_DIR}")
 message("CMAKE_BINARY_DIR = ${CMAKE_BINARY_DIR}")
@@ -96,7 +92,6 @@ ADD_TEST(LoadSolverModule:Works ${TESTRESULT} LoadSolverModule:Works elmermodule
 ADD_TEST(FSIregressionTest:Works ${TESTRESULT} FSIregressionTest:Works elmermoduledriver_testresults.txt)
 ADD_TEST(VortexRegressionTest:Works ${TESTRESULT} VortexRegressionTest:Works elmermoduledriver_testresults.txt)
 ADD_TEST(ElasticBeam3DRegressionTest:Works ${TESTRESULT} ElasticBeam3DRegressionTest:Works elmermoduledriver_testresults.txt)
-ADD_TEST(LoadedElasticBeamParallel:Works ${TESTRESULT} LoadedElasticBeamParallel:Works elmermoduledriver_testresults.txt)
 ADD_TEST(HronTurekBeam:Works ${TESTRESULT} HronTurekBeam:Works elmermoduledriver_testresults.txt)
 ADD_TEST(Initialize:Runs ${TESTRESULT} Initialize:Runs elmermoduledriver_testresults.txt)
 #ADD_TEST(ModuleFunctions:Runs ${TESTRESULT} ModuleFunctions:Runs elmermoduledriver_testresults.txt)
@@ -117,14 +112,30 @@ ADD_TEST(ElasticBeam3D_LoadFunction:Runs ${TESTRESULT} ElasticBeam3D_LoadFunctio
 ADD_TEST(ElasticBeam3D_LoadFunction:Works ${TESTRESULT} ElasticBeam3D_LoadFunction:Works elmermoduledriver_testresults_2.txt)
 
 IF(MPI_CXX_COMPILER)
-  # The parallel tests are actually run by this command
- #ADD_TEST(RunParallelPlatformTests ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/parallel_platforms -o elmermoduledriver_testresults.txt)
- ADD_TEST(RunParallelPlatformTests ${RUNTEST} -p
-${PROJECT_SOURCE_DIR}/share/Platforms/parallel_platforms -s
-${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -o elmermoduledriver_testresults.txt)
+ ADD_TEST(RunParallelPlatformTests ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/parallel_platforms -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -o elmermoduledriver_testresults.txt)
   # The remainder use "testresults" utility to check the results of the parallel tests run above
   ADD_TEST(ParallelExample:Runs ${TESTRESULT} PEPI:Runs elmermoduledriver_testresults.txt)
   ADD_TEST(ParallelExample:Works ${TESTRESULT} PEPI:Works elmermoduledriver_testresults.txt)
+  ADD_TEST(ParLoadedElasticBeam:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/LoadedElasticBeamParallel.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o elmermoduledriver_testresults.txt)
+  ADD_TEST(ParElasticBeam3D_LoadFunction:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/ParElasticBeam_LoadFunction.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o elmermoduledriver_testresults.txt)
+  ADD_TEST(ParLoadSolverModule:Works ${TESTRESULT} ParLoadSolverModule:Works elmermoduledriver_testresults.txt)
+  ADD_TEST(ParCoordinateData:Registered ${TESTRESULT} ParCoordinateData:Registered elmermoduledriver_testresults.txt)
+  ADD_TEST(ParCoordinateData:Correct ${TESTRESULT} ParCoordinateData:Correct elmermoduledriver_testresults.txt)
+  ADD_TEST(ParConnectivityData:Registered ${TESTRESULT} ParConnectivityData:Registered elmermoduledriver_testresults.txt)
+  ADD_TEST(ParConnectivityData:Correct ${TESTRESULT} ParConnectivityData:Correct elmermoduledriver_testresults.txt)
+  ADD_TEST(ParLoadData:Registered ${TESTRESULT} ParLoadData:Registered elmermoduledriver_testresults.txt)
+  ADD_TEST(ParLoadData:Initialized ${TESTRESULT} ParLoadData:Initialized elmermoduledriver_testresults.txt)
+  ADD_TEST(ParDisplacementData:Registered ${TESTRESULT} ParDisplacementData:Registered elmermoduledriver_testresults.txt)
+  ADD_TEST(ParDisplacementData:Correct ${TESTRESULT} ParDisplacementData:Correct elmermoduledriver_testresults.txt)
+  ADD_TEST(ParTimeStepper:Runs ${TESTRESULT} ParTimeStepper:Runs elmermoduledriver_testresults.txt)
+  ADD_TEST(ParFinalize:Runs ${TESTRESULT} ParFinalize:Runs elmermoduledriver_testresults.txt)
+  ADD_TEST(ParUnloadSolverModule:Works ${TESTRESULT} ParUnloadSolverModule:Works elmermoduledriver_testresults.txt)
+  ADD_TEST(ParElmerUnitTests:Run ${TESTRESULT} ParElmerUnitTests:Run elmermoduledriver_testresults.txt)
+  ADD_TEST(ParCommunicatorSetToModule:Works ${TESTRESULT} ParCommunicatorSetToModule:Works elmermoduledriver_testresults.txt)
+  ADD_TEST(ParCommunicatorSizeToModule:Works ${TESTRESULT} ParCommunicatorSizeToModule:Works elmermoduledriver_testresults.txt)
+  ADD_TEST(ParCommunicatorPassToModule:Works ${TESTRESULT} ParCommunicatorPassToModule:Works elmermoduledriver_testresults.txt)
+  ADD_TEST(ParLoadedElasticBeam:Works ${TESTRESULT} ParLoadedElasticBeam:Works elmermoduledriver_testresults.txt)
+  ADD_TEST(ParElasticBeam3D_LoadFunction:Works ${TESTRESULT} ParElasticBeam3D_LoadFunction:Works elmermoduledriver_testresults.txt)
   ADD_TEST(ParallelTrapezoidQuadrature:Runs ${TESTRESULT} ParallelTrapezoidQuadrature:Runs elmermoduledriver_testresults.txt)
   ADD_TEST(ParallelTrapezoidQuadrature:Accurate ${TESTRESULT} ParallelTrapezoidQuadrature:Accurate elmermoduledriver_testresults.txt)
   ADD_TEST(ParallelTrapezoidQuadrature:Order ${TESTRESULT} ParallelTrapezoidQuadrature:Order2 elmermoduledriver_testresults.txt)

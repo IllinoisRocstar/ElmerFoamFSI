@@ -503,6 +503,7 @@ namespace ElmerFoamFSI {
     ///
     void SetSourceDirPath(std::string input){
       SourceDirPath = input;
+      std::cout << "Source Path = " << SourceDirPath << std::endl;
     }   
 
 
@@ -1960,6 +1961,7 @@ namespace ElmerFoamFSI {
 	      Test__ElmerModuleLoad(result);
       Test__OFModuleLoad(result);
       // MS: End
+      /*
       // WK: Start
       Test__ElmerHandlesCheck(result);
       Test__FsiCoupler(result);
@@ -1969,10 +1971,11 @@ namespace ElmerFoamFSI {
       Test__SolidAgentRun(result);
       Test__SolidAgentFinalize(result);
       // WK: End
+      */
       // NS: Start
       Test__ElmerStructures(result);
       Test__OpenFoamFluids(result);
-			// NS: End
+      // NS: End
       Epilogue();
     }
     

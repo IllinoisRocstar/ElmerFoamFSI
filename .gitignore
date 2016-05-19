@@ -6,5 +6,10 @@ Third_Party_Modules/OpenFoamFSI/trunk/native/Make/linux64GccDPOpt/*
 Third_Party_Modules/OpenFoamFSI/trunk/native/fsiFOAM.dep
 Third_Party_Modules/OpenFoamFSI/trunk/native/lnInclude/*
 build/*
-include/.ElmerFoamFSITest.H.swp
+*.swp
 support_install/*
+*.dep
+lnInclude/
+foam/site/*
+build/
+linux64GccDPOpt/

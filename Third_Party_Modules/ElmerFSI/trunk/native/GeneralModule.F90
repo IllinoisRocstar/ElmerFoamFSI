@@ -112,7 +112,7 @@
      TYPE(Mesh_t), POINTER :: ExtrudedMesh
 
      INTEGER :: omp_get_max_threads
-     INTEGER :: MyVerbosity = 5
+     INTEGER :: MyVerbosity = 1
 
 
 #ifdef HAVE_TRILINOS
