@@ -1961,7 +1961,6 @@ namespace ElmerFoamFSI {
 	      Test__ElmerModuleLoad(result);
       Test__OFModuleLoad(result);
       // MS: End
-      /*
       // WK: Start
       Test__ElmerHandlesCheck(result);
       Test__FsiCoupler(result);
@@ -1971,7 +1970,6 @@ namespace ElmerFoamFSI {
       Test__SolidAgentRun(result);
       Test__SolidAgentFinalize(result);
       // WK: End
-      */
       // NS: Start
       Test__ElmerStructures(result);
       Test__OpenFoamFluids(result);
