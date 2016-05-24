@@ -7,8 +7,9 @@ setenv CC mpicc
 setenv CXX mpicxx
 setenv FC mpif90
 # set IRMULTIPHYSICS for compiling and running openfoam module & driver
-set OFSupport = "$ElmerFoamTop/support_install"
+set OFSupport = "${ElmerFoamTop}support_install"
 setenv IRMULTIPHYSICS $OFSupport
 ## set LD_LIBRARY_PATH with path to elmer libraries for running the elmer module
-set ElmerSupport = "$ElmerFoamTop/support_install/lib:$LD_LIBRARY_PATH"
+set ElmerSupport = "${ElmerFoamTop}support_install/lib:$LD_LIBRARY_PATH"
 setenv LD_LIBRARY_PATH $ElmerSupport
+echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
