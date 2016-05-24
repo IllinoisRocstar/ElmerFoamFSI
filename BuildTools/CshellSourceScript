@@ -1,5 +1,6 @@
 # source the openfoam source file
 setenv ElmerFoamTop $1
+setenv FOAM_INST_DIR $1foam
 source $ElmerFoamTop/foam/foam-extend-3.2/etc/cshrc
 # make set the mpi environment variables
 setenv CC mpicc

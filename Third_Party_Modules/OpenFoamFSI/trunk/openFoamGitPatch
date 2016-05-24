@@ -1,12 +1,10 @@
-From 531814b939d54f54721018d9de60be06b5bfd25f Mon Sep 17 00:00:00 2001
-From: Masoud Safdari <msafdari@ilrocstar24.illinois.rocstar>
-Date: Fri, 6 May 2016 13:49:27 -0500
-Subject: [PATCH 1/2] Applying patch to openFoam source code (stage 1).
- Modifications to accept IMPACT communicator and to rebuild openFoam source
- code with latest changes.
+From 0f5ddf5acf9caf534fcf00b8cbb4e7caf5d5c2a2 Mon Sep 17 00:00:00 2001
+From: Masoud Safdari <msafdari@ilrocstar26.illinois.rocstar>
+Date: Tue, 24 May 2016 11:40:00 -0500
+Subject: [PATCH] Patching openFoam to work with IMPACT in parallel mode
 
 ---
- Allwmake                                           |  16 +
+ Allwmake                                           |   9 +
  ThirdParty/rpmBuild/SPECS/openmpi-1.4.1.spec       |   9 +-
  ThirdParty/rpmBuild/SPECS/openmpi-1.4.3.spec       |   9 +-
  ThirdParty/rpmBuild/SPECS/openmpi-1.5.spec         |   9 +-
@@ -15,6 +13,8 @@ Subject: [PATCH 1/2] Applying patch to openFoam source code (stage 1).
  ThirdParty/rpmBuild/SPECS/openmpi-1.8.4.spec       |   8 +-
  ThirdParty/rpmBuild/SPECS/openmpi-1.8.8.spec       |   9 +-
  .../icoFsiElasticNonLinULSolidFoam/Make/options    |   6 +-
+ etc/bashrc                                         |   5 +-
+ etc/cshrc                                          |   3 +-
  src/foam/db/IOstreams/Pstreams/Pstream.C           |  67 +++
  src/foam/db/IOstreams/Pstreams/Pstream.H           |   8 +
  src/foam/global/argList/argList.C                  | 471 +++++++++++++++++++++
@@ -22,13 +22,13 @@ Subject: [PATCH 1/2] Applying patch to openFoam source code (stage 1).
  src/foam/global/argList/parRun.H                   |  13 +
  wmake/Makefile                                     |   9 +-
  wmake/rules/linux64Gcc/c++                         |   2 +-
- 16 files changed, 629 insertions(+), 40 deletions(-)
+ 18 files changed, 627 insertions(+), 43 deletions(-)
 
 diff --git a/Allwmake b/Allwmake
-index 7447be4..53b2f1b 100755
+index 7447be4..b30ddc8 100755
 --- a/Allwmake
 +++ b/Allwmake
-@@ -19,9 +19,25 @@ fi
+@@ -19,6 +19,15 @@ fi
  # before compiling the rest of OpenFOAM
  . $WM_PROJECT_DIR/etc/settings.sh
  
@@ -38,22 +38,12 @@ index 7447be4..53b2f1b 100755
 +echo "Current compilers :"
 +echo "WM_CC=$WM_CC"
 +echo "WM_CXX=$WM_CXX"
-+#export WM_CC=mpicc
-+#export WM_CXX=mpicxx
-+#echo "Switching to :"
-+#echo "WM_CC=$WM_CC"
-+#echo "WM_CXX=$WM_CXX"
 +# ElmerFoamFSI
 +
 +
  # build OpenFOAM libraries and applications
  src/Allwmake
-+# ElmerFoamFSI
  applications/Allwmake
-+# ElmerFoamFSI
- 
- if [ "$1" = doc ]
- then
 diff --git a/ThirdParty/rpmBuild/SPECS/openmpi-1.4.1.spec b/ThirdParty/rpmBuild/SPECS/openmpi-1.4.1.spec
 index 163b76d..bd0dff9 100644
 --- a/ThirdParty/rpmBuild/SPECS/openmpi-1.4.1.spec
@@ -300,6 +290,43 @@ index 9007e13..901395f 100644
 -    -lsolidModels
 +    -lsolidModels \
 +    $(PLIBS)
+diff --git a/etc/bashrc b/etc/bashrc
+index f597336..76931ab 100755
+--- a/etc/bashrc
++++ b/etc/bashrc
+@@ -47,7 +47,8 @@ export FOAM_DEV=1
+ #
+ # Location of FOAM installation
+ # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-foamInstall=$HOME/$WM_PROJECT
++foamInstall=$FOAM_INST_DIR
++#foamInstall=$HOME/$WM_PROJECT
+ # foamInstall=~$WM_PROJECT
+ # foamInstall=/usr/local/$WM_PROJECT
+ # foamInstall=/opt/$WM_PROJECT
+@@ -63,7 +64,7 @@ then
+ fi
+ 
+ # note the location for later use (eg, in job scripts)
+-: ${FOAM_INST_DIR:=$foamInstall}; export FOAM_INST_DIR
++#: ${FOAM_INST_DIR:=$foamInstall}; export FOAM_INST_DIR
+ 
+ # The old dirs to be cleaned from the various environment variables
+ # - remove anything under top-level directory.
+diff --git a/etc/cshrc b/etc/cshrc
+index 0821f18..4bdb7b1 100644
+--- a/etc/cshrc
++++ b/etc/cshrc
+@@ -45,7 +45,8 @@ setenv FOAM_DEV 1
+ #
+ # Location of FOAM installation
+ # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-set foamInstall = $HOME/$WM_PROJECT
++set foamInstall = $FOAM_INST_DIR
++#set foamInstall = $HOME/$WM_PROJECT
+ # set foamInstall = ~$WM_PROJECT
+ # set foamInstall = /usr/local/$WM_PROJECT
+ # set foamInstall = /opt/$WM_PROJECT
 diff --git a/src/foam/db/IOstreams/Pstreams/Pstream.C b/src/foam/db/IOstreams/Pstreams/Pstream.C
 index 09e7fb5..f7ecd53 100644
 --- a/src/foam/db/IOstreams/Pstreams/Pstream.C
@@ -997,43 +1024,6 @@ index 767c016..123ef58 100644
  
  include $(RULES)/c++$(WM_COMPILE_OPTION)
  
--- 
-1.8.3.1
-
-
-From 764641d3584865e4b15a2c443bcf76ad637e2cc0 Mon Sep 17 00:00:00 2001
-From: Masoud Safdari <msafdari@illrocstar.com>
-Date: Fri, 6 May 2016 15:51:49 -0500
-Subject: [PATCH 2/2] Adding final touch to patch. (Stage2)
-
----
- Allwmake | 7 -------
- 1 file changed, 7 deletions(-)
-
-diff --git a/Allwmake b/Allwmake
-index 53b2f1b..b30ddc8 100755
---- a/Allwmake
-+++ b/Allwmake
-@@ -25,19 +25,12 @@ echo "ElmerFoamFSI_INC=$ElmerFoamFSI_INC"
- echo "Current compilers :"
- echo "WM_CC=$WM_CC"
- echo "WM_CXX=$WM_CXX"
--#export WM_CC=mpicc
--#export WM_CXX=mpicxx
--#echo "Switching to :"
--#echo "WM_CC=$WM_CC"
--#echo "WM_CXX=$WM_CXX"
- # ElmerFoamFSI
- 
- 
- # build OpenFOAM libraries and applications
- src/Allwmake
--# ElmerFoamFSI
- applications/Allwmake
--# ElmerFoamFSI
- 
- if [ "$1" = doc ]
- then
 -- 
 1.8.3.1
 
