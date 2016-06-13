@@ -3318,15 +3318,15 @@ void fsifoam_module::InitFoam(int *pargc, void **pargv, int *verbIn)
   
    
   // This registers given solver to given Pane ID 
-  int paneId = rank + 100;
+  int paneId = rank + 200;
   // following two lines replaces 
   // SolverUtils::RegisterSolver(my_window_name.c_str(), *this, paneId);
   // this function creates a duplicate window which is not acceptable
   SolverUtils::CreateDataItemsFromSolution(my_window_name.c_str(),Solution());
   SolverUtils::AgentToPane(my_window_name.c_str(),paneId,*this);
   // adding an extra pane for testing
-  if (rank == 1)
-     SolverUtils::AgentToPane(my_window_name.c_str(),paneId+1,*this);
+  //if (rank == 1)
+  //   SolverUtils::AgentToPane(my_window_name.c_str(),paneId+1,*this);
 
   COM_window_init_done(my_window_name.c_str());
   

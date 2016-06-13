@@ -22,6 +22,7 @@
 
 
 COM_EXTERN_MODULE( ElmerCSCParallel);
+COM_EXTERN_MODULE(SimOut);
 
 
 namespace COM {
@@ -92,7 +93,10 @@ namespace COM {
 
       // loading ElmerParallel module
       COM_LOAD_MODULE_STATIC_DYNAMIC(ElmerCSCParallel, "ELMModule");
-    
+
+      // loading SimOut on all processes
+      COM_LOAD_MODULE_STATIC_DYNAMIC( SimOUT, "OUT");
+  
       // check the communicator that the window was loaded on
       MPI_Comm comm_check;
       outfile << "Checking ELMModule" << std::endl;
@@ -325,6 +329,7 @@ namespace COM {
         }
       }
       COM_UNLOAD_MODULE_STATIC_DYNAMIC( ElmerCSCParallel, "ELMModule");
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC(SimOUT, "OUT");
       return 0;
 
     }
@@ -570,6 +575,22 @@ namespace COM {
                testFile << maxDisp << std::endl << minDisp << std::endl;
                testFile.close();
             }
+            // writing window to HDF
+            int OUT_set = COM_get_function_handle( "OUT.set_option");
+            int OUT_write = COM_get_function_handle( "OUT.write_dataitem");
+            const char *win_out= "ELMModule";
+            std::string win_out_pre(win_out);
+            win_out_pre.append(".");
+            int OUT_all = COM_get_dataitem_handle((win_out_pre+"all").c_str());
+            ss.clear();
+            ss.str("");
+            ss << "_proc_"
+               << rank;
+            std::string fileOut;
+            fileOut = "ELMModule_window" + ss.str();
+            COM_call_function( OUT_set, "format", "HDF4");
+            COM_call_function( OUT_write, (fileOut + ".hdf").c_str(), &OUT_all, win_out,
+                            "0000");
          }
                   
          // calling finalize

@@ -144,7 +144,7 @@ namespace COM {
      // loading SimIn on all processes
      COM_LOAD_MODULE_STATIC_DYNAMIC( SimOUT, "OUT");
 
-     // getting node coordinates  
+     // getting number of processes  
      if (rank==0) {
        int* nProcReg;
        COM_get_array("OFModule.nproc", 0, &nProcReg);
@@ -152,10 +152,7 @@ namespace COM {
                << *nProcReg << " prcesses" << std::endl;
      }
 
-     // from this point we make a judicious decision about which 
-     // process does what
-
-     // initialing the openfoam using fluid processes
+     // initializing the openfoam using fluid processes
      //if (color == 1) {
         // getting the rank
         //int fluidProcessRank = newCommunicator.Rank();
@@ -168,7 +165,8 @@ namespace COM {
 	  exit(-1);
 	}
 	 
-	// make a dummy argc/argv for OpenFOAM. No options passed from the command 
+	// making a dummy argc/argv for OpenFOAM. 
+        // For now, no options passed from the command 
 	// line will be used by the driver
 	int myArgc = 1;
 	char *myArgv[2];
@@ -187,7 +185,7 @@ namespace COM {
         // make a barrier                
         //newCommunicator.Barrier();
         
-	// get information about what was registered in this window by another process
+	// getting information about what was registered in this window by another process
         if (rank==0){
 	   int numDataItems=0;
 	   std::string output;
@@ -582,10 +580,11 @@ namespace COM {
      std::cout << "Total number of panes = " << pComm->total_npanes() << std::endl;
      */
 
-     /* 
+      
      // writing fluid window to hdf
      int OUT_set = COM_get_function_handle( "OUT.set_option");
      int OUT_write = COM_get_function_handle( "OUT.write_dataitem");
+     int OUT_write_ctrl = COM_get_function_handle( "OUT.write_rocin_control_file");
      const char *win_out= "OFModule";
      std::string win_out_pre( win_out); 
      win_out_pre.append(".");
@@ -595,11 +594,16 @@ namespace COM {
      ss << "_proc_"
         << rank;
      std::string fileOut;
+     std::string fname, ctrl_fname;
      fileOut = "OFModule_window" + ss.str();
+     fname = (std::string)win_out + "_0_";
+     ctrl_fname = (std::string)win_out + "_in_0.txt";
      COM_call_function( OUT_set, "format", "HDF4");
      COM_call_function( OUT_write, (fileOut + ".hdf").c_str(), &OUT_all, win_out,
                      "0000");
-     */
+     COM_call_function( OUT_write_ctrl, win_out, fileOut.c_str(), ctrl_fname.c_str());
+     
+     
 
      // Finalizing
      // unloading SimIn on all processes
