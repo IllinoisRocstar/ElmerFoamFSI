@@ -115,6 +115,7 @@ namespace ElmerFoamFSI{
     
     // Make an instance of the ElmerFoamFSI testing object, ElmerFoamFSI::TestingObject
     ElmerFoamFSI::TestingObject<ElmerFoamFSI::TestResults> test;
+    
     // Make an instance of the ElmerFoamFSI results object, ElmerFoamFSI::TestResults
     ElmerFoamFSI::TestResults results;
     

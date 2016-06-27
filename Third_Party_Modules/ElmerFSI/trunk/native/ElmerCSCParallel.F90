@@ -132,7 +132,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
    !Allocate a temporay array to avoid repeating nodes 
    WRITE (*,*) "Number of Bulk elemenets = ", MyMesh % NumberOfBulkElements
    WRITE (*,*) "Number of Boundary elemenets = ", MyMesh % NumberOfBoundaryElements
-
+ 
    t = MyMesh % NumberOfBulkElements
    !WRITE (*,*) "Regular Element DIM = ", MyMesh % Elements(t) % TYPE % DIMENSION     
    MyCurrentElement => MyMesh % Elements(t+1)
@@ -198,6 +198,7 @@ SUBROUTINE Initializer(global, runs, verbIn)
    !This location will be registered with IMPACT
    IF( MyVerbosity > 3) WRITE(*,*) 'global%nNodes =', global%nNodes
    ALLOCATE(global%NodeDisplacements(3*global%nNodes))
+   global%NodeDisplacements = 0.0
    !Masoud
    ALLOCATE(global%PreviousNodeDisplacements(3*global%nNodes))
    global%PreviousNodeDisplacements = 0.d0
@@ -215,18 +216,23 @@ SUBROUTINE Initializer(global, runs, verbIn)
    !Allocate space for storing the FaceLoads
    !This location will be registered with IMPACT
    ALLOCATE(global%FaceLoads(3*global%nElem))
+   global%FaceLoads = 0.0
    !Allocate space for storing the FacePressures
    !This location will be registered with IMPACT
    ALLOCATE(global%FacePressures(global%nElem))
+   global%FacePressures = 0.0
    !Allocate space for storing the NodePressures
    !This location will be registered with IMPACT
    ALLOCATE(global%NodePressures(global%nNodes))
+   global%NodePressures = 0
    !Allocate space for storing the NodeLoads
    !This location will be registered with IMPACT
    ALLOCATE(global%NodeLoads(3*global%nNodes))
+   global%NodeLoads = 0.0
    !Allocate space for storing the previous loads
    !so linear interpolation can be done
    ALLOCATE(global%PreviousLoads(3,global%nNodes))
+   global%PreviousLoads = 0.0
    !Allocate the NodeLoads that gets passed to the user defined function
    ALLOCATE(CurrentModel%NodeLoadsPass(3,global%nNodes))
    IF( MyVerbosity > 3) WRITE(*,*) 'SIZE(NodeLoads)=',SIZE(global%NodeLoads)
@@ -238,6 +244,8 @@ SUBROUTINE Initializer(global, runs, verbIn)
         global%PreviousLoads(j,t) = 0.0
      END DO
    END DO
+
+   !Initialize the faceloads to 0.0
 
    !Allocate the mesh arrays now that their sizes are known
    MyCurrentElement => MyMesh % Elements(LastFSIElement)

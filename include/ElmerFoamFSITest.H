@@ -20,16 +20,14 @@
 #include <vector>
 #include <cmath>
 #include "Driver.H"
-//#include <array>
-//#include "Parameters.H"
-//#include "InterfaceLayer.H"
-//#include "Orchestrator.H"
-//#include "OpenFoamAgent.H"
-//#include "ElmerAgent.H"
 #include "FsiCoupling.H"
+#include "FsiCouplingPar.H"
+
 // Loading native modules
 COM_EXTERN_MODULE(OpenFoamFSI);
 COM_EXTERN_MODULE(ElmerCSC);
+COM_EXTERN_MODULE(OpenFoamFSIPar);
+COM_EXTERN_MODULE(ElmerCSCParallel);
 
 namespace ElmerFoamFSI {
 
@@ -289,32 +287,7 @@ namespace ElmerFoamFSI {
       result.UpdateResult("MidPointQuadrature:Order2",order2);
     }
    
-    virtual void Test__FluidsInitialize(ResultsType &result) {
-      bool runs = false;
-      COM_load_module("OpenFoamFSI","FluidsComponentInterface");
-      
-//      openfoamagent fluidsAgent;
-//      fluidsAgent.Initialize("FluidsComponentInterface");
-
-      COM_unload_module("OpenFoamFSI","FluidsComponentInterface");
-      result.UpdateResult("FluidsInitialize:Runs",runs);
-    }
-    // MS: Start
-    /// Test for ElmerFoamFSI::ScaffoldUnitTestFun
-    ///
-    /// @param result ElmerFoamFSI::TestResults object to store test results.
-    ///
-    /// This function implements a simple empty test functions which can be used
-    //  a scaffold to develop unit tests. 
-    ///
-    virtual void Test__ScaffoldUnitTestFun(ResultsType &result) {
-      bool runs = true;
-      std::cout << "This line is added by scafoldTestFun unit test" << std::endl;
-      result.UpdateResult("ScaffoldUnitTestFun:Runs",runs);
-    }
-    // MS: End
-
-  // MS: Test elmerModule load/unloads properly
+    // Test elmerModule load/unloads properly
     virtual void Test__ElmerModuleLoad(ResultsType &result) {
       std::cout << "Running Test__ElmerModuleLoad" << std::endl;
 
@@ -359,9 +332,8 @@ namespace ElmerFoamFSI {
 
       return;
     }
-    // MS: End
 
-    // MS: Test OpenFoamModule load/unloads properly
+    // Test OpenFoamModule load/unloads properly
     virtual void Test__OFModuleLoad(ResultsType &result) {
       std::cout << "Running Test__OFModuleLoad" << std::endl;
 
@@ -405,10 +377,8 @@ namespace ElmerFoamFSI {
       result.UpdateResult("UnloadOpenFoamModule:Works",works);
       return;
     }
-    // MS: End
 
 
-    // WK : Start 
     // Test if Elmer can load properly, and its functions handles can be accessed
     virtual void Test__ElmerHandlesCheck(ResultsType & result){
       bool works, loadWorks, globWorks, initWorks, runWorks, finWorks, unloadWorks = false;
@@ -720,8 +690,8 @@ namespace ElmerFoamFSI {
       //result.UpdateResult("ReadInputWorks", works);
     }
 */
-		///
-		/// Test the functionality of the fsiCoupler
+    ///
+    /// Test the functionality of the fsiCoupler
     virtual void Test__FsiCoupler(ResultsType &result){
       double time_final = 0.05;
       double timestep = 2.0e-3;
@@ -844,7 +814,7 @@ namespace ElmerFoamFSI {
     /// This function uses simple static problem data to test the transferagent->interpolate function.
     /// Displacement vector for solid agent is set to be the value of linear function along 
     /// the z direction. After interpolation, displacement vector for fluid agent should have 
-    /// similar values.
+    /// received these values (approximately).
     virtual void Test__TransferDisplacementsToFluid(ResultsType & result){
 
       double time_final = 0.05;
@@ -1864,85 +1834,6 @@ namespace ElmerFoamFSI {
       }
       return true;
     }
-    virtual void Test__SolidAgentFinalize(ResultsType &result){
-    
-
-      // Setting up the variable   
-      double time_final = 0.05;
-      double timestep = 2.0e-3;
-      int verblevel = 3;
-      bool works = true;
-      int IntDir;
-
-      // Copying the SimpleStatic data using getinputdata() helper function.
-      bool work =__helper();
-      std::string fluidDir;
-      std::string simStaticDir;
-      fluidDir = IRAD::Sys::CWD() + "/SimpleStatic/fluid";
-      simStaticDir = IRAD::Sys::CWD() + "/SimpleStatic";
-      if(!(IRAD::Sys::FILEEXISTS(fluidDir)||(IRAD::Sys::FILEEXISTS(simStaticDir)))){
-        std::cout << "SimpleStatic / fluid Folders do not exists!" << std::endl;
-        works = false;           
-        result.UpdateResult("fsiCoupler:Works",works);
-        return; 
-      }
-      else{
-        IntDir = IRAD::Sys::ChDir(simStaticDir);
-        if(IntDir == -1){
-          std::cout << "GetInputData Error: Could not change directory to " 
-                    << fluidDir << ". Exiting (fail). " << std::endl;
-          works = false;
-          result.UpdateResult("fsiCoupler:Works",works);
-        }
-        std::system("chmod 755 Allclean Allrun AllrunPar makeLinks makeSerialLinks removeSerialLinks"); 
-        std::system("./Allclean");
-        std::system("./Allrun");
-        IntDir = IRAD::Sys::ChDir(fluidDir);
-        if(IntDir == -1){
-          std::cout << "GetInputData Error: Could not change directory to " 
-                    << fluidDir << ". Exiting (fail). " << std::endl;
-          works = false;
-          result.UpdateResult("fsiCoupler:Works",works);
-        }
-      }
-      
-      fsicoupling fsiCoupler(global); 
-      std::string fluidSolverName("OpenFoamFSI");
-      std::string solidSolverName("ElmerCSC");
-      std::string transferServiceName("SurfX");
-      std::string runMode("1");
-
-      COM_load_module(fluidSolverName.c_str(),"FluidsComponentInterface");
-      COM_load_module(solidSolverName.c_str(),"StructuresComponentInterface");
-      COM_load_module("SurfUtil","SurfUtil");
-      COM_load_module("Simpal","Simpal");
-     
-      std::vector<std::string> componentInterfaceNames;
-      componentInterfaceNames.push_back("FluidsComponentInterface");
-      componentInterfaceNames.push_back("StructuresComponentInterface");
-      componentInterfaceNames.push_back("TransferInterface");
-      componentInterfaceNames.push_back("SurfUtil");
-      componentInterfaceNames.push_back("Simpal");
- 
-      fsiCoupler.SetRunMode(runMode);
-      fsiCoupler.SetVerbLevel(verblevel);      
-      fsiCoupler.Initialize(componentInterfaceNames, time_final, timestep);  
-      
-      // Testing the Elmer finalize
-      fsiCoupler.getStructureAgent()->Finalize();
-      
-      COM_unload_module(solidSolverName.c_str(),"StructuresComponentInterface");       
-      int h = COM_get_window_handle("StructuresComponentInterface");
-      if(h > 0 ){
-        std::cout << "After unloading, COM_get_window_handle(\"StructuresComponentInerface\") returns "                    << h << std::endl;
-        works = false;
-      }
-
-      result.UpdateResult("SolidAgentFinalize:Works",works);
-      
-    }
-
-    // WK : End
  
     ///
     /// Runs all tests implemented by the ElmerFoamFSI::TestingObject.
@@ -1954,13 +1845,8 @@ namespace ElmerFoamFSI {
       Test__ExampleFunction(result);
       Test__TrapezoidQuadrature(result);
       Test__MidPointQuadrature(result);
-      Test__FluidsInitialize(result);
-      // MS: Start
-      Test__ScaffoldUnitTestFun(result);
-      //for (int i=0; i<10; i++)
-	      Test__ElmerModuleLoad(result);
+      Test__ElmerModuleLoad(result);
       Test__OFModuleLoad(result);
-      // MS: End
       // WK: Start
       Test__ElmerHandlesCheck(result);
       Test__FsiCoupler(result);
@@ -1968,7 +1854,6 @@ namespace ElmerFoamFSI {
       Test__FluidAgentRun(result);
 	  Test__TransferLoadsToStructures(result);
       Test__SolidAgentRun(result);
-      Test__SolidAgentFinalize(result);
       // WK: End
       // NS: Start
       Test__ElmerStructures(result);
@@ -1992,17 +1877,10 @@ namespace ElmerFoamFSI {
         Test__TrapezoidQuadrature(result);
       else if(name == "MidPointQuadrature")
         Test__MidPointQuadrature(result);
-      else if(name == "FluidsInitialize")
-        Test__FluidsInitialize(result);
-      // MS: Start
-      else if(name == "ScaffoldUnitTestFun")
-        Test__ScaffoldUnitTestFun(result);
       else if(name == "ElmerModuleLoad")
         Test__ElmerModuleLoad(result);
       else if(name == "OpenFoamModuleLoad")
         Test__OFModuleLoad(result);
-      // MS: End
-      // WK: Start
       else if(name == "ElmerHandlesCheck")
         Test__ElmerHandlesCheck(result);
       else if(name == "FsiCoupler")
@@ -2015,15 +1893,10 @@ namespace ElmerFoamFSI {
         Test__TransferLoadsToStructures(result);
       else if(name == "SolidAgentRun")
         Test__SolidAgentRun(result);
-      else if(name == "SolidAgentFinalize")
-        Test__SolidAgentFinalize(result);
-      // WK: End
-      // NS: Start
       else if(name == "ElmerStructures")
         Test__ElmerStructures(result);
       else if(name == "OpenFoamFluids")
         Test__OpenFoamFluids(result);  
-			// NS: End
       Epilogue();
     }
 
@@ -2056,23 +1929,45 @@ namespace ElmerFoamFSI {
   template<typename CommType,typename ResultsType>
   class ParallelTestingObject : TestingObject<ResultsType>
   {
+  typedef IRAD::Profiler::ProfilerObj ProfilerType;
+  typedef std::string                 StackType;
+  typedef IRAD::Global::ParallelGlobalObj<CommType,StackType,int,ProfilerType> TestPGlobalType;
   protected:
-    // Example test fixtures for parallel ElmerFoamFSI testing.
-    //
+    /// Example test fixtures for parallel ElmerFoamFSI testing.
+    ///
     /// 
     /// The CommunicatorObject for the parallel testing object.
     ///
     CommType _communicator;
+    bool isRank0;
     ///
     /// A set of values for testing quadrature methods.
     /// 
     std::vector<int> N;
+    /// program source directory
+    std::string SourceDirPath;
+    /// parFsiCoupler
+    TestPGlobalType pGlobal;
+    fsicouplingpar fsiCouplerPar;
+    /// For use with the ElmerStructure and OpenFoamFluids tests
+    solidagentpar* testStructuresAgent;
+    fluidagentpar* testFluidsAgent;
+    /// other variables needed for tests
+    int verblevel;
+    std::vector<std::string> componentInterfaceNames;
+    double simulationFinalTime;
+    double simulationTimeStep;
+    bool initIsPerformed;
+ 
   public:
     ///
     /// Constructor with incoming communicator.
     ///
     ParallelTestingObject(CommType &incomm) :
-      TestingObject<ResultsType>(), _communicator(incomm) {};
+      TestingObject<ResultsType>(), _communicator(incomm), isRank0(false),
+      fsiCouplerPar(pGlobal), testStructuresAgent(NULL), testFluidsAgent(NULL),
+      initIsPerformed(false)
+    {isRank0 = (_communicator.Rank()==0);};
     CommType &GetCommunicator() { return(_communicator); };
 
     ///
@@ -2090,6 +1985,15 @@ namespace ElmerFoamFSI {
     virtual void  Prologue(){
       for(int i = _communicator.Size();i <= 1000000;i*=2) N.push_back(i);
     };
+
+    ///
+    /// Sets the string value of the testing source directory
+    ///
+    void SetSourceDirPath(std::string input){
+      SourceDirPath = input;
+      if (isRank0)
+        std::cout << "Source Directory Path = " << SourceDirPath << std::endl;
+    }   
 
     ///
     /// Parallel test for ElmerFoamFSI::TrapezoidQuadrature
@@ -2386,6 +2290,1131 @@ namespace ElmerFoamFSI {
       }
       result.UpdateResult("ParallelMidPointQuadrature:Order2",order2);
     }
+    
+    ///
+    /// Test parallel elmerModule load/unloads properly
+    ///
+    /// @param result ElmerFoamFSI::TestResults object to store test results.
+    ///
+    virtual void Test__ParElmerModuleLoadUnload(ResultsType &result) {
+      if (isRank0)
+         std::cout << "\n Running " << __func__ << "\n" <<std::endl;
+
+      // load Elmer module
+      std::cout << "Loading parallel Elmer Module" << std::endl;
+      COM_LOAD_MODULE_STATIC_DYNAMIC(ElmerCSCParallel, "ElmerModule");
+      bool works = false;
+
+      // get window handle
+      int h=COM_get_window_handle("ElmerModule");
+      if(h <= 0){
+        std::cout << " After loading, COM_get_window_handle(\"ElmerModule\") returns "
+                  << h << std::endl;
+        std::cout << "ModuleLoadUnload Error: Could not get window handle."
+                  << std::endl;
+      }
+      else{
+        works=true;
+        std::cout << "Parallel Elmer Module Loaded" << std::endl;
+      }
+      result.UpdateResult("ParElmerModuleLoad:Works",works);
+
+      // unload Elmer Module
+      std::cout << "Unloading Parallel Elmer Module" << std::endl;
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC(ElmerCSCParallel, "ElmerModule");
+      works=false;
+
+      // make sure module unloaded
+      h=COM_get_window_handle("ElmerModule");
+      if(h > 0){
+        std::cout << "After unloading, COM_get_window_handle(\"ElmerModule\") returns "
+                  << h << std::endl;
+        std::cout << "ModuleLoadUnload Error: Did not properly unload module."
+                  << std::endl;
+      }
+      else{
+        works=true;
+        std::cout << "Parallel Elmer Module Unloaded" << std::endl;
+      }
+
+      result.UpdateResult("ParElmerModuleUnload:Works",works);
+      _communicator.Barrier();
+      return;
+    }
+
+    ///
+    /// Test parallel OpenFoamModule load/unloads properly
+    ///
+    /// @param result ElmerFoamFSI::TestResults object to store test results.
+    ///
+    virtual void Test__ParOFModuleLoadUnload(ResultsType &result) {
+      if (isRank0)
+         std::cout << "\n Running " << __func__ << "\n" <<std::endl;
+
+      // load Elmer module
+      std::cout << "Loading parallel OpenFoam Module" << std::endl;
+      COM_LOAD_MODULE_STATIC_DYNAMIC(OpenFoamFSIPar, "OFModule");
+      bool works = false;
+
+      // get window handle
+      int h=COM_get_window_handle("OFModule");
+      if(h <= 0){
+        std::cout << " After loading, COM_get_window_handle(\"OFModule\") returns "
+                  << h << std::endl;
+        std::cout << "ModuleLoadUnload Error: Could not get window handle."
+                  << std::endl;
+      }
+      else{
+        works=true;
+        std::cout << "Parallel OpenFoam Module Loaded" << std::endl;
+      }
+      result.UpdateResult("ParOFModuleLoad:Works",works);
+
+      // unload Elmer Module
+      std::cout << "Unloading Parallel OpenFoam Module" << std::endl;
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC(OpenFoamFSIPar, "OFModule");
+      works=false;
+
+      // make sure module unloaded
+      h=COM_get_window_handle("OFModule");
+      if(h > 0){
+        std::cout << "After unloading, COM_get_window_handle(\"OFModule\") returns "
+                  << h << std::endl;
+        std::cout << "ModuleLoadUnload Error: Did not properly unload module."
+                  << std::endl;
+      }
+      else{
+        works=true;
+        std::cout << "Parallel OpenFoam Module Unloaded" << std::endl;
+      }
+      result.UpdateResult("ParOFModuleUnload:Works",works);
+      _communicator.Barrier();
+      return;
+    }
+
+
+    ///
+    /// Test if parallel Elmer module can load properly, and its functions handles can be accessed
+    ///
+    /// @param result ElmerFoamFSI::TestResults object to store test results.
+    ///
+    virtual void Test__ParElmerHandlesCheck(ResultsType & result){
+      if (isRank0)
+         std::cout << "\n Running " << __func__ << "\n" <<std::endl;
+
+      bool works, loadWorks, globWorks, initWorks, runWorks, finWorks, unloadWorks = false;
+
+      std::cout << "Running Test__ParElmerHandlesCheck" << std::endl;
+    
+      //Loading Elmer Module
+      std::cout << "Loading Parallel Elmer Module" << std::endl;
+      COM_LOAD_MODULE_STATIC_DYNAMIC(ElmerCSCParallel,"ElmerModule");
+
+      //Checking Elmer Module is indeed loaded.
+      int ElmerHandle = COM_get_window_handle("ElmerModule");
+      if(ElmerHandle <=0){
+        std::cout << "After loading, COM_get_window_handle(\"ElmerModule\") returns "
+                  << ElmerHandle << std::endl;
+        std::cout << "Error : Could not get window handle." << std::endl;
+      }
+      else{
+        loadWorks = true;
+        std::cout << "Parallel Elmer Module Loaded." << std::endl;
+      }
+
+      //Checking the registration of global data.
+      int globHandle = COM_get_dataitem_handle("ElmerModule.global");
+      if(globHandle <= 0){
+        std::cout << "After loading, COM_get_dataitem_handle(\"ElmerModule.global\") returns "
+                  << globHandle << std::endl;
+        std::cout << "Error : Could not get the data item handle." << std::endl;
+      }
+      else{
+        globWorks = true;
+        std::cout << "Global data handle accessed." << std::endl;
+      }
+      
+      //Checking the ElmerModule function Initialize handle
+      int initHandle = COM_get_function_handle("ElmerModule.Initialize");
+      if(initHandle <= 0){
+        std::cout << "After loading, COM_get_function_handle(\"ElmerModule.Initialize\") returns "
+                  << initHandle << std::endl;
+        std::cout << "Error : Could not get the Initialize function handle." << std::endl;
+      }
+      else{
+        initWorks = true;
+        std::cout << "Initialize function handle accessed." << std::endl;
+      }
+
+      //Checking the ElmerModule function Run handle
+      int runHandle = COM_get_function_handle("ElmerModule.Run");
+      if(runHandle <= 0){
+        std::cout << "After loading, COM_get_function_handle(\"ElmerModule.Run\") returns "
+                  << runHandle << std::endl;
+        std::cout << "Error : Could not get the Run function handle." << std::endl;
+      }
+      else{
+        runWorks = true;
+        std::cout << "Run function handle accessed." << std::endl;
+      }
+
+      //Checking the ElmerModule function Finalize handle
+      int finHandle = COM_get_function_handle("ElmerModule.Finalize");
+      if(finHandle <= 0){
+        std::cout << "After loading, COM_get_function_handle(\"ElmerModule.Finalize\") returns "
+                  << finHandle << std::endl;
+        std::cout << "Error : Could not get the Finalize function handle." << std::endl;
+      }
+      else{
+        finWorks = true;
+        std::cout << "Finalize function handle accessed." << std::endl;
+      }
+
+      //Unloading Elmer Module
+      std::cout << "Unloading Elmer Module" << std::endl;
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC(ElmerCSCParallel, "ElmerModule");
+      
+      //Checking Elmer Module is indeed unloaded.
+      ElmerHandle = COM_get_window_handle("ElmerModule");
+      if(ElmerHandle > 0){
+        std::cout << "After unloading, COM_get_window_handle(\"ElmerModule\") returns "
+                  << ElmerHandle << std::endl;
+        std::cout << "Error : Module was not properly unloaded." << std::endl;
+      }
+      else{
+        unloadWorks = true;
+        std::cout << "Parallel Elmer Module Unloaded." << std::endl;
+      } 
+      
+      if(loadWorks & globWorks & initWorks & runWorks & finWorks & unloadWorks) works = true;
+        result.UpdateResult("ParElmerHandlesCheck:Works",works);
+      _communicator.Barrier();
+      return;
+    }
+
+
+    ///
+    /// Test if parallel OpenFoam module can load properly, and its functions handles can be accessed
+    ///
+    /// @param result ElmerFoamFSI::TestResults object to store test results.
+    ///
+    virtual void Test__ParOpenFoamHandlesCheck(ResultsType & result){
+      if (isRank0)
+         std::cout << "\n Running " << __func__ << "\n" <<std::endl;
+
+      bool works, loadWorks, globWorks, initWorks, runWorks, finWorks, unloadWorks = false;
+
+      //Loading parallel OpenFoam Module
+      std::cout << "Loading Parallel OpenFoam Module" << std::endl;
+      COM_LOAD_MODULE_STATIC_DYNAMIC(OpenFoamFSIPar,"OFModule");
+
+      //Checking OF Module is indeed loaded.
+      int OFHandle = COM_get_window_handle("OFModule");
+      if(OFHandle <=0){
+        std::cout << "After loading, COM_get_window_handle(\"OFModule\") returns "
+                  << OFHandle << std::endl;
+        std::cout << "Error : Could not get window handle." << std::endl;
+      }
+      else{
+        loadWorks = true;
+        std::cout << "Parallel OpenFoam Module Loaded." << std::endl;
+      }
+
+      //Checking the registration of global data.
+      int globHandle = COM_get_dataitem_handle("OFModule.global");
+      if(globHandle <= 0){
+        std::cout << "After loading, COM_get_dataitem_handle(\"OFModule.global\") returns "
+                  << globHandle << std::endl;
+        std::cout << "Error : Could not get the data item handle." << std::endl;
+      }
+      else{
+        globWorks = true;
+        std::cout << "Global data handle accessed." << std::endl;
+      }
+      
+      //Checking the function Initialize handle
+      int initHandle = COM_get_function_handle("OFModule.InitFoam");
+      if(initHandle <= 0){
+        std::cout << "After loading, COM_get_function_handle(\"OFModule.InitFoam\") returns "
+                  << initHandle << std::endl;
+        std::cout << "Error : Could not get the Initialize function handle." << std::endl;
+      }
+      else{
+        initWorks = true;
+        std::cout << "Initialize function handle accessed." << std::endl;
+      }
+
+      //Checking the function Run handle
+      int runHandle = COM_get_function_handle("OFModule.RunFoam");
+      if(runHandle <= 0){
+        std::cout << "After loading, COM_get_function_handle(\"OFModule.RunFoam\") returns "
+                  << runHandle << std::endl;
+        std::cout << "Error : Could not get the Run function handle." << std::endl;
+      }
+      else{
+        runWorks = true;
+        std::cout << "Run function handle accessed." << std::endl;
+      }
+
+      //Checking the function Finalize handle
+      int finHandle = COM_get_function_handle("OFModule.StepFluid");
+      if(finHandle <= 0){
+        std::cout << "After loading, COM_get_function_handle(\"OFModule.StepFluid\") returns "
+                  << finHandle << std::endl;
+        std::cout << "Error : Could not get the Finalize function handle." << std::endl;
+      }
+      else{
+        finWorks = true;
+        std::cout << "Finalize function handle accessed." << std::endl;
+      }
+
+      //Unloading Module
+      std::cout << "Unloading OpenFoam Module" << std::endl;
+      COM_UNLOAD_MODULE_STATIC_DYNAMIC(OpenFoamFSIPar, "OFModule");
+      
+      //Checking Module is indeed unloaded.
+      OFHandle = COM_get_window_handle("OFModule");
+      if(OFHandle > 0){
+        std::cout << "After unloading, COM_get_window_handle(\"OFModule\") returns "
+                  << OFHandle << std::endl;
+        std::cout << "Error : Module was not properly unloaded." << std::endl;
+      }
+      else{
+        unloadWorks = true;
+        std::cout << "Parallel OpenFoam Module Unloaded." << std::endl;
+      } 
+      
+      if(loadWorks & globWorks & initWorks & runWorks & finWorks & unloadWorks) works = true;
+        result.UpdateResult("ParOpenFoamHandlesCheck:Works",works);
+      _communicator.Barrier();
+      return;
+    }
+
+
+    ///
+    /// Function to copy input data from source testing directory
+    /// for use in unit tests.
+    /// 
+    /// @param suffix std::string for the input data location (it is
+    /// appended to the source directory inputted on the command line)
+    /// @param TestDir std::string path for directory to run the test in
+    virtual int GetInputData(std::string sourceDirName, std::string TestDir){
+      std::cout << "Copying from " << sourceDirName 
+                << " to " << TestDir << std::endl;
+      std::string OrgDir;
+      //Save original working directory for later
+      OrgDir = IRAD::Sys::CWD();
+      //Check if data directory exists
+      if(!IRAD::Sys::FILEEXISTS(sourceDirName)){
+        std::cout << "GetInputData Error: Could not find data directory, "
+                  << sourceDirName << ". Exiting (fail)." << std::endl;
+        return -1;
+      }
+      std::ifstream Inf;
+      std::ofstream Ouf;
+      std::string InFileName;
+      std::string OutFileName;
+      int IntDir;
+      //Create TestDir directory in current directory (if it doesn't
+      //already exist) to run our tests in.
+      if(!IRAD::Sys::FILEEXISTS(TestDir)){
+        IntDir = IRAD::Sys::CreateDirectory(TestDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not make directory, "
+                    << TestDir << ". Exiting (fail)." << std::endl;
+          return -1;
+        }
+      }
+      //Open the input test data directory
+      IRAD::Sys::Directory SourceDir(sourceDirName);
+      //Change directories to TestDir directory for running 
+      IntDir = IRAD::Sys::ChDir(TestDir);
+      if(IntDir == -1){
+        std::cout << "GetInputData Error: Could not change directories to "
+                  << TestDir << ". Exiting (fail)." << std::endl;
+        return -1;
+      }
+      //Copy input data to TestDir directory for running 
+      for(std::vector<std::string>::iterator it = SourceDir.begin();
+          it != SourceDir.end(); ++it){
+        InFileName = sourceDirName + "/" + *it;
+        OutFileName = IRAD::Sys::CWD() + "/" + *it;
+        //std::cout << "InFileName = " << InFileName 
+        //          << ", OutFileName = " << OutFileName 
+        //          << std::endl;
+        // copy source to distnation recursively
+        if(IRAD::Sys::ISLINK(InFileName))
+          // preserve links, don't traverse
+          int IntDir = IRAD::Sys::SymLink(InFileName, OutFileName);
+        else if(IRAD::Sys::ISDIR(InFileName)) {
+          // recursively copy directories
+          int IntDir = GetInputData(InFileName, OutFileName);
+        } else {
+          // copy files, travserse into directories recursively
+          Inf.open(InFileName.c_str());
+          Ouf.open(OutFileName.c_str());
+          Ouf << Inf.rdbuf();
+          Ouf.close();
+          Inf.close();
+        }
+
+      }
+      //Change directories to back to original directory 
+      IntDir = IRAD::Sys::ChDir(OrgDir);
+      if(IntDir == -1){
+        std::cout << "GetInputData Error: Could not change directories to "
+                  << OrgDir << "\n Exiting (fail)." << std::endl;
+        return -1;
+      } else {
+        //std::cout << "\n**BACK**\n";
+      }
+      return 0;
+    }
+
+
+    // Helper function
+    virtual int __helper(){
+ 
+      int IntDir;
+      std::string OrgDir, TestDir;     
+
+      //call GetInputData to copy input test data to temp directory for running tests.
+      std::string sourceDir = SourceDirPath + "/share/Testing/test_data/HronTurekFSI3_4";
+  
+      //Make path for directory to run the test in
+      TestDir = IRAD::Sys::CWD() + "/HronTurekFSI3_4_UnitTest";
+      std::cout << "Getting Input Data!!" << std::endl;
+      IntDir  = GetInputData(sourceDir, TestDir);
+  
+      //check if GetInputData exited correctly.
+      if(IntDir != 0){
+        std::cout << "GetInputData failed!"
+                  << std::endl;
+        return 1;
+      }
+      // Check if TestDir directory exists in current Directory
+      if(!IRAD::Sys::FILEEXISTS(TestDir)){
+        std::cout << "Could not find directory, "
+                  << TestDir << ", for running tests." << std::endl;
+        return 2;
+      }
+      return 0;     
+    }  
+
+
+    ///
+    /// Tests Initalize function for the fsiCouplerPar and agentsPar
+    ///
+    virtual void Test__ParFsiCouplerAgentsInitialize(){
+      if (isRank0)
+         std::cout << "\n Running " << __func__ << "\n" <<std::endl;
+
+      // prepare testing folder
+      if (isRank0)
+      {
+         int work=__helper();
+	 if(work == 1){
+	   std::cout << "GetInputData failed 2!" << std::endl;
+           return;
+         }
+	 else if (work == 2) {
+	   std::cout << "Could not find directory for running tests" << std::endl;
+           return;
+         }
+      }      
+      // waiting for copy to finish
+      _communicator.Barrier();
+
+      int IntDir;
+      verblevel = 3;
+      testStructuresAgent = new solidagentpar;
+      testFluidsAgent = new fluidagentpar;
+      
+      std::string fluidDir;
+      std::string simDir;
+      fluidDir = IRAD::Sys::CWD() + "/HronTurekFSI3_4_UnitTest/fluid";
+      simDir = IRAD::Sys::CWD() + "/HronTurekFSI3_4_UnitTest";
+      	
+      if(!(IRAD::Sys::FILEEXISTS(fluidDir)||(IRAD::Sys::FILEEXISTS(simDir)))){
+        std::cout << "Test folder does not exist!" << std::endl;
+        return; 
+      }
+      else{
+        IntDir = IRAD::Sys::ChDir(simDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          return;
+        }
+        std::system("chmod 755 Allclean AllrunParDrvSetup makeLinks makeSerialLinks removeSerialLinks"); 
+        if (isRank0) {
+        std::system("./Allclean");
+        std::system("./AllrunParDrvSetup");
+        }
+        _communicator.Barrier();
+
+        IntDir = IRAD::Sys::ChDir(fluidDir);
+        if(IntDir == -1){
+          std::cout << "GetInputData Error: Could not change directory to " 
+                    << fluidDir << ". Exiting (fail). " << std::endl;
+          return;
+        }
+      }
+      
+      std::string fluidSolverName("OpenFoamFSIPar");
+      std::string solidSolverName("ElmerCSCParallel");
+      std::string transferServiceName("SurfX");
+      std::string runMode("1");
+
+      std::cout << "COM loading all modules" << std::endl;
+      COM_load_module(fluidSolverName.c_str(),"FluidsComponentInterface");
+      COM_load_module(solidSolverName.c_str(),"StructuresComponentInterface");
+      COM_load_module("SurfUtil","SurfUtil");
+      COM_load_module("Simpal","Simpal");
+      COM_load_module("SimOUT","Simout");
+
+
+      componentInterfaceNames.push_back("FluidsComponentInterface");
+      componentInterfaceNames.push_back("StructuresComponentInterface");
+      componentInterfaceNames.push_back("TransferInterface");
+      componentInterfaceNames.push_back("SurfUtil");
+      componentInterfaceNames.push_back("Simpal");
+      componentInterfaceNames.push_back("Simout");
+ 
+      fsiCouplerPar.SetRunMode(runMode);
+      fsiCouplerPar.SetVerbLevel(verblevel);
+      std::cout << "fsiCouplerAgentsInitialize Successful!" << std::endl;
+
+      // at this point initialization should be performed successfully
+      initIsPerformed = true;
+      _communicator.Barrier();
+      return;
+    }
+
+    ///
+    /// Helper function initializes the sample problem for testing
+    ///
+    virtual int initializeSampleProblem()
+    {
+      simulationFinalTime = 5.0e-3;
+      simulationTimeStep = 5.0e-4;
+      if (!initIsPerformed) {
+         // call the Agents Initialize function above
+	 // as well as the Initialize function of fsiCoupler
+	 std::cout << "Initalizing..." << std::endl;
+	 Test__ParFsiCouplerAgentsInitialize();
+	 fsiCouplerPar.Initialize(componentInterfaceNames, simulationFinalTime, simulationTimeStep);  
+	 std::cout << "Initialize Completed!" << std::endl;
+      }
+          
+      // making sure initialization is finished properly
+      if (!initIsPerformed) {
+        std::cout << "Problem initialization failed!" << std::endl;
+        return(1);
+      }
+      return(0);
+    }
+
+
+    ///
+    /// Tests the functionality of the fsiCouplerPar
+    ///
+    /// @param result ElmerFoamFSI::TestResults object to store test results.
+    ///
+    virtual void Test__ParFsiCoupler(ResultsType &result){
+      if (isRank0)
+         std::cout << "\n Running " << __func__ << "\n" <<std::endl;
+
+      bool works = false;
+      
+      // Initializing the sample FSI problem
+      if (initializeSampleProblem()){
+        // if initialization test failed this will fail as well
+        result.UpdateResult("ParFsiCoupler:Works",false);
+        return; 
+      }
+      _communicator.Barrier();
+      
+      // test to make sure that classInterfaceNames are populated 
+      // correctly to match componentInterfaceNames
+      bool interfaceNameCheck = true;
+      std::vector<std::string> classInterfaceNames;
+      classInterfaceNames =  fsiCouplerPar.getVariable();      
+      for(int i = 0; i < componentInterfaceNames.size(); i++){
+        if(componentInterfaceNames.at(i) != classInterfaceNames.at(i)){
+          interfaceNameCheck = false;
+          break;
+        }
+      }
+
+      // test to make sure solver time-related parameters are correctly populated
+      bool timeHackCheck= (fsiCouplerPar.getSimulationTime()==0) &&
+                          (fsiCouplerPar.getSimulationTimeStep()==simulationTimeStep) &&
+                          (fsiCouplerPar.getSimulationFinalTime()==simulationFinalTime);
+      
+      works = interfaceNameCheck && timeHackCheck;
+      result.UpdateResult("ParFsiCoupler:Works",works);
+      _communicator.Barrier();
+      return;
+    }
+
+    /// Test for fsiCoupling::ParTrasferDisplacementsToFluid function.
+    ///
+    /// @param result ElmerFoamFSI::TestResults object to store test results.
+    ///
+    /// This function uses HronTurekFSI3_4 problem data to test the transferagent->interpolate function.
+    /// Displacement vector for solid agent is set to a constant value. After interpolation, displacement 
+    /// vector for fluid agent should have received these values (approximately).
+    virtual void Test__ParTransferDisplacementsToFluid(ResultsType &result){
+      if (isRank0)
+         std::cout << "\n Running " << __func__ << "\n" <<std::endl;
+
+      bool works = false;
+
+      // Initializing the sample FSI problem
+      if (initializeSampleProblem()){
+        // if initialization test failed this will fail as well
+        result.UpdateResult("ParTransferDisplacementsToFluid:Works",works);
+        return; 
+      }
+      _communicator.Barrier();
+      
+      double *fluidDisp = NULL;
+      double *solidDisp = NULL;
+      bool testRankFluid = (fsiCouplerPar.getFluidAgent()->Coordinates().size()!=0);
+      bool testRankSolid = (fsiCouplerPar.getStructureAgent()->Coordinates().size()!=0);
+      std::string fluidsDispName(fsiCouplerPar.getFluidIntName()+".solidDisplacement");
+      std::string solidsDispName(fsiCouplerPar.getSolidIntName()+".Displacements");
+      double totalFluidDisp, totalSolidDisp = 0;
+
+      // setting solid displacements
+      if (testRankSolid) {
+         COM_get_array(solidsDispName.c_str(),(fsiCouplerPar.getStructureAgent())->PaneID(),&solidDisp);
+	 for(int i = 0; i<fsiCouplerPar.getStructureAgent()->Coordinates().size()/3; i++){
+	   solidDisp[3*i+1] = 1.0;
+	   totalSolidDisp += 1.0;
+           //std::cout<< "Rank " << _communicator.Rank() 
+           //         << " solidDisp["<< 3*i+1<< "] = " << solidDisp[3*i+1] << std::endl;
+         }
+      }
+
+      // performing parallel interpolation
+      fsiCouplerPar.TransferDisplacementsToFluid(fsiCouplerPar.getStructureAgent(),fsiCouplerPar.getFluidAgent());
+      _communicator.Barrier();
+      
+      // suming fluids displacements
+      if (testRankFluid) {
+	 COM_get_array(fluidsDispName.c_str(),(fsiCouplerPar.getFluidAgent())->PaneID(),&fluidDisp);
+	 // Calculate the total displacements for fluid 
+	 for(int i=0; i < fsiCouplerPar.getFluidAgent()->Coordinates().size()/3; i++){
+	   totalFluidDisp += fluidDisp[3*i+1];
+	 }
+      } 
+      
+      // error calculations
+      double ttFluidDisp, ttSolidDisp;
+      _communicator.AllReduce(totalFluidDisp, ttFluidDisp, IRAD::Comm::DTDOUBLE, IRAD::Comm::SUMOP);
+      _communicator.AllReduce(totalSolidDisp, ttSolidDisp, IRAD::Comm::DTDOUBLE, IRAD::Comm::SUMOP);
+      double ttNNdeSolid, ttNNdeFluid;
+      double totNNdeSolid = fsiCouplerPar.getStructureAgent()->Coordinates().size();
+      double totNNdeFluid = fsiCouplerPar.getFluidAgent()->Coordinates().size();
+      std::cout << "Rank " << _communicator.Rank()
+                << " totNNdeFluid = " << totNNdeFluid
+                << " totNNdeSolid = " << totNNdeSolid
+                << std::endl;
+      _communicator.Barrier();
+      _communicator.AllReduce(totNNdeSolid, ttNNdeSolid, IRAD::Comm::DTDOUBLE, IRAD::Comm::SUMOP);
+      _communicator.AllReduce(totNNdeFluid, ttNNdeFluid, IRAD::Comm::DTDOUBLE, IRAD::Comm::SUMOP);
+      if (isRank0)
+	 std::cout << " (tot) is per process \n (tt) is grand total \n"
+		   << " ttFluidDisp = " << ttFluidDisp 
+		   << " ttNNdeFluid = " << ttNNdeFluid
+		   << " ttSolidDisp = " << ttSolidDisp
+		   << " ttNNdeSolid = " << ttNNdeSolid
+		   << std::endl;
+      _communicator.Barrier();
+      
+      double ttSolidDispFrac = ttSolidDisp/(ttNNdeSolid/3.0);
+      double ttFluidDispFrac = ttFluidDisp/(ttNNdeFluid/3.0);
+      double totalDispErr = (ttFluidDispFrac - ttSolidDispFrac) / ttSolidDispFrac;
+       
+      if (isRank0)
+         std::cout << " Total Diplacement Interpolation Error (%) = " 
+                   << totalDispErr*100 << std::endl;
+      // If the error % is greater than 5%, let's call it a fail.
+      if (totalDispErr <= .05) 
+         works = true;
+      
+      result.UpdateResult("ParTransferDisplacementsToFluid:Works",works);
+      _communicator.Barrier();
+    }
+
+
+    /// Tests fluid agent steps properly.
+    ///
+    /// @param result ElmerFoamFSI::TestResults object to store test results.
+    ///
+    /// This function uses HronTurekFSI3_4 problem data to test fluidAgent porperly steps in time.
+    /// The fluidAgent will be requested to perform one step in time and report tractions. A norm of
+    /// the reported traction values will be compared with a reference value.
+    virtual void Test__ParFluidAgentRun(ResultsType &result){
+      if (isRank0)
+         std::cout << "\n Running " << __func__ << "\n" <<std::endl;
+
+      bool works = false;
+
+      // Initializing the sample FSI problem
+      // if initialization test failed this will fail as well
+      if (initializeSampleProblem()){
+        result.UpdateResult("ParFluidAgentRun:Works",false);
+        return; 
+      }
+      _communicator.Barrier();
+
+            
+      bool testRankFluid = (fsiCouplerPar.getFluidAgent()->Coordinates().size()!=0);
+      bool testRankSolid = (fsiCouplerPar.getStructureAgent()->Coordinates().size()!=0);
+      std::string fluidsDispName(fsiCouplerPar.getFluidIntName()+".solidDisplacement");
+      std::string solidsDispName(fsiCouplerPar.getSolidIntName()+".Displacements");
+
+      // setting some dummy solid displacements
+      double* fluidDisp = NULL;
+      if (testRankFluid) {
+         COM_get_array(fluidsDispName.c_str(),(fsiCouplerPar.getFluidAgent())->PaneID(),&fluidDisp);
+	 for(int i = 0; i<fsiCouplerPar.getFluidAgent()->Coordinates().size(); i++){
+	   fluidDisp[i] = 0.0;
+         }
+      }
+
+      // Passing a dummy time step to the Run method as it 
+      // only uses the value set by the openFoam input file
+      double simulTime = fsiCouplerPar.getSimulationTime();
+      fsiCouplerPar.getFluidAgent()->InitializeTimeStep(simulTime);
+      fsiCouplerPar.getFluidAgent()->Run(simulTime);
+
+      int stride = 0;
+      int cap = 0;
+      double *tractions = NULL;
+      std::vector<double> totTrac;
+      totTrac.resize(3, 0.0);
+      if (testRankFluid) {      
+	 COM_get_array((fsiCouplerPar.getFluidIntName()+".traction").c_str(), 
+                       (fsiCouplerPar.getFluidAgent())->PaneID(), &tractions, &stride, &cap);
+	 int isize = cap*stride;
+	 for(int i = 0; i < isize/3 ; i++){
+           totTrac[0] += tractions[3*i];
+           totTrac[1] += tractions[3*i+1];
+           totTrac[2] += tractions[3*i+2];
+	   //std::cout << "tractions[" << i << "] = " 
+           //          << tractions[3*i] << ",  " 
+           //          << tractions[3*i+1] 
+	   //          << ",  " << tractions[3*i+2] << std::endl;
+	 }
+      }
+      std::cout << "Rank " << _communicator.Rank()
+                << " totTrac[0] = " << totTrac[0]
+                << " totTrac[1] = " << totTrac[1]
+                << " totTrac[2] = " << totTrac[2]
+                << std::endl;
+
+      // reduce total traction to all ranks
+      std::vector<double> ttTracTest;
+      ttTracTest.resize(3, 0.0);
+      _communicator.AllReduce(totTrac, ttTracTest, IRAD::Comm::DTDOUBLE, IRAD::Comm::SUMOP);
+      _communicator.Barrier();
+         
+      // compare to reference
+      std::vector<double> ttTracRef;
+      ttTracRef.push_back(-1236.35211319659);
+      ttTracRef.push_back(-7.86484455024674);
+      ttTracRef.push_back(0.0);
+      double ttTracErr =  pow(ttTracTest[0] - ttTracRef[0], 2) +
+                          pow(ttTracTest[1] - ttTracRef[1], 2) +
+                          pow(ttTracTest[2] - ttTracRef[2], 2);
+      ttTracErr = pow(ttTracErr, 0.5); 
+      if (isRank0)
+        std::cout << "Total Traction Error = " 
+                  << ttTracErr
+                  << std::endl;
+      if (ttTracErr < 1.0e-10)
+        works = true;
+      _communicator.Barrier();
+     
+      result.UpdateResult("ParFluidAgentRun:Works",works);
+    }
+
+
+    /// Test for fsiCoupling::ParTrasferLoadsToStructure function.
+    ///
+    /// @param result ElmerFoamFSI::TestResults object to store test results.
+    ///
+    /// This function uses HronTurekFSI3_4 problem data to test the transferagent->transfer function.
+    /// Traction vector for fluid agent is set to a constant value. After interpolation, traction
+    /// vector for structure agent should have received these values (approximately).
+    virtual void Test__ParTransferLoadsToStructure(ResultsType &result){
+      if (isRank0)
+         std::cout << "\n Running " << __func__ << "\n" <<std::endl;
+
+      bool works = false;
+
+      // Initializing the sample FSI problem
+      if (initializeSampleProblem()){
+        // if initialization test failed this will fail as well
+        result.UpdateResult("ParTransferLoadsToStructure:Works",works);
+        return; 
+      }
+      _communicator.Barrier();
+      
+      double *fluidTrac = NULL;
+      double *solidTrac = NULL;
+      bool testRankFluid = (fsiCouplerPar.getFluidAgent()->Coordinates().size()!=0);
+      bool testRankSolid = (fsiCouplerPar.getStructureAgent()->Coordinates().size()!=0);
+      std::string fluidsTracName(fsiCouplerPar.getFluidIntName()+".traction");
+      std::string solidsTracName(fsiCouplerPar.getSolidIntName()+".Loads");
+      double totalFluidTrac = 0;
+      double totalSolidTrac = 0;
+
+      // setting tractions
+      int stride, cap = 0;
+      std::vector<double> nElm;
+      nElm.resize(1);
+      if (testRankFluid) {
+         COM_get_array(fluidsTracName.c_str(),(fsiCouplerPar.getFluidAgent())->PaneID(),&fluidTrac, &stride, &cap);
+         nElm[0] = cap;
+         std::cout << " nElm = " << nElm[0]
+                   << " stride x cap = " << stride*nElm[0]
+                   << " size = " << fsiCouplerPar.getFluidAgent()->Coordinates().size()
+                   << std::endl;
+	 for(int i = 0; i<nElm[0]; i++){
+	   fluidTrac[3*i] = 0.0;
+	   fluidTrac[3*i+1] = 1.0;
+	   fluidTrac[3*i+2] = 0.0;
+	   totalFluidTrac += 1.0;
+           //std::cout<< "Rank " << _communicator.Rank() 
+           //         << " fluidTrac["<< 3*i+1<< "] = " << fluidTrac[3*i+1] << std::endl;
+         }
+      }
+
+      // performing parallel least-square interpolation (transfer)
+      fsiCouplerPar.TransferLoadsToStructures(fsiCouplerPar.getFluidAgent(),fsiCouplerPar.getStructureAgent());
+      _communicator.Barrier();
+      
+      // summing up solid tractions
+      if (testRankSolid) {
+	 COM_get_array(solidsTracName.c_str(),(fsiCouplerPar.getStructureAgent())->PaneID(),&solidTrac);
+	 // Calculate the total displacements for fluid 
+	 for(int i=0; i < fsiCouplerPar.getStructureAgent()->Coordinates().size()/3; i++){
+	   totalSolidTrac += solidTrac[3*i+1];
+           //std::cout<< "Rank " << _communicator.Rank() 
+           //         << " solidTrac["<< 3*i+1<< "] = " << solidTrac[3*i+1] << std::endl;
+	 }
+      } 
+      
+      // error calculations
+      double ttFluidTrac = 0 ;
+      double ttSolidTrac = 0 ;
+      std::cout << "Rank " << _communicator.Rank()
+                << " totalFluidTrac = " << totalFluidTrac
+                << std::endl;
+      _communicator.AllReduce(totalFluidTrac, ttFluidTrac, IRAD::Comm::DTDOUBLE, IRAD::Comm::SUMOP);
+      _communicator.AllReduce(totalSolidTrac, ttSolidTrac, IRAD::Comm::DTDOUBLE, IRAD::Comm::SUMOP);
+      double ttNNdeSolid, ttNElmFluid;
+      double totNNdeSolid = fsiCouplerPar.getStructureAgent()->Coordinates().size();
+      std::cout << "Rank " << _communicator.Rank()
+                << " totNElmFluid = " << nElm[0]
+                << " totNNdeSolid = " << totNNdeSolid
+                << std::endl;
+      _communicator.Barrier();
+      _communicator.AllReduce(totNNdeSolid, ttNNdeSolid, IRAD::Comm::DTDOUBLE, IRAD::Comm::SUMOP);
+      _communicator.AllReduce(nElm[0], ttNElmFluid, IRAD::Comm::DTDOUBLE, IRAD::Comm::SUMOP);
+      if (isRank0)
+	 std::cout << " (tot) is per process \n (tt) is grand total \n"
+		   << " ttFluidTrac = " << ttFluidTrac 
+		   << " ttNElmFluid = " << ttNElmFluid
+		   << " ttSolidTrac = " << ttSolidTrac
+		   << " ttNNdeSolid = " << ttNNdeSolid
+		   << std::endl;
+      _communicator.Barrier();
+      
+      double ttSolidTracFrac = ttSolidTrac/(ttNNdeSolid/3.0);
+      double ttFluidTracFrac = ttFluidTrac/ttNElmFluid;
+      double totalTracErr = (ttSolidTracFrac - ttFluidTracFrac) / ttFluidTracFrac;
+       
+      if (isRank0)
+         std::cout << " Total Traction Least-square Interpolation Error (%) = " 
+                   << totalTracErr*100 << std::endl;
+      // If the error % is greater than 5%, let's call it a fail.
+      if (totalTracErr <= .05) 
+         works = true;
+      
+      result.UpdateResult("ParTransferLoadsToStructure:Works",works);
+      _communicator.Barrier();
+      return;
+    }
+
+
+    /// Tests structure agent steps properly.
+    ///
+    /// @param result ElmerFoamFSI::TestResults object to store test results.
+    ///
+    /// This function uses HronTurekFSI3_4 problem data to test structureAgent properly steps in time.
+    /// The structureAgent will be requested to perform one step in time and report displacements. A norm of
+    /// the reported displacement values will be compared with a reference value.
+    virtual void Test__ParStructureAgentRun(ResultsType &result){
+      if (isRank0)
+         std::cout << "\n Running " << __func__ << "\n" <<std::endl;
+
+      bool works = false;
+
+      // Initializing the sample FSI problem
+      // if initialization test failed this will fail as well
+      if (initializeSampleProblem()){
+        result.UpdateResult("ParStructureAgentRun:Works",false);
+        return; 
+      }
+      _communicator.Barrier();
+
+            
+      bool testRankFluid = (fsiCouplerPar.getFluidAgent()->Coordinates().size()!=0);
+      bool testRankSolid = (fsiCouplerPar.getStructureAgent()->Coordinates().size()!=0);
+      std::string fluidsTracName(fsiCouplerPar.getFluidIntName()+".traction");
+      std::string solidsTracName(fsiCouplerPar.getSolidIntName()+".Loads");
+
+      // setting some dummy structure traction
+      double* solidTrac = NULL;
+      if (testRankSolid) {
+         COM_get_array(solidsTracName.c_str(),(fsiCouplerPar.getStructureAgent())->PaneID(),&solidTrac);
+	 for(int i = 0; i<fsiCouplerPar.getStructureAgent()->Coordinates().size()/3; i++){
+	   solidTrac[3*i] = 0.0;
+	   solidTrac[3*i+1] = 1.0;
+	   solidTrac[3*i+2] = 0.0;
+         }
+      }
+
+      // Passing a dummy time step to the Run method as it 
+      // only uses the value set by run method currently
+      double simulTime = fsiCouplerPar.getSimulationTime();
+      double simulTimeStep = fsiCouplerPar.getSimulationTimeStep();
+      fsiCouplerPar.getStructureAgent()->InitializeTimeStep(simulTime);
+      fsiCouplerPar.getStructureAgent()->Run(simulTime + simulTimeStep);
+      _communicator.Barrier();
+
+      int stride = 0;
+      int cap = 0;
+      double *disps = NULL;
+      std::vector<double> totDisp;
+      totDisp.resize(3, 0.0);
+      if (testRankSolid) {      
+	 COM_get_array((fsiCouplerPar.getSolidIntName()+".Displacements").c_str(), 
+                       (fsiCouplerPar.getStructureAgent())->PaneID(), &disps, &stride, &cap);
+	 int isize = cap*stride;
+	 for(int i = 0; i < isize/3 ; i++){
+           totDisp[0] += disps[3*i];
+           totDisp[1] += disps[3*i+1];
+           totDisp[2] += disps[3*i+2];
+	   //std::cout << "disps[" << i << "] = " 
+           //          << disps[3*i] << ",  " 
+           //          << disps[3*i+1] << ",  " 
+           //          << disps[3*i+2] << std::endl;
+	 }
+      }
+      _communicator.Barrier();
+      std::cout << "Rank " << _communicator.Rank()
+                << " totDisp[0] = " << totDisp[0]
+                << " totDisp[1] = " << totDisp[1]
+                << " totDisp[2] = " << totDisp[2]
+                << std::endl;
+
+      // reduce total displacements to all ranks
+      std::vector<double> ttDispTest;
+      ttDispTest.resize(3, 0.0);
+      _communicator.AllReduce(totDisp, ttDispTest, IRAD::Comm::DTDOUBLE, IRAD::Comm::SUMOP);
+      _communicator.Barrier();
+         
+      // compare to reference
+      std::vector<double> ttDispRef;
+      ttDispRef.push_back(0.0);
+      ttDispRef.push_back(4.49226422312958e-06);
+      ttDispRef.push_back(0.0);
+      double ttDispErr =  pow(ttDispTest[0] - ttDispRef[0], 2) +
+                          pow(ttDispTest[1] - ttDispRef[1], 2) +
+                          pow(ttDispTest[2] - ttDispRef[2], 2);
+      ttDispErr = pow(ttDispErr, 0.5); 
+      if (isRank0)
+        std::cout << "Total Displacement Error = " 
+                  << ttDispErr
+                  << std::endl;
+      if (ttDispErr < 1.0e-10)
+        works = true;
+      _communicator.Barrier();
+     
+      result.UpdateResult("ParStructureAgentRun:Works",works);
+    }
+
+
+    /// Tests Elmer Structure Module
+    ///
+    /// @param result ElmerFoamFSI::TestResults object to store test results.
+    ///
+    /// This function uses HronTurekFSI3_4 problem data to test Elmer Structure Module.
+    /// The module will be initialized and then the correctness of the node coordinates 
+    /// will be checked. A simple (but reliable) will be used for the checking purpose.
+    virtual void Test__ParElmerStructure(ResultsType &result){
+      if (isRank0)
+         std::cout << "\n Running " << __func__ << "\n" <<std::endl;
+
+      bool works = false;
+
+      // Initializing the sample FSI problem
+      // if initialization test failed this will fail as well
+      if (initializeSampleProblem()){
+        result.UpdateResult("ParElmerStructure:Works",false);
+        return; 
+      }
+      _communicator.Barrier();
+
+            
+      bool testRankFluid = (fsiCouplerPar.getFluidAgent()->Coordinates().size()!=0);
+      bool testRankSolid = (fsiCouplerPar.getStructureAgent()->Coordinates().size()!=0);
+
+      std::vector<double> ndeCrds;
+      std::vector<double> totCrds;
+      totCrds.resize(3, 0.0);
+      if (testRankSolid) {      
+	 ndeCrds = (fsiCouplerPar.getStructureAgent())->Coordinates();
+	 int isize = ndeCrds.size();
+	 for(int i = 0; i < isize/3 ; i++){
+           totCrds[0] += ndeCrds[3*i];
+           totCrds[1] += ndeCrds[3*i+1];
+           totCrds[2] += ndeCrds[3*i+2];
+	   //std::cout << "ndrCrds[" << i << "] = " 
+           //          << ndeCrds[3*i] << ",  " 
+           //          << ndeCrds[3*i+1] << ",  " 
+           //          << ndeCrds[3*i+2] << std::endl;
+	 }
+      }
+      _communicator.Barrier();
+      std::cout << "Rank " << _communicator.Rank()
+                << " totCrds[0] = " << totCrds[0]
+                << " totCrds[1] = " << totCrds[1]
+                << " totCrds[2] = " << totCrds[2]
+                << std::endl;
+
+      // reduce total displacements to all ranks
+      std::vector<double> ttCrdsTest;
+      ttCrdsTest.resize(3, 0.0);
+      _communicator.AllReduce(totCrds, ttCrdsTest, IRAD::Comm::DTDOUBLE, IRAD::Comm::SUMOP);
+      _communicator.Barrier();
+
+      //std::cout << "Rank " << _communicator.Rank()
+      //          << std::setprecision(15)
+      //          << " ttCrdsTest[0] = " << ttCrdsTest[0]
+      //          << " ttCrdsTest[1] = " << ttCrdsTest[1]
+      //          << " ttCrdsTest[2] = " << ttCrdsTest[2]
+      //          << std::endl;
+         
+      // compare to reference
+      std::vector<double> ttCrdsRef;
+      ttCrdsRef.push_back(272.088);
+      ttCrdsRef.push_back(127.2);
+      ttCrdsRef.push_back(0.0);
+      double ttCrdsErr =  pow(ttCrdsTest[0] - ttCrdsRef[0], 2) +
+                          pow(ttCrdsTest[1] - ttCrdsRef[1], 2) +
+                          pow(ttCrdsTest[2] - ttCrdsRef[2], 2);
+      ttCrdsErr = pow(ttCrdsErr, 0.5); 
+      if (isRank0)
+        std::cout << "Total Nodal Coordinate Error = " 
+                  << ttCrdsErr
+                  << std::endl;
+      if (ttCrdsErr < 1.0e-10)
+        works = true;
+      _communicator.Barrier();
+     
+      result.UpdateResult("ParElmerStructure:Works",works);
+    }
+
+
+    /// Tests OpenFoam Fluid Module
+    ///
+    /// @param result ElmerFoamFSI::TestResults object to store test results.
+    ///
+    /// This function uses HronTurekFSI3_4 problem data to test OpenFoam Fluid Module.
+    /// The module will be initialized and then the correctness of the coordinates 
+    /// will be checked. A simple (but reliable) will be used for the checking purpose.
+    virtual void Test__ParOpenFoamFluid(ResultsType &result){
+      if (isRank0)
+         std::cout << "\n Running " << __func__ << "\n" <<std::endl;
+
+      bool works = false;
+
+      // Initializing the sample FSI problem
+      // if initialization test failed this will fail as well
+      if (initializeSampleProblem()){
+        result.UpdateResult("ParOpenFoamFluid:Works",false);
+        return; 
+      }
+      _communicator.Barrier();
+
+            
+      bool testRankFluid = (fsiCouplerPar.getFluidAgent()->Coordinates().size()!=0);
+      bool testRankSolid = (fsiCouplerPar.getStructureAgent()->Coordinates().size()!=0);
+
+      std::vector<double> ndeCrds;
+      std::vector<double> totCrds;
+      totCrds.resize(3, 0.0);
+      if (testRankFluid) {      
+	 ndeCrds = (fsiCouplerPar.getFluidAgent())->Coordinates();
+	 int isize = ndeCrds.size();
+	 for(int i = 0; i < isize/3 ; i++){
+           totCrds[0] += ndeCrds[3*i];
+           totCrds[1] += ndeCrds[3*i+1];
+           totCrds[2] += ndeCrds[3*i+2];
+	   //std::cout << "ndrCrds[" << i << "] = " 
+           //          << ndeCrds[3*i] << ",  " 
+           //          << ndeCrds[3*i+1] << ",  " 
+           //          << ndeCrds[3*i+2] << std::endl;
+	 }
+      }
+      _communicator.Barrier();
+      std::cout << "Rank " << _communicator.Rank()
+                << " totCrds[0] = " << totCrds[0]
+                << " totCrds[1] = " << totCrds[1]
+                << " totCrds[2] = " << totCrds[2]
+                << std::endl;
+
+      // reduce total displacements to all ranks
+      std::vector<double> ttCrdsTest;
+      ttCrdsTest.resize(3, 0.0);
+      _communicator.AllReduce(totCrds, ttCrdsTest, IRAD::Comm::DTDOUBLE, IRAD::Comm::SUMOP);
+      _communicator.Barrier();
+
+      //std::cout << "Rank " << _communicator.Rank()
+      //          << std::setprecision(15)
+      //          << " ttCrdsTest[0] = " << ttCrdsTest[0]
+      //          << " ttCrdsTest[1] = " << ttCrdsTest[1]
+      //          << " ttCrdsTest[2] = " << ttCrdsTest[2]
+      //          << std::endl;
+         
+      // compare to reference
+      std::vector<double> ttCrdsRef;
+      ttCrdsRef.push_back(140.1298353186);
+      ttCrdsRef.push_back(69.1999999999998);
+      ttCrdsRef.push_back(0.0);
+      double ttCrdsErr =  pow(ttCrdsTest[0] - ttCrdsRef[0], 2) +
+                          pow(ttCrdsTest[1] - ttCrdsRef[1], 2) +
+                          pow(ttCrdsTest[2] - ttCrdsRef[2], 2);
+      ttCrdsErr = pow(ttCrdsErr, 0.5); 
+      if (isRank0)
+        std::cout << "Total Coordinate Error = " 
+                  << ttCrdsErr
+                  << std::endl;
+      if (ttCrdsErr < 1.0e-10)
+        works = true;
+      _communicator.Barrier();
+     
+      result.UpdateResult("ParOpenFoamFluid:Works",works);
+    }
+
 
     ///
     /// Runs all tests implemented by the ElmerFoamFSI::TestingObject.
@@ -2396,6 +3425,17 @@ namespace ElmerFoamFSI {
       Prologue();
       Test__ParallelTrapezoidQuadrature(result);
       Test__ParallelMidPointQuadrature(result);
+      Test__ParElmerModuleLoadUnload(result);
+      Test__ParOFModuleLoadUnload(result);
+      Test__ParElmerHandlesCheck(result);
+      Test__ParOpenFoamHandlesCheck(result);
+      Test__ParFsiCoupler(result);
+      Test__ParElmerStructure(result);
+      Test__ParOpenFoamFluid(result);
+      Test__ParTransferDisplacementsToFluid(result);
+      Test__ParFluidAgentRun(result);
+      Test__ParTransferLoadsToStructure(result);
+      Test__ParStructureAgentRun(result);
       Epilogue();
     }
     
@@ -2407,10 +3447,32 @@ namespace ElmerFoamFSI {
     ///
     virtual void RunTest(const std::string &name,ResultsType &result)
     {
-      if(name == "ParallelTrapezoidQuadrature")
+      if(name == "ParTrapezoidQuadrature")
         Test__ParallelTrapezoidQuadrature(result);
-      if(name == "ParallelMidPointQuadrature")
+      if(name == "ParMidPointQuadrature")
         Test__ParallelMidPointQuadrature(result);
+      if(name == "ParElmerModuleLodaUnload")
+        Test__ParElmerModuleLoadUnload(result);
+      if(name == "ParOFModuleLoadUnload")
+        Test__ParOFModuleLoadUnload(result);
+      if(name == "ParElmerHandlesCheck")
+        Test__ParElmerHandlesCheck(result);
+      if(name == "ParOpenFoamHandlesCheck")
+        Test__ParOpenFoamHandlesCheck(result);
+      if(name == "ParFsiCoupler")
+        Test__ParFsiCoupler(result);
+      if(name == "ParElmerStructure")
+        Test__ParElmerStructure(result);
+      if(name == "ParOpenFoamFluid")
+        Test__ParOpenFoamFluid(result);
+      if(name == "ParTransferDisplacementsToFluid")
+        Test__ParTransferDisplacementsToFluid(result);
+      if(name == "ParFluidAgentRun")
+        Test__ParFluidAgentRun(result);
+      if(name == "ParTransferLoadsToStructure")
+        Test__ParTransferLoadsToStructure(result);
+      if(name == "ParStructureAgentRun")
+        Test__ParStructureAgentRun(result);
     }
 
     ///

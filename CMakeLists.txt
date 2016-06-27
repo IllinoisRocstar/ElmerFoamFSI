@@ -9,14 +9,6 @@ mark_as_advanced (LIBRARY_OUTPUT_PATH EXECUTABLE_OUTPUT_PATH)
 SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-# 
-# ========= USE IN EXISTING PROJECT ============
-#
-# In order to use this IllinoisRocstar Project Template
-# in an existing project COPY this file from this point
-# on and paste it into your project's CMakeLists.txt 
-# file *before* your existing INSTALL directives.
-#
 INCLUDE(CTest)
 IF(BUILD_TESTING)
   SET(BUILDNAME "${BUILDNAME}" CACHE STRING "Name of build on the dashboard")
@@ -43,7 +35,6 @@ FIND_LIBRARY(SOLVERUTILS_LIB SolverUtils)
 FIND_FILE(IMPACT_HDR com.h)
 GET_FILENAME_COMPONENT(IMPACT_LIBPATH ${IMPACT_LIB} PATH)
 GET_FILENAME_COMPONENT(IMPACT_INCPATH ${IMPACT_HDR} PATH)
-# ADD_SUBDIRECTORY(IRAD)
 
 find_package(MPI)
 IF(MPI_CXX_COMPILER)
@@ -55,15 +46,12 @@ include_directories(include ${IRAD_INCPATH} ${IMPACT_INCPATH})
 
 ADD_LIBRARY(ElmerFoamFSI SHARED src/ExampleSourceFile.C)
 TARGET_LINK_LIBRARIES(ElmerFoamFSI ${SOLVERUTILS_LIB} ${IRAD_LIB} ${IMPACT_LIB})
-#ADD_EXECUTABLE(elmerfoamfsi_test src/ElmerFoamDriver.C src/TestElmerFoamFSI.C)
 ADD_EXECUTABLE(elmerfoamfsi_test src/TestElmerFoamFSI.C)
 TARGET_LINK_LIBRARIES(elmerfoamfsi_test ElmerFoamFSI)
 ADD_EXECUTABLE(sep src/ExampleSerialProgram.C src/sep.C)
 TARGET_LINK_LIBRARIES(sep ElmerFoamFSI)
 ADD_EXECUTABLE(elmerfoamfsi src/ElmerFoamDriver.C src/driver.C)
 TARGET_LINK_LIBRARIES(elmerfoamfsi ElmerFoamFSI)
-#ADD_EXECUTABLE(make_project src/MakeProject.C)
-#TARGET_LINK_LIBRARIES(make_project ElmerFoamFSI)
 
 IF(MPI_CXX_COMPILER)
   ADD_DEFINITIONS(-D_ELMERFOAMFSI_PARALLEL_)
@@ -71,42 +59,31 @@ IF(MPI_CXX_COMPILER)
   TARGET_LINK_LIBRARIES(pepi ElmerFoamFSI)
   ADD_EXECUTABLE(elmerfoamfsi_parallel_test src/ParallelTestElmerFoamFSI.C) 
   TARGET_LINK_LIBRARIES(elmerfoamfsi_parallel_test ElmerFoamFSI)
+  ADD_EXECUTABLE(elmerfoamfsiPar src/ElmerFoamDriverPar.C src/driverPar.C)
+  TARGET_LINK_LIBRARIES(elmerfoamfsiPar ElmerFoamFSI)
 ENDIF()
-
 INSTALL(TARGETS ElmerFoamFSI elmerfoamfsi RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib)
+
 # Add target to build the documentation
 option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen)" ON)
 IF(BUILD_DOCUMENTATION)
-
   FIND_PACKAGE(Doxygen)
   IF(NOT DOXYGEN_FOUND)
     MESSAGE(FATAL_ERROR "Doxygen is needed to build the documentation.")
   ENDIF()
-  
-#  FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/doc DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-  
-  
   SET( doxyfile_in          ${CMAKE_CURRENT_SOURCE_DIR}/doc/ElmerFoamFSI.cfg.in )
   SET( doxyfile             ${CMAKE_CURRENT_BINARY_DIR}/ElmerFoamFSI.cfg        )
   SET( documentation        ${CMAKE_CURRENT_BINARY_DIR}/docs                 )
-
   CONFIGURE_FILE( ${doxyfile_in} ${doxyfile} @ONLY )
-
   ADD_CUSTOM_COMMAND( OUTPUT ${documentation}
                       COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile}
                       MAIN_DEPENDENCY ${doxyfile} ${doxyfile_in}
                       DEPENDS ElmerFoamFSI ${doxy_extra_files}
                       COMMENT "Generating documentation")
-
   ADD_CUSTOM_TARGET( docs DEPENDS ${documentation} )
-
   INSTALL( DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/docs DESTINATION share/ElmerFoamFSI )
-  
-    FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/doc/PhysicsOfCoupling.pdf DESTINATION
-${CMAKE_CURRENT_BINARY_DIR}/docs/html)
-
+  FILE(COPY ${CMAKE_CURRENT_SOURCE_DIR}/doc/PhysicsOfCoupling.pdf DESTINATION
+            ${CMAKE_CURRENT_BINARY_DIR}/docs/html)
 ENDIF()
-
-# ========= USE IN EXISTING PROJECT ==============
 
 ADD_SUBDIRECTORY(testing)

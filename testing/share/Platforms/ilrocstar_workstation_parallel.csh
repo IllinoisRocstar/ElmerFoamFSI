@@ -5,7 +5,7 @@ set SRCDIR = ${2}
 set BINDIR = ${3}
 
 rm -f tmpresults_1.txt
-mpirun -np 4 ${BINDIR}/elmerfoamfsi_parallel_test -o tmpresults_1.txt
+mpirun -np 4 ${BINDIR}/elmerfoamfsi_parallel_test -s ${SRCDIR} -o tmpresults_1.txt
 @ i = 1
 while($i <= 240)
     @ i += 1
