@@ -208,6 +208,8 @@ public:
   int StepFluidNonItr();
   int StepFluidItr();
   int Dump();
+  int Rank(){ return(rank);} ;
+  int Size(){ return(nproc);} ;
 
 
   /// function to register through IMPACT

@@ -13,7 +13,7 @@ set TmpOut = ${OutFile}_tmp.txt
 set InputDir = HronTurekFSI3
 set Outputs = ./fluid/prb2.dat
 set OutputsCheck = prb2_ref.dat
-set TestName = Hron-Turek-FSI3
+set TestName = HronTurekFSI3:Works
 
 #Remove old test InputDir if present
 if( -d  ${InputDir}) then

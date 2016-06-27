@@ -49,7 +49,14 @@ namespace ElmerFoamFSI{
   ///
   int ParallelTest(int argc,char *argv[])
   {
-    
+
+    int com_initialized = COM_initialized();
+    bool com_initialized_pass = (com_initialized <= 0);
+
+    COM_init(&argc, &argv);
+    if(com_initialized_pass)
+    com_initialized = (COM_initialized() > 0);
+ 
     // The default verbosity is 0
     int verblevel = 0;
 
@@ -109,6 +116,7 @@ namespace ElmerFoamFSI{
     std::string TestName(comline.GetOption("name"));
     std::string ListName(comline.GetOption("list"));
     std::string sverb(comline.GetOption("verblevel"));
+    std::string SourcePath(comline.GetOption("source"));
     
     // The following block parses and sets the verbosity level
     if(!sverb.empty()){
@@ -144,14 +152,23 @@ namespace ElmerFoamFSI{
     // Make an instance of the ElmerFoamFSI results object, ElmerFoamFSI::TestResults
     ElmerFoamFSI::TestResults results;
     
+    //Set the source directory for the testing object if it was input 
+    if(!SourcePath.empty()){
+      test.SetSourceDirPath(SourcePath);
+    }
+
     // If the user specified a name, then run only the named test
     if(!TestName.empty()){
       // This call runs a test by name
+      if (do_stdout)
+         std::cout << "Processing test : " << TestName << std::endl;
       test.RunTest(TestName,results);
     }
     // Otherwise, if the user specified a list, then read the list and
     // run the listed tests.
     else if(!ListName.empty()){
+      if (do_stdout)
+         std::cout << "Processing list of tests" << std::endl;
       std::ifstream ListInf;
       ListInf.open(ListName.c_str());
       if(!ListInf){
@@ -169,6 +186,8 @@ namespace ElmerFoamFSI{
     }
     else {
       // This call runs all the tests for the ElmerFoamFSI namespace.
+      if (do_stdout)
+         std::cout << "Processing all of the tests" << std::endl;
       test.Process(results);
     }
     if(Out)

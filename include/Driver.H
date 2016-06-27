@@ -367,12 +367,32 @@ namespace ElmerFoamFSI {
   protected:
     /// Name of file for output.
     std::string output_name;
-    /// Verbosity level.
-    int verblevel;           
-    /// Output file stream object for output.
-    std::ofstream Ouf;      
-    /// Number of partitions for domain.
-    int ndiv;
+    /// Name of input file.
+    std::string input_name;
+    /// Verbosity level. 
+    int verblevel;
+    /// Outfile stream for output.
+    std::ofstream Ouf;
+    /// Infile stream for input.
+    std::ifstream Inf;
+    /// Handle/identifier for fluids init
+    int fluidsInitHandle;
+    /// Handle/identifier for fluids run
+    int fluidsRunHandle;
+    /// Handle/identifier for fluids step
+    int fluidsStepHandle;
+    /// Handle/identifier for fluids finalize
+    int fluidsFinalizeHandle;
+    /// Handle/identifier for structures init
+    int structuresInitHandle;
+    /// Handle/identifier for structures run
+    int structuresRunHandle;
+    /// Handle/identifier for structures finalize
+    int structuresFinalizeHandle;
+    /// Object-local copy for argc
+    int argc;
+    /// Object-local copy for argv
+    char **argv;
   public:
     /// 
     /// Default constructor.
@@ -384,8 +404,19 @@ namespace ElmerFoamFSI {
     /// Constructor designed to take all commandline args.
     ///
     ParallelDriverProgram(int nargs,char **args) :
-      ParallelProgramType(nargs,args)
-    {verblevel = 0;};
+      ParallelProgramType(nargs,args), argc(nargs), argv(args)
+    {
+       // initializing COM with -com-mpi to force calling MPI_init
+       int nargs_dupe = 2;
+       char **args_dupe;
+       args_dupe = new char * [3];
+       args_dupe[0] = const_cast<char *>("dummy");
+       args_dupe[1] = const_cast<char *>("-com-mpi");
+       args_dupe[2] = NULL;
+       COM_init(&nargs_dupe,&args_dupe);
+       // at this point we should have communicator setup
+       //std::cout << "My Rank = " << Rank() << std::endl;
+    };
     /// 
     /// Constructor designed to take all commandline args.
     ///
@@ -415,14 +446,18 @@ namespace ElmerFoamFSI {
         ErrOut(Ostr.str());
         return(retval);
       }
+      // setting up debuger if needed
+      if(!_command_line.GetOption("debug").empty()){
+        this->SetDebugLevel(2);
+        this->SetDebugStream(std::cout);
+      }
 
       // Everything is OK up to here, so check for an output file.
       output_name = _command_line.GetOption("output");
 
-      // Set number of divisions to first argument
+      // Set input file to first argument
       std::vector<std::string> args(_command_line.GetArgs());
-      std::istringstream Istr(args[0]);
-      Istr >> ndiv;
+      input_name = args[0];
 
       // Check the verbosity level
       std::string sverb(_command_line.GetOption("verbosity"));
@@ -435,15 +470,23 @@ namespace ElmerFoamFSI {
           verblevel = 1;
       }
 
+      //Set the verblevel within IRAD
+      SetVerbLevel((char)verblevel);
+
       // If high verbosity, stick a configuration blurb to stdout.
       if(verblevel > 1){
         std::ostringstream Ostr;
-        Ostr << "Configuration:" << std::endl
-             << "verbosity           = " << verblevel << std::endl
-             << "number of divisions = " << ndiv << std::endl;
+        Ostr << "*****************************************************"<< std::endl;
+        Ostr << "*            Reading the input file                 *"<< std::endl;
+        Ostr << "*****************************************************"<< std::endl;
+        Ostr << "* Configuration:" << std::endl
+             << "* verbosity           = " << verblevel << std::endl;
+        if(!input_name.empty())
+          Ostr << "* input file          = " << input_name << std::endl;
         if(!output_name.empty())
-          Ostr << "output file         = " << output_name << std::endl;
-        Ostr << std::endl;
+          Ostr << "* output file         = " << output_name << std::endl;
+        Ostr << "*" << std::endl;
+        Ostr << "*****************************************************"<< std::endl;
         StdOut(Ostr.str());
       } 
 
@@ -457,6 +500,8 @@ namespace ElmerFoamFSI {
     /// Destructor.
     ///
     virtual ~ParallelDriverProgram() {
+      if(COM_initialized())
+        COM_finalize();
       if(Ouf){
         Ouf.close();
         SetOutStream(std::cout);

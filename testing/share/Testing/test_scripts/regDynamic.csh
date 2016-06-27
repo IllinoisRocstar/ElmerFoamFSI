@@ -19,7 +19,6 @@ mkdir ${InputDir}
 cd ${InputDir}
 
 #Copy input data into InputDir
-echo "$2/share/Testing/test_data/${InputDir}/" 
 cp -r $2/share/Testing/test_data/${InputDir}/* .
 
 #Run executable to generate output data

@@ -44,13 +44,12 @@ int fsifoam_module::Initialize(int argc,char *argv[])
     Info << "FsiFoam:Initialize: Error: Failed to setup time object." << endl;
     return(1);
   }
-  
+
   //
   // createDynamicFvMesh.H
   // ~~~~~~~~~~~~
   InitFluidMesh();
 
-  
   //
   // createFields.H
   // ~~~~~~~~~~~~
@@ -84,11 +83,11 @@ int fsifoam_module::Initialize(int argc,char *argv[])
   // ~~~~~~~~~~~~
   FindGlobalFaceZones();
   
+
   // functions specific to IMPACT FSI
   CreateFSISurfaceMesh();
     
-
-  std::cout << ">>> End of initialization." << std::endl;
+  Foam::Info << "End of initialization of openFoamPar module." << endl;
   return(0);
 };
 
@@ -3170,7 +3169,7 @@ int fsifoam_module::Dump(){
 };
 
 ///
-/// @brief "Loads" IcoFoamModule
+/// @brief "Loads" parallel openFoam solver module
 ///
 ///
 //static void fsifoam_module::Load(const std::string &name){
@@ -3183,18 +3182,19 @@ void fsifoam_module::Load(const std::string &name){
   int rank, size;
   MPI_Comm_rank(inComm, &rank);
   MPI_Comm_size(inComm, &size);
-  std::cout << "FsiFoam:Load:Rank #"
-            << rank 
-            << " on communicator "
-            << inComm
-            << " with "
-            << size
-            << " processes."
-            << std::endl;
-  std::cout << "FsiFoam:Load:Rank #"
-            << rank
-            << " Loading FsiFoamModule with name " << name 
-            << "." << std::endl;
+  Info << "FsiFoam:Load:Rank #"
+       << rank 
+       << " on communicator "
+       << inComm
+       << " with "
+       << size
+       << " processes.\n";
+  Info << "FsiFoam:Load:Rank #"
+       << rank
+       << " Loading FsiFoamModule with name " 
+       << name
+       << "\n.";
+
   
 
   /// Register module with COM
@@ -3275,17 +3275,22 @@ void fsifoam_module::InitFoam(int *pargc, void **pargv, int *verbIn)
   Solution().Meta().AddField("pressure", 'c', 1, 8, "Pa");
   Solution().Meta().AddField("traction", 'c', 3, 8, "N");
   //Solution().Meta().AddField("nElmSurf", 'c', 1, 1, "");
-  
-   
+
   Mesh().nc.init(numPointsSurface, &surfaceCoordinates[0]);
   
   // this assumes that our elements are quads...we can generalize this
   Mesh().con.AddElements(numElementsSurface, 4, surfaceConnectivity);
 
   // create buffers for the actual data
+  // only call this method if the process has a share 
+  // from the interface mesh
   CreateSoln();
 
-  
+  if (numPointsSurface==0 && numElementsSurface==0)
+     std::cout << "Process " << Rank() 
+               << " has no share on interface data ... "
+               << std::endl; 
+ 
   //unsigned int nnodes = Mesh().nc.NNodes();
   //unsigned int nelem = Mesh().con.Nelem();
 
@@ -3297,10 +3302,10 @@ void fsifoam_module::InitFoam(int *pargc, void **pargv, int *verbIn)
  
   initStatus.resize(1, -1000);
   runStatus.resize(1, -1000);
-
+  
   surfacePressure.resize(numElementsSurface, -1);
   surfaceTraction.resize(3*numElementsSurface, -1);
-  solidDisplacement.resize(3*numPointsSurface,0.);
+  solidDisplacement.resize(3*numPointsSurface, 0.);
 
   
   // reset the buffers to be our own local buffers
@@ -3323,14 +3328,15 @@ void fsifoam_module::InitFoam(int *pargc, void **pargv, int *verbIn)
   // SolverUtils::RegisterSolver(my_window_name.c_str(), *this, paneId);
   // this function creates a duplicate window which is not acceptable
   SolverUtils::CreateDataItemsFromSolution(my_window_name.c_str(),Solution());
-  SolverUtils::AgentToPane(my_window_name.c_str(),paneId,*this);
-  // adding an extra pane for testing
-  //if (rank == 1)
-  //   SolverUtils::AgentToPane(my_window_name.c_str(),paneId+1,*this);
+  if (numPointsSurface!=0 && numElementsSurface!=0)
+     SolverUtils::AgentToPane(my_window_name.c_str(),paneId,*this);
+
 
   COM_window_init_done(my_window_name.c_str());
   
   initStatus[0] = 0;
+  std::cout << "Rank " << Rank() << " finished " << std::endl;
+ 
   return;
 } 
 
@@ -3426,30 +3432,40 @@ void fsifoam_module::StepFoam(){
 ///
 void fsifoam_module::StepFluid(){
 
-  // Masoud: probe output file and preps
-  ofstream prb2DmpFile;
+  // Probe output file and preps
+  std::stringstream ss;
+  std::string tmpFname;
+  ofstream surfDmpFile;
   dynamicFvMesh &fluidsMesh(this->FluidMesh());
   pointField foamCoords = fluidsMesh.allPoints();
-  // Masoud: end
-
+  // check if needs to probe
+  int *setsProb = NULL;
+  int setsProb_handle;
+  int *probProcId, *probNdeId;
+  bool recordProb = false;
+  std::string dataItemName(my_window_name+".setsProb");
+  setsProb_handle = COM_get_dataitem_handle(dataItemName.c_str());
+  if (setsProb_handle) { 
+    COM_get_array(dataItemName.c_str(), 0, &setsProb);
+    if (*setsProb) {
+      dataItemName = my_window_name+".probProcId";
+      COM_get_array(dataItemName.c_str(), 0, &probProcId);
+      dataItemName = my_window_name+".probNdeId";
+      COM_get_array(dataItemName.c_str(), 0, &probNdeId);
+      recordProb = (*probProcId==rank) && (*probNdeId>=0 && *probNdeId<numPointsSurface);
+      std::cout << "****** Rank " << rank << " probe state = " << recordProb << std::endl;
+    }
+  }
+  
   Foam::Time &runTime(RunTime());
-
   Info << "FsiFoam:StepFluid: Stepping fluid solver..." << endl;
 
   //  while(!runTime.end()){
   if(!runTime.end()){
     Info << "FsiFoam:StepFluid: Time = " << runTime.timeName() << endl;
-    // Original: This step routine does perform iterations properly
-    //  StepFluidAlone();
-    // Original: End
-    
-    // Masoud: Non-iterative stepping
+   
+    // Non-iterative stepping
      StepFluidNonItr();
-    // Masoud: end
-
-    // Masoud: Iterative stepping
-    //StepFluidItr();
-    // Masoud: end
     
     Info<< "FsiFoam:StepFluid: ExecutionTime = " << runTime.elapsedCpuTime() << " s"
         << "  ClockTime = " << runTime.elapsedClockTime() << " s"
@@ -3459,30 +3475,34 @@ void fsifoam_module::StepFluid(){
 
     // update IMPACT data
     UpdateTime();
-    UpdateFSISurfaceData(); // Masoud: updates tractions and pressures
-    UpdateFSISurfaceMesh(); // Masoud: updates surface mesh
-
-    // Masoud : cheking impact data
-    //Info << "numPointSurface = " << numPointsSurface << endl;
-    //Info << "numElementSurface = " << numElementsSurface << endl;
-    //Info << "SurfaceCoordinates = " << endl;
-    //for (int i = 0; i < numPointsSurface; i++)
-    //{
-    //	Info << surfaceCoordinates[i*3] << " "
-    //         << surfaceCoordinates[i*3+1] << " "
-    //         << surfaceCoordinates[i*3+2] << endl;
-    //}
-    // Masoud : end
-
-    // Masoud: output for probe
-    prb2DmpFile.open("prb2.dat", std::ios::app);
-    prb2DmpFile <<  runTime.timeName()  << " " << \
-    foamCoords[64].x() << " " << \
-    foamCoords[64].y() << " " << \
-    foamCoords[64].z() << "\n"; 
-    prb2DmpFile.close();
-    // Masoud: end
-
+    UpdateFSISurfaceData(); // updates tractions and pressures
+    UpdateFSISurfaceMesh(); // updates surface mesh
+    
+    // update probe
+    if(recordProb){
+       ss.clear();
+       ss.str("");
+       ss << "probe_proc_"
+	  << rank
+          << "_nde_"
+          << *probNdeId
+	  << ".dat";
+       tmpFname = ss.str();
+       surfDmpFile.open(tmpFname.c_str(), std::ios::app);       
+       //surfDmpFile << "numPointSurface = " << numPointsSurface << "\n";
+       //surfDmpFile << "numElementSurface = " << numElementsSurface << "\n";
+       //surfDmpFile << "SurfaceCoordinates = " << "\n";
+       int i = *probNdeId;
+       //for (int i = 0; i < numPointsSurface; i++)
+       //{
+	   surfDmpFile << runTime.timeName() << " "
+		       << surfaceCoordinates[i*3]   << " "
+		       << surfaceCoordinates[i*3+1] << " "
+		       << surfaceCoordinates[i*3+2] << "\n";
+       //}
+       surfDmpFile.close();
+    }
+    
   }
   if(runTime.end()){
     Info<< "FsiFoam:StepFluid: End\n" << endl;
@@ -3571,8 +3591,7 @@ void fsifoam_module::UpdateTime(){
 
 int fsifoam_module::UpdateFSISurface(Foam::vectorField &solidDispl){
   //Masoud : Testing displacement
-  std::cout << 
-  "FsiFoam:UpdateFSISurface: Reporting solid displacements to the fluid solver" << std::endl;
+  Info << "FsiFoam:UpdateFSISurface: Reporting solid displacements to the fluid solver" << endl;
   //std::cout<< "Displacements passed to me : " << std::endl;
   // Masoud : End
   /////////////////////////////
