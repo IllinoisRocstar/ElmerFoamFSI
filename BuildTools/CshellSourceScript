@@ -1,6 +1,7 @@
 # source the openfoam source file
 setenv ElmerFoamTop $1
-setenv FOAM_INST_DIR $1foam
+setenv FOAM_INST_DIR "$1foam"
+echo $FOAM_INST_DIR
 source $ElmerFoamTop/foam/foam-extend-3.2/etc/cshrc
 # make set the mpi environment variables
 setenv CC mpicc
@@ -12,4 +13,4 @@ setenv IRMULTIPHYSICS $OFSupport
 ## set LD_LIBRARY_PATH with path to elmer libraries for running the elmer module
 set ElmerSupport = "${ElmerFoamTop}support_install/lib:$LD_LIBRARY_PATH"
 setenv LD_LIBRARY_PATH $ElmerSupport
-echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
+#echo "LD_LIBRARY_PATH = $LD_LIBRARY_PATH"
