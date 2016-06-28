@@ -1745,14 +1745,14 @@ namespace OpenFoamModuleDriver {
 
       // check the status variable to determine success of initialize
       int* initStatus=NULL;
-      int status = COM_get_status("OFModule.initStatus",100+myRank);
+      int status = COM_get_status("OFModule.initStatus",200+myRank);
       if(status <= 0) {
         std::cout << "ModuleFunctionInitialize Error: initStatus not a valid DataItem."
                   << "status = " << status << std::endl;
         return;
       }
 
-      COM_get_array("OFModule.initStatus", 100 + myRank, &initStatus);
+      COM_get_array("OFModule.initStatus", 200 + myRank, &initStatus);
 
       works=false;
       if(*initStatus == 0)
@@ -2661,7 +2661,6 @@ namespace OpenFoamModuleDriver {
 
       bool works = false;
 
-
       //Call GetInputData to copy input test data to temp directory for running tests.
       std::string suffix = "/share/Testing/test_data/HronTurekFsiPar";
       std::string dirName = SourceDirPath + suffix;
@@ -2734,6 +2733,12 @@ namespace OpenFoamModuleDriver {
         std::cout << " endTime = " << *endTime << " expected " << testEndTime << std::endl;
       }
       result.UpdateResult("ParTimeData:Correct",works);
+
+      // Initializing setProbe needed for stepFluid operation
+      std::string newDataItemName = "OFModule.setsProb";
+      COM_new_dataitem(newDataItemName.c_str(),'w',COM_INT,1,"");
+      int setsProb = 0;
+      COM_set_array((newDataItemName).c_str(),0,&setsProb);
 
       // Test StepFluid function exists
       works = false;
