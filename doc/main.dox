@@ -3,7 +3,7 @@
 @mainpage ElmerFoamFSI Documentation
 
 @section elmerfoamfsi_intro Introduction 
-<b><i>ElmerFoamFSI</i></b> is an aeroelastic simulation application built up 
+<b><i>ElmerFoamFSI</i></b> is a fluid-solid interaction simulation application built up 
 from <b><i>OpenFOAM</i></b> (CFD) and <b><i>Elmer</i></b> (CSM) coupled through the <b><i>IMPACT</i></b> 
 multiphysics software integration infrastructure. \n \n
 
