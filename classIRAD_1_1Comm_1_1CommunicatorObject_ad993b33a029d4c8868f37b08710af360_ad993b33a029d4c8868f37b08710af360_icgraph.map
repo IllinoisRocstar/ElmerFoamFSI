@@ -1,5 +1,0 @@
-<map id="ResolveDataType" name="ResolveDataType">
-<area shape="rect" id="node2" href="$classIRAD_1_1Comm_1_1CommunicatorObject_a8d1be5b57549ef0643506f95d2602aa8.html#a8d1be5b57549ef0643506f95d2602aa8" title="AllReduce" alt="" coords="181,5,264,32"/>
-<area shape="rect" id="node4" href="$classIRAD_1_1Comm_1_1CommunicatorObject_afcf12962ba5515f1d7802573f764ee99.html#afcf12962ba5515f1d7802573f764ee99" title="Reduce" alt="" coords="189,56,256,83"/>
-<area shape="rect" id="node3" href="$classIRAD_1_1Comm_1_1CommunicatorObject_a68525b3d4b8bdc6d90e811ddd7fe4794.html#a68525b3d4b8bdc6d90e811ddd7fe4794" title="AllGatherv" alt="" coords="312,5,395,32"/>
-</map>

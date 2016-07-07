@@ -1,7 +1,0 @@
-<map id="PopulateSolutionDataFromPane" name="PopulateSolutionDataFromPane">
-<area shape="rect" id="node2" href="$com__c_8h_a6dd240c15a2b3e85d2d91cbe9eec6611.html#a6dd240c15a2b3e85d2d91cbe9eec6611" title="Get the address for an dataitem on a specific pane. " alt="" coords="293,5,408,32"/>
-<area shape="rect" id="node3" href="$classSolverUtils_1_1FEM_1_1SolutionData_addf180ac6b7ba13756908f2f6218230c.html#addf180ac6b7ba13756908f2f6218230c" title="SolverUtils::FEM::Solution\lData::Data" alt="" coords="262,57,439,98"/>
-<area shape="rect" id="node4" href="$classSolverUtils_1_1FEM_1_1SolutionData_a62680bd659e55d37f379eb09498faf92.html#a62680bd659e55d37f379eb09498faf92" title="SolverUtils::FEM::Solution\lData::Meta" alt="" coords="262,122,439,163"/>
-<area shape="rect" id="node5" href="$classSolverUtils_1_1FEM_1_1SolutionData_a84eed8a714a282e781a20b3801876518.html#a84eed8a714a282e781a20b3801876518" title="SolverUtils::FEM::Solution\lData::SetFieldBuffer" alt="" coords="262,187,439,229"/>
-<area shape="rect" id="node6" href="$classSolverUtils_1_1FEM_1_1SolutionData_a2b73f52413287c249bd669e3fb1bfc52.html#a2b73f52413287c249bd669e3fb1bfc52" title="SolverUtils::FEM::Solution\lData::GetDataIndex" alt="" coords="489,187,666,229"/>
-</map>

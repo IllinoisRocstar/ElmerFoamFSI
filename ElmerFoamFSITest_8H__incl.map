@@ -1,25 +1,11 @@
 <map id="ElmerFoamFSITest.H" name="ElmerFoamFSITest.H">
-<area shape="rect" id="node2" href="$Testing_8H.html" title="Testing constructs for unit testing. " alt="" coords="595,80,673,107"/>
-<area shape="rect" id="node15" href="$include_2ExampleHeader_8H.html" title="Example C++ header file for ElmerFoamFSI. " alt="" coords="359,80,488,107"/>
-<area shape="rect" id="node16" href="$Profiler_8H.html" title="Performance Profiling interface definition. " alt="" coords="124,229,201,256"/>
-<area shape="rect" id="node19" href="$Driver_8H.html" title="Example program interface. " alt="" coords="937,80,1007,107"/>
-<area shape="rect" id="node40" href="$FsiCoupling_8H.html" title="Example serial program. " alt="" coords="2013,80,2117,107"/>
-<area shape="rect" id="node47" href="$FsiCouplingPar_8H.html" title="Example serial program. " alt="" coords="1551,80,1676,107"/>
-<area shape="rect" id="node3" href="$Parameters_8H.html" title="Parameters object interface (for config files, etc) " alt="" coords="583,155,685,181"/>
-<area shape="rect" id="node4" href="$primitive__utilities_8H.html" title="Basic utility header. " alt="" coords="568,229,701,256"/>
-<area shape="rect" id="node10" href="$PrimitiveTypes_8H.html" title="Simple utility classes. " alt="" coords="356,304,479,331"/>
-<area shape="rect" id="node20" href="$Global_8H.html" title="Base global object header. " alt="" coords="1077,155,1149,181"/>
-<area shape="rect" id="node35" href="$com_8h.html" title="This file contains the prototypes for COM API. " alt="" coords="2129,304,2188,331"/>
-<area shape="rect" id="node21" href="$ComLine_8H.html" title="ComLineObject header. " alt="" coords="789,229,877,256"/>
-<area shape="rect" id="node25" href="$UnixUtils_8H.html" title="Unix System Tools interface. " alt="" coords="1377,229,1468,256"/>
-<area shape="rect" id="node36" href="$com__c_8h.html" title="This file contains the C wrapper for COM_base. " alt="" coords="2108,379,2180,405"/>
-<area shape="rect" id="node37" href="$com__basic_8h.html" title="This file contains some definitions of macros and constants for COM. " alt="" coords="2349,453,2445,480"/>
-<area shape="rect" id="node38" href="$commpi_8h.html" title="Contains declarations of MPI subroutines used in COPM. " alt="" coords="2057,453,2135,480"/>
-<area shape="rect" id="node41" href="$InterfaceLayer_8H.html" title="InterfaceLayer.H" alt="" coords="2019,229,2137,256"/>
-<area shape="rect" id="node44" href="$Orchestrator_8H.html" title="Orchestrator.H" alt="" coords="2169,229,2276,256"/>
-<area shape="rect" id="node45" href="$OpenFoamAgent_8H.html" title="OpenFoamAgent.H" alt="" coords="2051,155,2185,181"/>
-<area shape="rect" id="node46" href="$ElmerAgent_8H.html" title="ElmerAgent.H" alt="" coords="2261,155,2365,181"/>
-<area shape="rect" id="node43" href="$SolverAgent_8H.html" title="SolverAgent.H" alt="" coords="2353,304,2460,331"/>
-<area shape="rect" id="node48" href="$OpenFoamParAgent_8H.html" title="OpenFoamParAgent.H" alt="" coords="1593,155,1748,181"/>
-<area shape="rect" id="node49" href="$ElmerParAgent_8H.html" title="ElmerParAgent.H" alt="" coords="1851,155,1975,181"/>
+<area shape="rect" id="node3" href="$include_2ExampleHeader_8H.html" title="Example C++ header file for ElmerFoamFSI. " alt="" coords="107,80,236,107"/>
+<area shape="rect" id="node8" href="$Driver_8H.html" title="Example program interface. " alt="" coords="313,80,383,107"/>
+<area shape="rect" id="node11" href="$FsiCoupling_8H.html" title="Example serial program. " alt="" coords="434,80,539,107"/>
+<area shape="rect" id="node16" href="$FsiCouplingPar_8H.html" title="Example serial program. " alt="" coords="693,80,819,107"/>
+<area shape="rect" id="node13" href="$Orchestrator_8H.html" title="Orchestrator.H" alt="" coords="599,229,707,256"/>
+<area shape="rect" id="node14" href="$OpenFoamAgent_8H.html" title="OpenFoamAgent.H" alt="" coords="639,155,773,181"/>
+<area shape="rect" id="node15" href="$ElmerAgent_8H.html" title="ElmerAgent.H" alt="" coords="460,155,564,181"/>
+<area shape="rect" id="node17" href="$OpenFoamParAgent_8H.html" title="OpenFoamParAgent.H" alt="" coords="997,155,1152,181"/>
+<area shape="rect" id="node18" href="$ElmerParAgent_8H.html" title="ElmerParAgent.H" alt="" coords="798,155,921,181"/>
 </map>

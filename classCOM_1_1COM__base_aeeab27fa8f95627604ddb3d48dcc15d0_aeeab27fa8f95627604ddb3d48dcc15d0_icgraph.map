@@ -1,9 +1,0 @@
-<map id="set_size" name="set_size">
-<area shape="rect" id="node2" href="$com__c_8h_acc8881c130343a24f665563fb88d3e0f.html#acc8881c130343a24f665563fb88d3e0f" title="Set sizes of for a specific dataitem. " alt="" coords="125,67,235,94"/>
-<area shape="rect" id="node3" href="$namespaceSolverUtils_a040b0206db4efc72691b47e124622aef.html#a040b0206db4efc72691b47e124622aef" title="SolverUtils::AgentToPane" alt="" coords="557,38,731,65"/>
-<area shape="rect" id="node6" href="$namespaceSolverUtils_a5715c31b1d60ded22957f9d3e53a713a.html#a5715c31b1d60ded22957f9d3e53a713a" title="SolverUtils::CreateDataItems\lFromSolution" alt="" coords="547,89,741,131"/>
-<area shape="rect" id="node7" href="$namespaceSolverUtils_ac956a14f8058561de46a633f07854aef.html#ac956a14f8058561de46a633f07854aef" title="Creates a window pane from a Mesh object. (copy mode or use mode) " alt="" coords="305,31,476,72"/>
-<area shape="rect" id="node8" href="$namespaceSolverUtils_a725d859f6513d7bdac690fbae04d362d.html#a725d859f6513d7bdac690fbae04d362d" title="Creates a window from a Mesh object. (copies data) " alt="" coords="283,147,498,174"/>
-<area shape="rect" id="node4" href="$namespaceSolverUtils_abd82bb11c3dd2f2f88ff31ca33755f5b.html#abd82bb11c3dd2f2f88ff31ca33755f5b" title="SolverUtils::RegisterSolver" alt="" coords="801,41,981,67"/>
-<area shape="rect" id="node5" href="$namespaceSolverUtils_a4dc3eadf3c5b31e96ea58eaee60c4a59.html#a4dc3eadf3c5b31e96ea58eaee60c4a59" title="SolverUtils::RegisterSolverInto" alt="" coords="789,93,992,119"/>
-</map>

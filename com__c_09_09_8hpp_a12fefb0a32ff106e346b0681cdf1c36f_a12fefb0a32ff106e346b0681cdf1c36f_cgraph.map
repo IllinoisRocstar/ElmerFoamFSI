@@ -1,5 +1,0 @@
-<map id="COM_call_function" name="COM_call_function">
-<area shape="rect" id="node2" href="$classCOM_1_1COM__base_aa5691bb8a33c7fddd9e2708b36d6012b.html#aa5691bb8a33c7fddd9e2708b36d6012b" title="Invoke a function with given arguments. " alt="" coords="187,5,341,46"/>
-<area shape="rect" id="node3" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="209,71,319,97"/>
-<area shape="rect" id="node4" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="390,71,575,97"/>
-</map>

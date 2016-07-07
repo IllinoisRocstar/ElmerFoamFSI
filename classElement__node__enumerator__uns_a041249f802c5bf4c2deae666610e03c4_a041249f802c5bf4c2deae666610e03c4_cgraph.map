@@ -1,9 +1,0 @@
-<map id="next" name="next">
-<area shape="rect" id="node2" href="$classPane_a25c5541adf914a0543c1cc5e45a12b8b.html#a25c5541adf914a0543c1cc5e45a12b8b" title="Obtain the connectivity table containing the element with the given ID. " alt="" coords="108,5,239,32"/>
-<area shape="rect" id="node3" href="$classConnectivity_a69bd059da8cf335fbee896488f5c1e97.html#a69bd059da8cf335fbee896488f5c1e97" title="Get the index of the first element. " alt="" coords="106,57,241,98"/>
-<area shape="rect" id="node6" href="$classConnectivity_a3ab0f5b4dbc683714ef15ccfb16225ac.html#a3ab0f5b4dbc683714ef15ccfb16225ac" title="Get a constant pointer to the connectivity array. " alt="" coords="102,123,245,149"/>
-<area shape="rect" id="node7" href="$classConnectivity_a868521919735626a306ba5be3efc4bdf.html#a868521919735626a306ba5be3efc4bdf" title="Get the total number of elements (including ghost elements) in the table. " alt="" coords="110,174,237,215"/>
-<area shape="rect" id="node8" href="$classConnectivity_a6b814939135364a0cd18ee54799897ee.html#a6b814939135364a0cd18ee54799897ee" title="Get the number of nodes per element of the current connectivity table. " alt="" coords="110,239,237,281"/>
-<area shape="rect" id="node4" href="$classConnectivity_aafbe63b1107c964c3673375df9a7472a.html#aafbe63b1107c964c3673375df9a7472a" title="Root of use&#45;inheritance. " alt="" coords="293,64,419,91"/>
-<area shape="rect" id="node5" href="$classDataItem_a8200761ace321d2760f1c601505ccc87.html#a8200761ace321d2760f1c601505ccc87" title="Root of use&#45;inheritance. " alt="" coords="467,64,573,91"/>
-</map>

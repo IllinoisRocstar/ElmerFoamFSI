@@ -1,22 +1,5 @@
 <map id="FsiCouplingPar.H" name="FsiCouplingPar.H">
-<area shape="rect" id="node2" href="$InterfaceLayer_8H.html" title="InterfaceLayer.H" alt="" coords="991,155,1109,181"/>
-<area shape="rect" id="node38" href="$Orchestrator_8H.html" title="Orchestrator.H" alt="" coords="1227,155,1335,181"/>
-<area shape="rect" id="node39" href="$OpenFoamParAgent_8H.html" title="OpenFoamParAgent.H" alt="" coords="1040,80,1195,107"/>
-<area shape="rect" id="node40" href="$ElmerParAgent_8H.html" title="ElmerParAgent.H" alt="" coords="1219,80,1343,107"/>
-<area shape="rect" id="node41" href="$Global_8H.html" title="Base global object header. " alt="" coords="1873,155,1945,181"/>
-<area shape="rect" id="node4" href="$SolverAgent_8H.html" title="SolverAgent.H" alt="" coords="953,229,1060,256"/>
-<area shape="rect" id="node32" href="$com__basic_8h.html" title="This file contains some definitions of macros and constants for COM. " alt="" coords="197,379,293,405"/>
-<area shape="rect" id="node34" href="$com_8h.html" title="This file contains the prototypes for COM API. " alt="" coords="235,229,293,256"/>
-<area shape="rect" id="node5" href="$FEM_8H.html" title="Finite Element Stuff. " alt="" coords="424,304,488,331"/>
-<area shape="rect" id="node8" href="$FieldData_8H.html" title="Finite Element Stuff. " alt="" coords="918,304,1009,331"/>
-<area shape="rect" id="node9" href="$NetUtils_8H.html" title="TCP/IP Network Utilities Interface. " alt="" coords="1086,304,1169,331"/>
-<area shape="rect" id="node24" href="$FDUtils_8H.html" title="Implementation of stream object for Unix file descriptors. " alt="" coords="1763,304,1844,331"/>
-<area shape="rect" id="node6" href="$PMesh_8H.html" title="Parallel Mesh Stuff. " alt="" coords="317,379,395,405"/>
-<area shape="rect" id="node33" href="$FC_8h.html" title="FC.h" alt="" coords="220,453,271,480"/>
-<area shape="rect" id="node35" href="$com__c_8h.html" title="This file contains the C wrapper for COM_base. " alt="" coords="157,304,229,331"/>
-<area shape="rect" id="node36" href="$commpi_8h.html" title="Contains declarations of MPI subroutines used in COPM. " alt="" coords="5,379,83,405"/>
-<area shape="rect" id="node42" href="$ComLine_8H.html" title="ComLineObject header. " alt="" coords="2308,304,2396,331"/>
-<area shape="rect" id="node46" href="$UnixUtils_8H.html" title="Unix System Tools interface. " alt="" coords="1648,304,1739,331"/>
-<area shape="rect" id="node47" href="$primitive__utilities_8H.html" title="Basic utility header. " alt="" coords="1920,229,2053,256"/>
-<area shape="rect" id="node49" href="$PrimitiveTypes_8H.html" title="Simple utility classes. " alt="" coords="2111,304,2233,331"/>
+<area shape="rect" id="node3" href="$Orchestrator_8H.html" title="Orchestrator.H" alt="" coords="194,155,301,181"/>
+<area shape="rect" id="node4" href="$OpenFoamParAgent_8H.html" title="OpenFoamParAgent.H" alt="" coords="56,80,211,107"/>
+<area shape="rect" id="node5" href="$ElmerParAgent_8H.html" title="ElmerParAgent.H" alt="" coords="286,80,409,107"/>
 </map>

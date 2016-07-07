@@ -1,14 +1,3 @@
 <map id="driver.C" name="driver.C">
-<area shape="rect" id="node2" href="$Driver_8H.html" title="Example program interface. " alt="" coords="1681,80,1751,107"/>
-<area shape="rect" id="node3" href="$Global_8H.html" title="Base global object header. " alt="" coords="1107,155,1179,181"/>
-<area shape="rect" id="node30" href="$Profiler_8H.html" title="Performance Profiling interface definition. " alt="" coords="1678,229,1755,256"/>
-<area shape="rect" id="node32" href="$com_8h.html" title="This file contains the prototypes for COM API. " alt="" coords="1955,155,2014,181"/>
-<area shape="rect" id="node4" href="$ComLine_8H.html" title="ComLineObject header. " alt="" coords="138,229,226,256"/>
-<area shape="rect" id="node11" href="$UnixUtils_8H.html" title="Unix System Tools interface. " alt="" coords="813,229,903,256"/>
-<area shape="rect" id="node23" href="$primitive__utilities_8H.html" title="Basic utility header. " alt="" coords="1362,229,1495,256"/>
-<area shape="rect" id="node26" href="$PrimitiveTypes_8H.html" title="Simple utility classes. " alt="" coords="1779,304,1902,331"/>
-<area shape="rect" id="node33" href="$com__c_8h.html" title="This file contains the C wrapper for COM_base. " alt="" coords="2151,229,2223,256"/>
-<area shape="rect" id="node34" href="$com__basic_8h.html" title="This file contains some definitions of macros and constants for COM. " alt="" coords="2083,304,2179,331"/>
-<area shape="rect" id="node36" href="$commpi_8h.html" title="Contains declarations of MPI subroutines used in COPM. " alt="" coords="2204,304,2282,331"/>
-<area shape="rect" id="node35" href="$FC_8h.html" title="FC.h" alt="" coords="2106,379,2157,405"/>
+<area shape="rect" id="node2" href="$Driver_8H.html" title="Example program interface. " alt="" coords="106,80,176,107"/>
 </map>

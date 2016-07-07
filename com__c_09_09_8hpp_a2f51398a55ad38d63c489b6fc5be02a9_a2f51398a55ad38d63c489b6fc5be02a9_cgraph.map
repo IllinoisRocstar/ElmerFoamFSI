@@ -1,5 +1,0 @@
-<map id="COM_get_panes" name="COM_get_panes">
-<area shape="rect" id="node2" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="195,5,306,32"/>
-<area shape="rect" id="node4" href="$classCOM_1_1COM__base_abac5455b6ae9ddffe748955994558b95.html#abac5455b6ae9ddffe748955994558b95" title="Obtain the panes of a given window on a specific process. " alt="" coords="174,57,327,98"/>
-<area shape="rect" id="node3" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="377,5,562,32"/>
-</map>

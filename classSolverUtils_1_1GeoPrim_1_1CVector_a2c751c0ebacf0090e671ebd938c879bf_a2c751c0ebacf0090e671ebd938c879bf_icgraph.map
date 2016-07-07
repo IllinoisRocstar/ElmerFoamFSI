@@ -1,5 +1,0 @@
-<map id="unit" name="unit">
-<area shape="rect" id="node2" href="$classSolverUtils_1_1GeoPrim_1_1CLine_a5a825f157fd23c389876bd1c54d57757.html#a5a825f157fd23c389876bd1c54d57757" title="SolverUtils::GeoPrim\l::CLine::has_point" alt="" coords="97,5,242,46"/>
-<area shape="rect" id="node4" href="$classSolverUtils_1_1GeoPrim_1_1CPlane_ad5886d99eaa33c5ef208c15d47ec3456.html#ad5886d99eaa33c5ef208c15d47ec3456" title="SolverUtils::GeoPrim\l::CPlane::operator==" alt="" coords="97,70,242,111"/>
-<area shape="rect" id="node3" href="$classSolverUtils_1_1GeoPrim_1_1CLineSegment_aee8741ea7673428339de3f4d65d2d43a.html#aee8741ea7673428339de3f4d65d2d43a" title="SolverUtils::GeoPrim\l::CLineSegment::has_point" alt="" coords="291,5,471,46"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="COM_map&lt; Object &gt;" name="COM_map&lt; Object &gt;">
-<area shape="rect" id="node2" href="$classCOM__map.html" title="COM_map\&lt; Window * \&gt;" alt="" coords="359,5,524,32"/>
-<area shape="rect" id="node3" href="$classCOM__map.html" title="COM_map\&lt; Function * \&gt;" alt="" coords="357,56,525,83"/>
-<area shape="rect" id="node5" href="$classCOM__map.html" title="COM_map\&lt; DataItem * \&gt;" alt="" coords="355,107,527,133"/>
-<area shape="rect" id="node6" href="$classCOM__map.html" title="COM_map\&lt; std::pair\l\&lt; void *, std::set\&lt;\l std::string \&gt; \&gt; \&gt;" alt="" coords="369,157,513,213"/>
-<area shape="rect" id="node4" href="$classFunction__map.html" title="A map functions. " alt="" coords="579,56,683,83"/>
-</map>

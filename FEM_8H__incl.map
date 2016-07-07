@@ -1,8 +1,0 @@
-<map id="FEM.H" name="FEM.H">
-<area shape="rect" id="node2" href="$PMesh_8H.html" title="Parallel Mesh Stuff. " alt="" coords="561,80,639,107"/>
-<area shape="rect" id="node3" href="$Mesh_8H.html" title="Mesh Stuff. " alt="" coords="295,155,363,181"/>
-<area shape="rect" id="node22" href="$COMM_8H.html" title="Communication utilities. " alt="" coords="561,155,639,181"/>
-<area shape="rect" id="node7" href="$GeoPrimitives_8H.html" title="Geometric Primitives interface. " alt="" coords="70,304,188,331"/>
-<area shape="rect" id="node13" href="$primitive__utilities_8H.html" title="Basic utility header. " alt="" coords="415,229,548,256"/>
-<area shape="rect" id="node18" href="$PrimitiveTypes_8H.html" title="Simple utility classes. " alt="" coords="565,304,688,331"/>
-</map>

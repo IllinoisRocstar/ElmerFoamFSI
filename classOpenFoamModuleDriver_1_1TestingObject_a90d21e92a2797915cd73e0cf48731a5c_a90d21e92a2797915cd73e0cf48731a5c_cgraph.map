@@ -1,9 +1,0 @@
-<map id="GetInputData" name="GetInputData">
-<area shape="rect" id="node2" href="$namespaceIRAD_1_1Sys_afe7cbdace3dec046da8a36d08578610d.html#afe7cbdace3dec046da8a36d08578610d" title="IRAD::Sys::ChDir" alt="" coords="184,5,312,32"/>
-<area shape="rect" id="node3" href="$namespaceIRAD_1_1Sys_a907ccb4be0eba55b76775c69712059ad.html#a907ccb4be0eba55b76775c69712059ad" title="IRAD::Sys::CreateDirectory" alt="" coords="155,56,341,83"/>
-<area shape="rect" id="node4" href="$namespaceIRAD_1_1Sys_afae3306c1aef8273c2fd074f4f5c4fe6.html#afae3306c1aef8273c2fd074f4f5c4fe6" title="IRAD::Sys::CWD" alt="" coords="185,107,311,133"/>
-<area shape="rect" id="node5" href="$namespaceIRAD_1_1Sys_a64439af6e8939be5517df918e2ecea36.html#a64439af6e8939be5517df918e2ecea36" title="IRAD::Sys::FILEEXISTS" alt="" coords="163,157,333,184"/>
-<area shape="rect" id="node6" href="$namespaceIRAD_1_1Sys_a0bcb3bbe82c724ff589d3ec071e5a506.html#a0bcb3bbe82c724ff589d3ec071e5a506" title="IRAD::Sys::ISDIR" alt="" coords="183,208,313,235"/>
-<area shape="rect" id="node7" href="$namespaceIRAD_1_1Sys_a2d575706e1c0f851a9f9350d15ba4313.html#a2d575706e1c0f851a9f9350d15ba4313" title="IRAD::Sys::ISLINK" alt="" coords="179,259,317,285"/>
-<area shape="rect" id="node8" href="$namespaceIRAD_1_1Sys_a05dbd3303c15001bdaeb27da8f5b7125.html#a05dbd3303c15001bdaeb27da8f5b7125" title="IRAD::Sys::SymLink" alt="" coords="175,309,321,336"/>
-</map>

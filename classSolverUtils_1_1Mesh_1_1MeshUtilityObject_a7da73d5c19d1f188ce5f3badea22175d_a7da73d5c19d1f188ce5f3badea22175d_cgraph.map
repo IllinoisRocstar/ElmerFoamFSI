@@ -1,6 +1,0 @@
-<map id="GetCon" name="GetCon">
-<area shape="rect" id="node2" href="$classSolverUtils_1_1Mesh_1_1MeshUtilityObject_a690d9694fadce78f040760ee34d5a0fa.html#a690d9694fadce78f040760ee34d5a0fa" title="FormConnectivity" alt="" coords="120,64,245,91"/>
-<area shape="rect" id="node3" href="$classSolverUtils_1_1Mesh_1_1MeshUtilityObject_aaaa6c4a41ae628a7697343a69b2229a0.html#aaaa6c4a41ae628a7697343a69b2229a0" title="ECon" alt="" coords="339,5,394,32"/>
-<area shape="rect" id="node4" href="$classSolverUtils_1_1Mesh_1_1Connectivity_a2105ca18804fbadec8e2d4d1376f2270.html#a2105ca18804fbadec8e2d4d1376f2270" title="SolverUtils::Mesh::\lConnectivity::Inverse" alt="" coords="293,57,440,98"/>
-<area shape="rect" id="node5" href="$classSolverUtils_1_1Mesh_1_1MeshUtilityObject_a4ee6fd10b4878cb005f9eb3e11508cdc.html#a4ee6fd10b4878cb005f9eb3e11508cdc" title="NC" alt="" coords="345,123,388,149"/>
-</map>

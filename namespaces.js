@@ -5,8 +5,5 @@ var namespaces =
     [ "ElmerModuleDriver", "namespaceElmerModuleDriver.html", "namespaceElmerModuleDriver" ],
     [ "IcoFoamMod", "namespaceIcoFoamMod.html", null ],
     [ "impact", "namespaceimpact.html", "namespaceimpact" ],
-    [ "IRAD", "namespaceIRAD.html", "namespaceIRAD" ],
-    [ "Mesh", "namespaceMesh.html", null ],
-    [ "OpenFoamModuleDriver", "namespaceOpenFoamModuleDriver.html", "namespaceOpenFoamModuleDriver" ],
-    [ "SolverUtils", "namespaceSolverUtils.html", "namespaceSolverUtils" ]
+    [ "OpenFoamModuleDriver", "namespaceOpenFoamModuleDriver.html", "namespaceOpenFoamModuleDriver" ]
 ];

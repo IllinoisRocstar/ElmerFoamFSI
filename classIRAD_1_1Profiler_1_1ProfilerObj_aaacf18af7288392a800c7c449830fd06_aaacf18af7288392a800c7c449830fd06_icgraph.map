@@ -1,8 +1,0 @@
-<map id="FinalizeReady" name="FinalizeReady">
-<area shape="rect" id="node2" href="$classIRAD_1_1Global_1_1GlobalObj_a6068a393f390317c207fce14a60f9ef4.html#a6068a393f390317c207fce14a60f9ef4" title="Finalizes the global object, and it&#39;s profiler object. " alt="" coords="160,63,357,119"/>
-<area shape="rect" id="node7" href="$classIRAD_1_1Global_1_1GlobalObj_a30b2be2228e2d7ff57c3f7ea89742398.html#a30b2be2228e2d7ff57c3f7ea89742398" title="Sets the Profiler object. " alt="" coords="160,143,357,199"/>
-<area shape="rect" id="node3" href="$classIRAD_1_1Global_1_1Program_a6068a393f390317c207fce14a60f9ef4.html#a6068a393f390317c207fce14a60f9ef4" title="Finalizes the global object, and it&#39;s profiler object. " alt="" coords="405,70,563,111"/>
-<area shape="rect" id="node4" href="$namespaceElmerFoamFSI_1_1ExampleProgram_a51e123c8b200fe0d466698ff7429bba6.html#a51e123c8b200fe0d466698ff7429bba6" title="Unified driver for the example programs. " alt="" coords="611,5,829,46"/>
-<area shape="rect" id="node5" href="$namespaceElmerModuleDriver_1_1ExampleProgram_a945c2d21d14578304f149399117a364c.html#a945c2d21d14578304f149399117a364c" title="Unified driver for the example programs. " alt="" coords="637,70,803,111"/>
-<area shape="rect" id="node6" href="$namespaceElmerFoamFSI_aff46f457934a8e2d3712bdbfb1688e99.html#aff46f457934a8e2d3712bdbfb1688e99" title="Unified driver for the example programs. " alt="" coords="643,136,797,163"/>
-</map>

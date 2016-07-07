@@ -1,7 +1,0 @@
-<map id="CreateSoln" name="CreateSoln">
-<area shape="rect" id="node2" href="$classSolverUtils_1_1FEM_1_1SolutionData_a447b86534f271fc2d84c3ee6548b9a65.html#a447b86534f271fc2d84c3ee6548b9a65" title="SolverUtils::FEM::Solution\lData::Create" alt="" coords="142,37,319,78"/>
-<area shape="rect" id="node5" href="$classSolverUtils_1_1FEM_1_1SolverAgent_a79921d24f767ba9aeb14b5e32db13b4c.html#a79921d24f767ba9aeb14b5e32db13b4c" title="Mesh" alt="" coords="203,103,258,129"/>
-<area shape="rect" id="node6" href="$classSolverUtils_1_1FEM_1_1SolverAgent_aca958a697df836ac67f3244d08d9ee6c.html#aca958a697df836ac67f3244d08d9ee6c" title="Solution" alt="" coords="196,153,265,180"/>
-<area shape="rect" id="node3" href="$classSolverUtils_1_1Mesh_1_1Connectivity_a3efad0e23e75de241cfe6c5193f1daa7.html#a3efad0e23e75de241cfe6c5193f1daa7" title="SolverUtils::Mesh::\lConnectivity::Nelem" alt="" coords="377,5,519,46"/>
-<area shape="rect" id="node4" href="$classSolverUtils_1_1Mesh_1_1NodalCoordinates_a3dc03243fcc53453e160252efee8e232.html#a3dc03243fcc53453e160252efee8e232" title="SolverUtils::Mesh::\lNodalCoordinates::Size" alt="" coords="368,70,528,111"/>
-</map>

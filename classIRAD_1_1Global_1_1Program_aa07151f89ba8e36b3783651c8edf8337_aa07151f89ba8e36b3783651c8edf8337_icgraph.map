@@ -1,7 +1,0 @@
-<map id="Initialize" name="Initialize">
-<area shape="rect" id="node2" href="$classElmerFoamFSI_1_1ExampleProgram_1_1SerialProgram_aa07151f89ba8e36b3783651c8edf8337.html#aa07151f89ba8e36b3783651c8edf8337" title="Initializes native data structures from commandline args. " alt="" coords="125,5,344,46"/>
-<area shape="rect" id="node3" href="$classElmerFoamFSI_1_1SerialDriverProgram_aa07151f89ba8e36b3783651c8edf8337.html#aa07151f89ba8e36b3783651c8edf8337" title="Initializes native data structures from commandline args. " alt="" coords="141,70,328,111"/>
-<area shape="rect" id="node4" href="$namespaceElmerFoamFSI_1_1ExampleProgram_a51e123c8b200fe0d466698ff7429bba6.html#a51e123c8b200fe0d466698ff7429bba6" title="Unified driver for the example programs. " alt="" coords="392,5,611,46"/>
-<area shape="rect" id="node5" href="$namespaceElmerModuleDriver_1_1ExampleProgram_a945c2d21d14578304f149399117a364c.html#a945c2d21d14578304f149399117a364c" title="Unified driver for the example programs. " alt="" coords="419,70,584,111"/>
-<area shape="rect" id="node6" href="$namespaceElmerFoamFSI_aff46f457934a8e2d3712bdbfb1688e99.html#aff46f457934a8e2d3712bdbfb1688e99" title="Unified driver for the example programs. " alt="" coords="425,136,578,163"/>
-</map>

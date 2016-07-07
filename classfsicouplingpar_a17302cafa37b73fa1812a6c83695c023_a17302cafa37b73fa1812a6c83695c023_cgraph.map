@@ -1,14 +1,6 @@
 <map id="TestTransfer" name="TestTransfer">
-<area shape="rect" id="node2" href="$com__c_8h_a6dd240c15a2b3e85d2d91cbe9eec6611.html#a6dd240c15a2b3e85d2d91cbe9eec6611" title="Get the address for an dataitem on a specific pane. " alt="" coords="196,5,311,32"/>
-<area shape="rect" id="node3" href="$classopenfoamagentpar_a11af20e113d9cb3bad41a7504f10da2c.html#a11af20e113d9cb3bad41a7504f10da2c" title="openfoamagentpar::Coordinates" alt="" coords="150,56,357,83"/>
-<area shape="rect" id="node4" href="$classelmeragentpar_a11af20e113d9cb3bad41a7504f10da2c.html#a11af20e113d9cb3bad41a7504f10da2c" title="elmeragentpar::Coordinates" alt="" coords="162,107,345,133"/>
-<area shape="rect" id="node5" href="$classSolverUtils_1_1TransferObjectPar_aa6208b5bc1a6a9e86d72320e39a84a25.html#aa6208b5bc1a6a9e86d72320e39a84a25" title="SolverUtils::TransferObject\lPar::Interpolate" alt="" coords="163,158,343,199"/>
-<area shape="rect" id="node11" href="$classopenfoamagentpar_a84634b1a9101359943436cfa37a4b88e.html#a84634b1a9101359943436cfa37a4b88e" title="openfoamagentpar::PaneID" alt="" coords="163,224,344,251"/>
-<area shape="rect" id="node12" href="$classelmeragentpar_a84634b1a9101359943436cfa37a4b88e.html#a84634b1a9101359943436cfa37a4b88e" title="elmeragentpar::PaneID" alt="" coords="175,275,331,301"/>
-<area shape="rect" id="node13" href="$classIRAD_1_1Global_1_1GlobalObj_a4604cffc6d9588606aa2a5866b026226.html#a4604cffc6d9588606aa2a5866b026226" title="IRAD::Global::GlobalObj\l::StdOut" alt="" coords="171,326,336,367"/>
-<area shape="rect" id="node6" href="$com__c_09_09_8hpp_a86224e33f2e17b4cee6c3256bfdff75d.html#a86224e33f2e17b4cee6c3256bfdff75d" title="COM_get_dataitem_handle" alt="" coords="406,136,586,163"/>
-<area shape="rect" id="node10" href="$namespaceSolverUtils_ab602f331b052ecdbea6aa8caa0eeed75.html#ab602f331b052ecdbea6aa8caa0eeed75" title="SolverUtils::COM_call\l_function" alt="" coords="420,187,572,229"/>
-<area shape="rect" id="node7" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="657,107,767,133"/>
-<area shape="rect" id="node9" href="$classCOM_1_1COM__base_a9fd7945150b9f390f5560bce2b7ea375.html#a9fd7945150b9f390f5560bce2b7ea375" title="COM::COM_base::get\l_dataitem_handle" alt="" coords="635,158,789,199"/>
-<area shape="rect" id="node8" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="838,107,1023,133"/>
+<area shape="rect" id="node2" href="$classopenfoamagentpar_a11af20e113d9cb3bad41a7504f10da2c.html#a11af20e113d9cb3bad41a7504f10da2c" title="openfoamagentpar::Coordinates" alt="" coords="150,5,357,32"/>
+<area shape="rect" id="node3" href="$classelmeragentpar_a11af20e113d9cb3bad41a7504f10da2c.html#a11af20e113d9cb3bad41a7504f10da2c" title="elmeragentpar::Coordinates" alt="" coords="162,56,345,83"/>
+<area shape="rect" id="node4" href="$classopenfoamagentpar_a84634b1a9101359943436cfa37a4b88e.html#a84634b1a9101359943436cfa37a4b88e" title="openfoamagentpar::PaneID" alt="" coords="163,107,344,133"/>
+<area shape="rect" id="node5" href="$classelmeragentpar_a84634b1a9101359943436cfa37a4b88e.html#a84634b1a9101359943436cfa37a4b88e" title="elmeragentpar::PaneID" alt="" coords="175,157,331,184"/>
 </map>

@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classSolverUtils_1_1GeoPrim_1_1C3LineSegment.html" title="C3LineSegment" alt="" coords="5,5,120,32"/>
+<area shape="rect" id="node2" href="$classElmerFoamFSI_1_1ExampleProgram_1_1SerialProgram.html" title="Implementation of the basic parts of the serial program example. " alt="" coords="204,5,308,32"/>
+<area shape="rect" id="node3" href="$classElmerFoamFSI_1_1SerialDriverProgram.html" title="Implementation of the basic parts of the serial program example. " alt="" coords="187,56,325,83"/>
+<area shape="rect" id="node4" href="$classElmerModuleDriver_1_1ExampleProgram_1_1SerialProgram.html" title="Implementation of the basic parts of the serial program example. " alt="" coords="204,107,308,133"/>
 </map>

@@ -1,7 +1,0 @@
-<map id="is_ghost_node" name="is_ghost_node">
-<area shape="rect" id="node2" href="$classSimple__manifold__2_a306844d8bb7a3ba531f04bc8481b582b.html#a306844d8bb7a3ba531f04bc8481b582b" title="Get the ID of an incident edge within the pane of a given node that originated from the node..." alt="" coords="181,5,307,32"/>
-<area shape="rect" id="node3" href="$classSimple__manifold__2_a5526ffd6e536b2c699cd80d42c05d534.html#a5526ffd6e536b2c699cd80d42c05d534" title="Get the ID of an incident real edge within the pane of a given node The incident edge may encode an i..." alt="" coords="161,56,327,83"/>
-<area shape="rect" id="node4" href="$classSimple__manifold__2_a9d228fc3894d548a55db1c25d28ec9af.html#a9d228fc3894d548a55db1c25d28ec9af" title="Is the node on pane boundary (not isolated)? " alt="" coords="189,107,299,133"/>
-<area shape="rect" id="node5" href="$classSimple__manifold__2_a30f5e07616a5738e328bd9c86b551e3b.html#a30f5e07616a5738e328bd9c86b551e3b" title="Is the node on pane boundary (not isolated)? It assumes vID is incident on the ghost (no checking is ..." alt="" coords="169,157,319,184"/>
-<area shape="rect" id="node6" href="$classSimple__manifold__2_ad6d1f85a4b3a0d2d2c8f74494d90e1fe.html#ad6d1f85a4b3a0d2d2c8f74494d90e1fe" title="Is the node on the pane boundary of real part (not isolated)? " alt="" coords="175,208,313,235"/>
-</map>

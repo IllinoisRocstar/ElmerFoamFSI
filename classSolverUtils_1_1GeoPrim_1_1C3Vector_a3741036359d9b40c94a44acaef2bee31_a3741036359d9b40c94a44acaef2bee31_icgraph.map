@@ -1,7 +1,0 @@
-<map id="Normalize" name="Normalize">
-<area shape="rect" id="node2" href="$classSolverUtils_1_1GeoPrim_1_1C3Plane_aba3e4120cb4b5b32164cddf75c28b014.html#aba3e4120cb4b5b32164cddf75c28b014" title="SolverUtils::GeoPrim\l::C3Plane::C3Plane" alt="" coords="137,5,282,46"/>
-<area shape="rect" id="node3" href="$classSolverUtils_1_1GeoPrim_1_1C3Line_a6f8c1b75074675c4c51b25b02f6c4dc2.html#a6f8c1b75074675c4c51b25b02f6c4dc2" title="SolverUtils::GeoPrim\l::C3Line::has_point" alt="" coords="334,63,479,105"/>
-<area shape="rect" id="node5" href="$classSolverUtils_1_1GeoPrim_1_1C3Vector_ac9824a858358ee06d122c0bcbf06e4fe.html#ac9824a858358ee06d122c0bcbf06e4fe" title="Unit" alt="" coords="186,121,233,148"/>
-<area shape="rect" id="node4" href="$classSolverUtils_1_1GeoPrim_1_1C3LineSegment_acea406f3a19b37ff68662597c6466609.html#acea406f3a19b37ff68662597c6466609" title="SolverUtils::GeoPrim\l::C3LineSegment::has_point" alt="" coords="531,63,717,105"/>
-<area shape="rect" id="node6" href="$classSolverUtils_1_1GeoPrim_1_1C3Plane_aefbe051711c8b698dc5f7a484ba83d82.html#aefbe051711c8b698dc5f7a484ba83d82" title="SolverUtils::GeoPrim\l::C3Plane::operator==" alt="" coords="331,129,482,170"/>
-</map>

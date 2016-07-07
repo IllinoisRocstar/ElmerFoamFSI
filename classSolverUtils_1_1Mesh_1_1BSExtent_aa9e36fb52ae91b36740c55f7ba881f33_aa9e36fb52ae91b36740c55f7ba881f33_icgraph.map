@@ -1,6 +1,0 @@
-<map id="ND" name="ND">
-<area shape="rect" id="node2" href="$classSolverUtils_1_1Mesh_1_1BSExtent_a77f23a4f2ffc868999f0484fa6a169b1.html#a77f23a4f2ffc868999f0484fa6a169b1" title="GetFlatIndices" alt="" coords="96,5,203,32"/>
-<area shape="rect" id="node4" href="$classSolverUtils_1_1Mesh_1_1BSExtent_a07810e59f71203421fdd43396a5e1b83.html#a07810e59f71203421fdd43396a5e1b83" title="Overlap" alt="" coords="116,56,183,83"/>
-<area shape="rect" id="node3" href="$classSolverUtils_1_1Mesh_1_1BSExtent_ad3d3d5147d6ab85f799387d5fbe18697.html#ad3d3d5147d6ab85f799387d5fbe18697" title="CreateUnstructuredMesh" alt="" coords="251,5,419,32"/>
-<area shape="rect" id="node5" href="$classSolverUtils_1_1Mesh_1_1BSExtent_a5f6f24dcff5a481d2216db056a66193f.html#a5f6f24dcff5a481d2216db056a66193f" title="FindSharedNodes" alt="" coords="271,56,398,83"/>
-</map>

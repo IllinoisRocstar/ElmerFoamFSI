@@ -1,8 +1,0 @@
-<map id="TransferLoadsToStructures" name="TransferLoadsToStructures">
-<area shape="rect" id="node2" href="$classSolverUtils_1_1TransferObjectPar_ac956acb3aa9c094efbebec0883d08ba1.html#ac956acb3aa9c094efbebec0883d08ba1" title="SolverUtils::TransferObject\lPar::Transfer" alt="" coords="235,57,415,98"/>
-<area shape="rect" id="node3" href="$com__c_09_09_8hpp_a86224e33f2e17b4cee6c3256bfdff75d.html#a86224e33f2e17b4cee6c3256bfdff75d" title="COM_get_dataitem_handle" alt="" coords="465,35,645,61"/>
-<area shape="rect" id="node7" href="$namespaceSolverUtils_ab602f331b052ecdbea6aa8caa0eeed75.html#ab602f331b052ecdbea6aa8caa0eeed75" title="SolverUtils::COM_call\l_function" alt="" coords="479,86,631,127"/>
-<area shape="rect" id="node4" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="715,5,826,32"/>
-<area shape="rect" id="node6" href="$classCOM_1_1COM__base_a9fd7945150b9f390f5560bce2b7ea375.html#a9fd7945150b9f390f5560bce2b7ea375" title="COM::COM_base::get\l_dataitem_handle" alt="" coords="694,57,847,98"/>
-<area shape="rect" id="node5" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="897,5,1082,32"/>
-</map>

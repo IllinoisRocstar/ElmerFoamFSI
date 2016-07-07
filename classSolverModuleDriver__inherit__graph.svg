@@ -15,11 +15,8 @@
 </g>
 <!-- Node2 -->
 <g id="node2" class="node"><title>Node2</title>
-<g id="a_node2"><a xlink:href="classSolverUtils_1_1FEM_1_1SolverAgent.html" target="_top" xlink:title="SolverAgent">
-<polygon fill="none" stroke="black" points="0,-56.5 0,-75.5 70,-75.5 70,-56.5 0,-56.5"/>
+<polygon fill="none" stroke="#bfbfbf" points="0,-56.5 0,-75.5 70,-75.5 70,-56.5 0,-56.5"/>
 <text text-anchor="middle" x="35" y="-63.5" font-family="Helvetica,sans-Serif" font-size="10.00">SolverAgent</text>
-</a>
-</g>
 </g>
 <!-- Node2&#45;&gt;Node1 -->
 <g id="edge1" class="edge"><title>Node2&#45;&gt;Node1</title>

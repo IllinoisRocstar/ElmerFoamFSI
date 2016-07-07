@@ -1,20 +1,4 @@
 var searchData=
 [
-  ['_5f_5fhelper',['__helper',['../classElmerFoamFSI_1_1TestingObject_a6ddf5281e8c291fe3b0db952bc4607e7.html#a6ddf5281e8c291fe3b0db952bc4607e7',1,'ElmerFoamFSI::TestingObject']]],
-  ['_5fallgathermo',['_AllGatherMO',['../classIRAD_1_1Comm_1_1CommunicatorObject_a943956fa2e50f8504cd585ffae9129a1.html#a943956fa2e50f8504cd585ffae9129a1',1,'IRAD::Comm::CommunicatorObject']]],
-  ['_5fallgathermov',['_AllGatherMOV',['../classIRAD_1_1Comm_1_1CommunicatorObject_a3022a005f590568be595c8e47063dbde.html#a3022a005f590568be595c8e47063dbde',1,'IRAD::Comm::CommunicatorObject']]],
-  ['_5fallgatherv',['_AllGatherv',['../classIRAD_1_1Comm_1_1CommunicatorObject_a467e1ea74ed33b360c9a470518143ba4.html#a467e1ea74ed33b360c9a470518143ba4',1,'IRAD::Comm::CommunicatorObject']]],
-  ['_5farecv',['_ARecv',['../classIRAD_1_1Comm_1_1CommunicatorObject_a58f88fb299637ed226ba3155dbb4f51a.html#a58f88fb299637ed226ba3155dbb4f51a',1,'IRAD::Comm::CommunicatorObject']]],
-  ['_5fasend',['_ASend',['../classIRAD_1_1Comm_1_1CommunicatorObject_a015e3d31ef6d2b33d07b76bb65c093a0.html#a015e3d31ef6d2b33d07b76bb65c093a0',1,'IRAD::Comm::CommunicatorObject']]],
-  ['_5fbroadcastmov',['_BroadCastMOV',['../classIRAD_1_1Comm_1_1CommunicatorObject_abde1f68cebfd3473ad0f693e9ffff7bd.html#abde1f68cebfd3473ad0f693e9ffff7bd',1,'IRAD::Comm::CommunicatorObject']]],
-  ['_5fcopycreate_5fpoint',['_copycreate_point',['../classSolverUtils_1_1GeoPrim_1_1C3Facet_a021a97d3896ce8526912adec4f33a82d.html#a021a97d3896ce8526912adec4f33a82d',1,'SolverUtils::GeoPrim::C3Facet']]],
-  ['_5fcreate',['_create',['../classSolverUtils_1_1GeoPrim_1_1C3Point_a76362e9dac37d41cf05c2fb2f7652bf4.html#a76362e9dac37d41cf05c2fb2f7652bf4',1,'SolverUtils::GeoPrim::C3Point::_create()'],['../classSolverUtils_1_1GeoPrim_1_1C3Vector_a76362e9dac37d41cf05c2fb2f7652bf4.html#a76362e9dac37d41cf05c2fb2f7652bf4',1,'SolverUtils::GeoPrim::C3Vector::_create()'],['../classIRAD_1_1Primitive_1_1Vector_a76362e9dac37d41cf05c2fb2f7652bf4.html#a76362e9dac37d41cf05c2fb2f7652bf4',1,'IRAD::Primitive::Vector::_create()']]],
-  ['_5fcreate_5fpoint',['_create_point',['../classSolverUtils_1_1GeoPrim_1_1C3Facet_ac3f9f87edc16299e54ed3dd831832a0b.html#ac3f9f87edc16299e54ed3dd831832a0b',1,'SolverUtils::GeoPrim::C3Facet']]],
-  ['_5fdestroy',['_destroy',['../classSolverUtils_1_1GeoPrim_1_1C3Point_a08531d4550f00fdc7d9031ce7c649bb1.html#a08531d4550f00fdc7d9031ce7c649bb1',1,'SolverUtils::GeoPrim::C3Point::_destroy()'],['../classSolverUtils_1_1GeoPrim_1_1C3Vector_a08531d4550f00fdc7d9031ce7c649bb1.html#a08531d4550f00fdc7d9031ce7c649bb1',1,'SolverUtils::GeoPrim::C3Vector::_destroy()'],['../classIRAD_1_1Primitive_1_1Vector_a08531d4550f00fdc7d9031ce7c649bb1.html#a08531d4550f00fdc7d9031ce7c649bb1',1,'IRAD::Primitive::Vector::_destroy()']]],
-  ['_5fgathermo',['_GatherMO',['../classIRAD_1_1Comm_1_1CommunicatorObject_afd68c33bb044878b1af720844da60b17.html#afd68c33bb044878b1af720844da60b17',1,'IRAD::Comm::CommunicatorObject']]],
-  ['_5fgathermov',['_GatherMOV',['../classIRAD_1_1Comm_1_1CommunicatorObject_a9f039d75c1cb0fb7a3daedc026228478.html#a9f039d75c1cb0fb7a3daedc026228478',1,'IRAD::Comm::CommunicatorObject']]],
-  ['_5frecv',['_Recv',['../classIRAD_1_1Comm_1_1CommunicatorObject_ac19d992fbffce2d3c9079977fccbd48f.html#ac19d992fbffce2d3c9079977fccbd48f',1,'IRAD::Comm::CommunicatorObject']]],
-  ['_5fsend',['_Send',['../classIRAD_1_1Comm_1_1CommunicatorObject_a547fcd49eb70a779314a0fe3ad8f228f.html#a547fcd49eb70a779314a0fe3ad8f228f',1,'IRAD::Comm::CommunicatorObject']]],
-  ['_5fsetrecv',['_SetRecv',['../classIRAD_1_1Comm_1_1CommunicatorObject_a03837e5650fbf6daa181d975cedb4610.html#a03837e5650fbf6daa181d975cedb4610',1,'IRAD::Comm::CommunicatorObject']]],
-  ['_5fsetsend',['_SetSend',['../classIRAD_1_1Comm_1_1CommunicatorObject_aa9227a5ea91ae0ab12b8cb9b88f54c03.html#aa9227a5ea91ae0ab12b8cb9b88f54c03',1,'IRAD::Comm::CommunicatorObject']]]
+  ['_5f_5fhelper',['__helper',['../classElmerFoamFSI_1_1TestingObject_a6ddf5281e8c291fe3b0db952bc4607e7.html#a6ddf5281e8c291fe3b0db952bc4607e7',1,'ElmerFoamFSI::TestingObject']]]
 ];

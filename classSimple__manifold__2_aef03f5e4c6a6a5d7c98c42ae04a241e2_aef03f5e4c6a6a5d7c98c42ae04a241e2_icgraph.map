@@ -1,4 +1,0 @@
-<map id="get_opposite_edge_border" name="get_opposite_edge_border">
-<area shape="rect" id="node2" href="$classSimple__manifold__2_a02859d542d6ec8221641cbfb4122a39d.html#a02859d542d6ec8221641cbfb4122a39d" title="Get the ID of the next edge of the element or along the boundary. " alt="" coords="241,5,348,32"/>
-<area shape="rect" id="node3" href="$classSimple__manifold__2_ab2f2bcc3b156c06ca00d323ad90c5be3.html#ab2f2bcc3b156c06ca00d323ad90c5be3" title="Get the ID of the opposite edge of a given interior or border edge. " alt="" coords="229,56,360,83"/>
-</map>

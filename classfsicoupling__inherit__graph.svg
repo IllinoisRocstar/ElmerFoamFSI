@@ -28,11 +28,8 @@
 </g>
 <!-- Node3 -->
 <g id="node3" class="node"><title>Node3</title>
-<g id="a_node3"><a xlink:href="classIRAD_1_1Global_1_1GlobalObj.html" target="_top" xlink:title="Base global object. ">
-<polygon fill="none" stroke="black" points="92,-56.5 92,-75.5 158,-75.5 158,-56.5 92,-56.5"/>
+<polygon fill="none" stroke="#bfbfbf" points="92,-56.5 92,-75.5 158,-75.5 158,-56.5 92,-56.5"/>
 <text text-anchor="middle" x="125" y="-63.5" font-family="Helvetica,sans-Serif" font-size="10.00">GlobalType</text>
-</a>
-</g>
 </g>
 <!-- Node3&#45;&gt;Node1 -->
 <g id="edge2" class="edge"><title>Node3&#45;&gt;Node1</title>

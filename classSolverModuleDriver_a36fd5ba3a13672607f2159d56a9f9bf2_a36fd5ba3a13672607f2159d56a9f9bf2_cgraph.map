@@ -1,10 +1,3 @@
 <map id="init" name="init">
-<area shape="rect" id="node2" href="$com__c_09_09_8hpp_a6f9e4ea8f2cb977968964f4cb5a4b4f6.html#a6f9e4ea8f2cb977968964f4cb5a4b4f6" title="COM_call_function" alt="" coords="115,13,248,40"/>
-<area shape="rect" id="node3" href="$com__c_09_09_8hpp_acbbf9749cce36d33b4c60c100bdfaea2.html#acbbf9749cce36d33b4c60c100bdfaea2" title="COM_get_function_handle" alt="" coords="93,64,269,91"/>
-<area shape="rect" id="node7" href="$com__c_09_09_8hpp_ac0f80d6e63759a2afe40ed883cea3d5e.html#ac0f80d6e63759a2afe40ed883cea3d5e" title="COM_init" alt="" coords="143,115,220,141"/>
-<area shape="rect" id="node9" href="$classSolverModuleDriver_a20c52ceae4a26c2a523366ace5cab784.html#a20c52ceae4a26c2a523366ace5cab784" title="usage" alt="" coords="153,165,210,192"/>
-<area shape="rect" id="node4" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="339,5,450,32"/>
-<area shape="rect" id="node6" href="$classCOM_1_1COM__base_a640995dd65a1fb030650457b9cf10b26.html#a640995dd65a1fb030650457b9cf10b26" title="COM::COM_base::get\l_function_handle" alt="" coords="318,57,471,98"/>
-<area shape="rect" id="node5" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="521,5,706,32"/>
-<area shape="rect" id="node8" href="$classCOM_1_1COM__base_a38b2bac03bb06f2d0ea5c99760da5f1c.html#a38b2bac03bb06f2d0ea5c99760da5f1c" title="COM::COM_base::init" alt="" coords="319,123,471,149"/>
+<area shape="rect" id="node2" href="$classSolverModuleDriver_a20c52ceae4a26c2a523366ace5cab784.html#a20c52ceae4a26c2a523366ace5cab784" title="usage" alt="" coords="94,5,151,32"/>
 </map>

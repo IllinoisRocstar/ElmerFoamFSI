@@ -10,12 +10,9 @@ var NAVTREE =
     [ "Namespaces", null, [
       [ "Namespace List", "namespaces.html", "namespaces" ],
       [ "Namespace Members", "namespacemembers.html", [
-        [ "All", "namespacemembers.html", "namespacemembers_dup" ],
+        [ "All", "namespacemembers.html", null ],
         [ "Functions", "namespacemembers_func.html", null ],
-        [ "Variables", "namespacemembers_vars.html", null ],
-        [ "Typedefs", "namespacemembers_type.html", null ],
-        [ "Enumerations", "namespacemembers_enum.html", null ],
-        [ "Enumerator", "namespacemembers_eval.html", null ]
+        [ "Typedefs", "namespacemembers_type.html", null ]
       ] ]
     ] ],
     [ "Classes", null, [
@@ -27,20 +24,15 @@ var NAVTREE =
         [ "Functions", "functions_func.html", "functions_func" ],
         [ "Variables", "functions_vars.html", "functions_vars" ],
         [ "Typedefs", "functions_type.html", null ],
-        [ "Enumerations", "functions_enum.html", null ],
-        [ "Enumerator", "functions_eval.html", null ],
-        [ "Related Functions", "functions_rela.html", null ]
+        [ "Enumerator", "functions_eval.html", null ]
       ] ]
     ] ],
     [ "Files", null, [
       [ "File List", "files.html", "files" ],
       [ "File Members", "globals.html", [
-        [ "All", "globals.html", "globals_dup" ],
-        [ "Functions", "globals_func.html", "globals_func" ],
-        [ "Variables", "globals_vars.html", null ],
+        [ "All", "globals.html", null ],
+        [ "Functions", "globals_func.html", null ],
         [ "Typedefs", "globals_type.html", null ],
-        [ "Enumerations", "globals_enum.html", null ],
-        [ "Enumerator", "globals_eval.html", null ],
         [ "Macros", "globals_defs.html", null ]
       ] ]
     ] ]
@@ -49,26 +41,12 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"BSMesh_8H.html",
-"Mesh_8H.html#a7426bbbc302cfd5a6d42b6422d692331",
-"Third__Party__Modules_2OpenFoamFSI_2trunk_2build_2CMakeFiles_23_82_82_2CompilerIdC_2CMakeCCompilerId_8c.html#adbc5372f40838899018fadbc89bd588b",
-"classComponentInterface_a175029dfa8402e0e91c0565a27ec4300.html#a175029dfa8402e0e91c0565a27ec4300",
-"classElement__node__enumerator_a9acf7419f2975c3ffc94d40306508070.html#a9acf7419f2975c3ffc94d40306508070",
-"classFunction_ac7cc5d5fb7ee44e54c6c40b19bf34f86.html#ac7cc5d5fb7ee44e54c6c40b19bf34f86",
-"classIRAD_1_1Primitive_1_1DummyStepper_ab19430f9eaa16f01f7e942247b33da56.html#ab19430f9eaa16f01f7e942247b33da56",
-"classIRAD_1_1Sys_1_1Net_1_1Server_a745eb59f924065bdc1422f081c86fd5d.html#a745eb59f924065bdc1422f081c86fd5d",
-"classPane__boundary_abe3d5ff7f16a9c7598c4bb5ae8316eaa.html#abe3d5ff7f16a9c7598c4bb5ae8316eaa",
-"classRocmap_a6ae6b685a1228664165da5f86e3a7f28.html#a6ae6b685a1228664165da5f86e3a7f28",
-"classSolverUtils_1_1FEM_1_1SolutionData_ab5d46e4a8d170096335b34d52b86fd1f.html#ab5d46e4a8d170096335b34d52b86fd1f",
-"classSolverUtils_1_1GeoPrim_1_1CBox_a5c5cdfd04661d2cff6c922a96a3bfc37.html#a5c5cdfd04661d2cff6c922a96a3bfc37",
-"classSolverUtils_1_1Mesh_1_1GenericCell__2_a2bca4fb6ffae02cdf543869fd6c7fbb4.html#a2bca4fb6ffae02cdf543869fd6c7fbb4",
-"classVector__3_aac59e0c8408b069dc0220bec9e1e4876.html#aac59e0c8408b069dc0220bec9e1e4876",
-"classfsifoam__module_a51fa9955eb1fab9aef7544f1838c3201.html#a51fa9955eb1fab9aef7544f1838c3201",
-"classfsifoam__module_adaaa646461d237122348c7a2e461efd0.html#adaaa646461d237122348c7a2e461efd0",
-"com__c_09_09_8hpp.html#a78d50abc1a3142a0f3047b16bb1fb9a2",
-"functions_0x65.html",
-"ir_documentation_guide.html#member_data_sec",
-"simplestatic.html"
+"Driver_8H.html",
+"classCOM_1_1SolverModuleDriver_a7098828043ec8c5cd71920994f2d0e76.html#a7098828043ec8c5cd71920994f2d0e76",
+"classfsicoupling_a590006df8a6c2cec7f39ffba1a58ad3f.html#a590006df8a6c2cec7f39ffba1a58ad3f",
+"classfsifoam__module_aa99914005dce0726e27444f48178e398.html#aa99914005dce0726e27444f48178e398",
+"classopenfoamagentpar_a9a8261713154978fa009d8cb2c533055.html#a9a8261713154978fa009d8cb2c533055",
+"ir_coding_guide.html#General"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

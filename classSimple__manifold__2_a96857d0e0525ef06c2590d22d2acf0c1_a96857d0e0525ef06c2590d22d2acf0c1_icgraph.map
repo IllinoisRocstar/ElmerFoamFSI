@@ -1,7 +1,0 @@
-<map id="get_origin" name="get_origin">
-<area shape="rect" id="node2" href="$classSimple__manifold__2_a05075db38eafb64582a849f6d66a5e6d.html#a05075db38eafb64582a849f6d66a5e6d" title="Obtain the ID of a border node. " alt="" coords="153,5,285,32"/>
-<area shape="rect" id="node3" href="$classSimple__manifold__2_ae52132cad7d53fd486d7d4c110068004.html#ae52132cad7d53fd486d7d4c110068004" title="Obtain the ID of a border node of the ghost part of the pane. " alt="" coords="133,56,304,83"/>
-<area shape="rect" id="node4" href="$classSimple__manifold__2_a6a6cc68c2360dc9c8aef70bc9d9547ec.html#a6a6cc68c2360dc9c8aef70bc9d9547ec" title="Obtain the ID of a border node of the real part of the pane. " alt="" coords="139,107,299,133"/>
-<area shape="rect" id="node5" href="$classSimple__manifold__2_a306844d8bb7a3ba531f04bc8481b582b.html#a306844d8bb7a3ba531f04bc8481b582b" title="Get the ID of an incident edge within the pane of a given node that originated from the node..." alt="" coords="155,157,282,184"/>
-<area shape="rect" id="node6" href="$classSimple__manifold__2_afaabce069f16be292e5dd4d8064bcd99.html#afaabce069f16be292e5dd4d8064bcd99" title="Get the ID of an incident real edge within the pane of a given node. " alt="" coords="141,208,296,235"/>
-</map>

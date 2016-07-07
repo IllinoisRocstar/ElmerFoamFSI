@@ -1,5 +1,5 @@
 <map id="Test__ModuleMeshRegistration" name="Test__ModuleMeshRegistration">
-<area shape="rect" id="node2" href="$classOpenFoamModuleDriver_1_1TestingObject_a046f7ab06db0acf616b0d2bf3d3146aa.html#a046f7ab06db0acf616b0d2bf3d3146aa" title="Process all tests and populate a &quot;results&quot; object. " alt="" coords="262,12,333,39"/>
+<area shape="rect" id="node2" href="$classOpenFoamModuleDriver_1_1TestingObject_a046f7ab06db0acf616b0d2bf3d3146aa.html#a046f7ab06db0acf616b0d2bf3d3146aa" title="Process" alt="" coords="262,12,333,39"/>
 <area shape="rect" id="node5" href="$classOpenFoamModuleDriver_1_1TestingObject_af1f07f14b9af7708e4264bb38937eed2.html#af1f07f14b9af7708e4264bb38937eed2" title="Runs a test specified by name. " alt="" coords="261,63,333,89"/>
 <area shape="rect" id="node3" href="$namespaceOpenFoamModuleDriver_a98bd69551725493def1a31bfe72b0781.html#a98bd69551725493def1a31bfe72b0781" title="Drives the OpenFoamModuleDriver::TestObject. " alt="" coords="381,5,544,46"/>
 <area shape="rect" id="node4" href="$TestOpenFoamModuleDriver_8C_a0ddf1224851353fc92bfbff6f499fa97.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="592,12,643,39"/>

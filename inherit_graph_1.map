@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structSolverUtils_1_1Mesh_1_1BorderData.html" title="Border data in CSR format. " alt="" coords="5,5,93,32"/>
+<area shape="rect" id="node1" href="$classimpact_1_1orchestrator_1_1couplingbase.html" title="couplingbase" alt="" coords="5,56,104,83"/>
+<area shape="rect" id="node2" href="$classfsicoupling.html" title="fsicoupling" alt="" coords="162,31,246,57"/>
+<area shape="rect" id="node3" href="$classfsicouplingpar.html" title="fsicouplingpar" alt="" coords="153,93,255,120"/>
 </map>

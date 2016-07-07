@@ -1,4 +1,0 @@
-<map id="is_real_node" name="is_real_node">
-<area shape="rect" id="node2" href="$classSimple__manifold__2_afaabce069f16be292e5dd4d8064bcd99.html#afaabce069f16be292e5dd4d8064bcd99" title="Get the ID of an incident real edge within the pane of a given node. " alt="" coords="149,5,304,32"/>
-<area shape="rect" id="node3" href="$classSimple__manifold__2_ad6d1f85a4b3a0d2d2c8f74494d90e1fe.html#ad6d1f85a4b3a0d2d2c8f74494d90e1fe" title="Is the node on the pane boundary of real part (not isolated)? " alt="" coords="157,56,296,83"/>
-</map>

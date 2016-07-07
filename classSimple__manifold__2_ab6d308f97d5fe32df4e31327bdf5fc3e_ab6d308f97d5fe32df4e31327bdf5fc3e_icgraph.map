@@ -1,4 +1,0 @@
-<map id="is_real_border_edge" name="is_real_border_edge">
-<area shape="rect" id="node2" href="$classSimple__manifold__2_af44ed2c338be4e7d6ba15c813ac6ac42.html#af44ed2c338be4e7d6ba15c813ac6ac42" title="Get the ID of the destination of a given edge. " alt="" coords="214,5,325,32"/>
-<area shape="rect" id="node3" href="$classSimple__manifold__2_afaabce069f16be292e5dd4d8064bcd99.html#afaabce069f16be292e5dd4d8064bcd99" title="Get the ID of an incident real edge within the pane of a given node. " alt="" coords="192,56,347,83"/>
-</map>

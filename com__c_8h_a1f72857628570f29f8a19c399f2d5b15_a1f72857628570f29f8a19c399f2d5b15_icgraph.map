@@ -1,9 +1,0 @@
-<map id="COM_delete_window" name="COM_delete_window">
-<area shape="rect" id="node2" href="$namespaceSolverUtils_ada85c9258996a945bcfa817ffb6e6c51.html#ada85c9258996a945bcfa817ffb6e6c51" title="SolverUtils::DestroySolver" alt="" coords="211,5,389,32"/>
-<area shape="rect" id="node4" href="$classSolverUtils_1_1TransferObjectPar_a735bf8439c33b9d8f45d213ff1a113d6.html#a735bf8439c33b9d8f45d213ff1a113d6" title="SolverUtils::TransferObject\lPar::Overlay" alt="" coords="457,82,637,123"/>
-<area shape="rect" id="node6" href="$classSolverUtils_1_1TransferObjectPar_a3bf689e70e300071bc1b010c1fedaae9.html#a3bf689e70e300071bc1b010c1fedaae9" title="SolverUtils::TransferObject\lPar::read_file_rocin" alt="" coords="210,107,390,149"/>
-<area shape="rect" id="node7" href="$classIcoFoamMod_1_1IcoFoamModule_a1103cacab6c0af000e9c5aa579a3fc5f.html#a1103cacab6c0af000e9c5aa579a3fc5f" title="Unloads the IcoFoamModule. " alt="" coords="201,173,399,214"/>
-<area shape="rect" id="node3" href="$namespaceSolverUtils_ab41d23a53d2a634a1c6f547b487252be.html#ab41d23a53d2a634a1c6f547b487252be" title="SolverUtils::UnRegisterSolver" alt="" coords="448,5,645,32"/>
-<area shape="rect" id="node5" href="$classfsicouplingpar_ae855141f7b214925c25f7797b8b122a8.html#ae855141f7b214925c25f7797b8b122a8" title="fsicouplingpar::Initialize" alt="" coords="694,89,853,116"/>
-<area shape="rect" id="node8" href="$icoFoamModule_8C_ad3161c274f0cecf37126d9a51b82f9df.html#ad3161c274f0cecf37126d9a51b82f9df" title="C/C++ bindings to unload IcoFoamModule. " alt="" coords="467,173,627,214"/>
-</map>

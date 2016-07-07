@@ -1,25 +1,7 @@
 <map id="ElmerFoamDriverPar.C" name="ElmerFoamDriverPar.C">
-<area shape="rect" id="node2" href="$Driver_8H.html" title="Example program interface. " alt="" coords="694,155,764,181"/>
-<area shape="rect" id="node38" href="$Parameters_8H.html" title="Parameters object interface (for config files, etc) " alt="" coords="778,80,880,107"/>
-<area shape="rect" id="node39" href="$FsiCouplingPar_8H.html" title="Example serial program. " alt="" coords="1061,80,1187,107"/>
-<area shape="rect" id="node3" href="$Global_8H.html" title="Base global object header. " alt="" coords="867,229,940,256"/>
-<area shape="rect" id="node30" href="$Profiler_8H.html" title="Performance Profiling interface definition. " alt="" coords="571,379,648,405"/>
-<area shape="rect" id="node32" href="$com_8h.html" title="This file contains the prototypes for COM API. " alt="" coords="387,304,445,331"/>
-<area shape="rect" id="node4" href="$ComLine_8H.html" title="ComLineObject header. " alt="" coords="909,379,997,405"/>
-<area shape="rect" id="node11" href="$UnixUtils_8H.html" title="Unix System Tools interface. " alt="" coords="1513,379,1604,405"/>
-<area shape="rect" id="node23" href="$primitive__utilities_8H.html" title="Basic utility header. " alt="" coords="764,304,897,331"/>
-<area shape="rect" id="node26" href="$PrimitiveTypes_8H.html" title="Simple utility classes. " alt="" coords="763,379,885,405"/>
-<area shape="rect" id="node33" href="$com__c_8h.html" title="This file contains the C wrapper for COM_base. " alt="" coords="153,379,225,405"/>
-<area shape="rect" id="node34" href="$com__basic_8h.html" title="This file contains some definitions of macros and constants for COM. " alt="" coords="197,453,293,480"/>
-<area shape="rect" id="node36" href="$commpi_8h.html" title="Contains declarations of MPI subroutines used in COPM. " alt="" coords="94,453,172,480"/>
-<area shape="rect" id="node35" href="$FC_8h.html" title="FC.h" alt="" coords="220,528,271,555"/>
-<area shape="rect" id="node40" href="$InterfaceLayer_8H.html" title="InterfaceLayer.H" alt="" coords="1227,229,1345,256"/>
-<area shape="rect" id="node47" href="$Orchestrator_8H.html" title="Orchestrator.H" alt="" coords="1038,229,1145,256"/>
-<area shape="rect" id="node48" href="$OpenFoamParAgent_8H.html" title="OpenFoamParAgent.H" alt="" coords="1209,155,1364,181"/>
-<area shape="rect" id="node49" href="$ElmerParAgent_8H.html" title="ElmerParAgent.H" alt="" coords="930,155,1053,181"/>
-<area shape="rect" id="node42" href="$SolverAgent_8H.html" title="SolverAgent.H" alt="" coords="1617,304,1724,331"/>
-<area shape="rect" id="node43" href="$FEM_8H.html" title="Finite Element Stuff. " alt="" coords="2007,379,2071,405"/>
-<area shape="rect" id="node44" href="$FieldData_8H.html" title="Finite Element Stuff. " alt="" coords="1789,379,1880,405"/>
-<area shape="rect" id="node45" href="$NetUtils_8H.html" title="TCP/IP Network Utilities Interface. " alt="" coords="1629,379,1712,405"/>
-<area shape="rect" id="node46" href="$FDUtils_8H.html" title="Implementation of stream object for Unix file descriptors. " alt="" coords="1407,379,1488,405"/>
+<area shape="rect" id="node2" href="$Driver_8H.html" title="Example program interface. " alt="" coords="137,80,207,107"/>
+<area shape="rect" id="node7" href="$FsiCouplingPar_8H.html" title="Example serial program. " alt="" coords="411,80,536,107"/>
+<area shape="rect" id="node9" href="$Orchestrator_8H.html" title="Orchestrator.H" alt="" coords="477,229,584,256"/>
+<area shape="rect" id="node10" href="$OpenFoamParAgent_8H.html" title="OpenFoamParAgent.H" alt="" coords="339,155,493,181"/>
+<area shape="rect" id="node11" href="$ElmerParAgent_8H.html" title="ElmerParAgent.H" alt="" coords="569,155,692,181"/>
 </map>

@@ -1,5 +1,0 @@
-<map id="get_object" name="get_object">
-<area shape="rect" id="node2" href="$com__c_09_09_8hpp_a51cd80e32371211a6a01185579eff4ee.html#a51cd80e32371211a6a01185579eff4ee" title="COM_get_object" alt="" coords="136,12,256,39"/>
-<area shape="rect" id="node3" href="$classIcoFoamMod_1_1IcoFoamModule_a1103cacab6c0af000e9c5aa579a3fc5f.html#a1103cacab6c0af000e9c5aa579a3fc5f" title="Unloads the IcoFoamModule. " alt="" coords="305,5,503,46"/>
-<area shape="rect" id="node4" href="$icoFoamModule_8C_ad3161c274f0cecf37126d9a51b82f9df.html#ad3161c274f0cecf37126d9a51b82f9df" title="C/C++ bindings to unload IcoFoamModule. " alt="" coords="552,5,712,46"/>
-</map>

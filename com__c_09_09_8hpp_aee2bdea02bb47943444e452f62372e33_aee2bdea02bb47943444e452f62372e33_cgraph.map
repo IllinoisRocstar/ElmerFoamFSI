@@ -1,5 +1,0 @@
-<map id="COM_delete_window" name="COM_delete_window">
-<area shape="rect" id="node2" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="230,5,341,32"/>
-<area shape="rect" id="node4" href="$classCOM_1_1COM__base_ad19a2baf9f3506b153d077429ad0cf4c.html#ad19a2baf9f3506b153d077429ad0cf4c" title="Deletes a window with given name. " alt="" coords="200,57,371,98"/>
-<area shape="rect" id="node3" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="419,5,605,32"/>
-</map>

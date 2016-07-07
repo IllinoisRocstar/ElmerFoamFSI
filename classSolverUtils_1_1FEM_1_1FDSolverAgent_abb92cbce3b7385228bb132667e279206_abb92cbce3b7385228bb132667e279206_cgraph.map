@@ -1,5 +1,0 @@
-<map id="SendSolnMeta" name="SendSolnMeta">
-<area shape="rect" id="node2" href="$classSolverUtils_1_1FEM_1_1SolutionData_a62680bd659e55d37f379eb09498faf92.html#a62680bd659e55d37f379eb09498faf92" title="SolverUtils::FEM::Solution\lData::Meta" alt="" coords="161,5,338,46"/>
-<area shape="rect" id="node3" href="$classSolverUtils_1_1FEM_1_1SolverAgent_aca958a697df836ac67f3244d08d9ee6c.html#aca958a697df836ac67f3244d08d9ee6c" title="SolverUtils::FEM::Solver\lAgent::Solution" alt="" coords="166,70,333,111"/>
-<area shape="rect" id="node4" href="$classSolverUtils_1_1FEM_1_1SolutionMetaData_aedc536103a2890aab4790cbac466de4e.html#aedc536103a2890aab4790cbac466de4e" title="SolverUtils::FEM::Solution\lMetaData::WriteToStream" alt="" coords="161,135,338,177"/>
-</map>

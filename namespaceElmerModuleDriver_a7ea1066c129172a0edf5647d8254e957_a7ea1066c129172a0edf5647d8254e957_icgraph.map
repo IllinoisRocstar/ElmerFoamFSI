@@ -1,6 +1,6 @@
 <map id="TrapezoidQuadrature" name="TrapezoidQuadrature">
 <area shape="rect" id="node2" href="$classElmerModuleDriver_1_1TestingObject_a7928083cb5586c2b361e1d29a8dc2b54.html#a7928083cb5586c2b361e1d29a8dc2b54" title="Test for ElmerModuleDriver::TrapezoidQuadrature. " alt="" coords="197,31,355,87"/>
-<area shape="rect" id="node3" href="$classElmerModuleDriver_1_1TestingObject_a046f7ab06db0acf616b0d2bf3d3146aa.html#a046f7ab06db0acf616b0d2bf3d3146aa" title="Process all tests and populate a &quot;results&quot; object. " alt="" coords="405,5,563,46"/>
+<area shape="rect" id="node3" href="$classElmerModuleDriver_1_1TestingObject_a046f7ab06db0acf616b0d2bf3d3146aa.html#a046f7ab06db0acf616b0d2bf3d3146aa" title="ElmerModuleDriver::\lTestingObject::Process" alt="" coords="405,5,563,46"/>
 <area shape="rect" id="node6" href="$classElmerModuleDriver_1_1TestingObject_af1f07f14b9af7708e4264bb38937eed2.html#af1f07f14b9af7708e4264bb38937eed2" title="Runs a test specified by name. " alt="" coords="403,70,565,111"/>
 <area shape="rect" id="node4" href="$namespaceElmerModuleDriver_a657930328d3dc159ded2e9fd6473b2b6.html#a657930328d3dc159ded2e9fd6473b2b6" title="Drives the ElmerModuleDriver::TestObject. " alt="" coords="685,16,733,43"/>
 <area shape="rect" id="node5" href="$TestElmerModuleDriver_8C_a0ddf1224851353fc92bfbff6f499fa97.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="853,16,904,43"/>

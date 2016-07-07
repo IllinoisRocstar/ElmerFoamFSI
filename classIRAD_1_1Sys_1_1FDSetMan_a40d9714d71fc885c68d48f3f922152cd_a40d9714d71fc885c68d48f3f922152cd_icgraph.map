@@ -1,8 +1,0 @@
-<map id="Set" name="Set">
-<area shape="rect" id="node2" href="$classIRAD_1_1Sys_1_1FDSetMan_acf1d003a601d4a82079adc38c1d7101a.html#acf1d003a601d4a82079adc38c1d7101a" title="SetForIO" alt="" coords="105,5,180,32"/>
-<area shape="rect" id="node3" href="$classIRAD_1_1Sys_1_1FDSetMan_a8ff1bc1d59900d8e9f50614cd586171d.html#a8ff1bc1d59900d8e9f50614cd586171d" title="SetForRead" alt="" coords="97,56,189,83"/>
-<area shape="rect" id="node6" href="$classIRAD_1_1Sys_1_1FDSetMan_a6015264b4f6d57005a1a4b4fa917bac7.html#a6015264b4f6d57005a1a4b4fa917bac7" title="SetForWrite" alt="" coords="97,107,189,133"/>
-<area shape="rect" id="node4" href="$classIRAD_1_1Sys_1_1FDSetMan_ae8be13c2e52fd07dc30cb4434e9ad112.html#ae8be13c2e52fd07dc30cb4434e9ad112" title="ListenForInput" alt="" coords="242,31,347,57"/>
-<area shape="rect" id="node5" href="$classIRAD_1_1Sys_1_1FDSetMan_a4a5f7af65acef0284da146c0fb0a5cc1.html#a4a5f7af65acef0284da146c0fb0a5cc1" title="Select" alt="" coords="265,81,324,108"/>
-<area shape="rect" id="node7" href="$classIRAD_1_1Sys_1_1FDSetMan_a09e7b441bf87dcf52f15e99248682272.html#a09e7b441bf87dcf52f15e99248682272" title="ListenForOutput" alt="" coords="237,132,352,159"/>
-</map>

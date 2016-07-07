@@ -1,7 +1,0 @@
-<map id="Interpolate" name="Interpolate">
-<area shape="rect" id="node2" href="$namespaceSolverUtils_ab602f331b052ecdbea6aa8caa0eeed75.html#ab602f331b052ecdbea6aa8caa0eeed75" title="SolverUtils::COM_call\l_function" alt="" coords="151,5,303,46"/>
-<area shape="rect" id="node3" href="$com__c_09_09_8hpp_a86224e33f2e17b4cee6c3256bfdff75d.html#a86224e33f2e17b4cee6c3256bfdff75d" title="COM_get_dataitem_handle" alt="" coords="137,71,317,97"/>
-<area shape="rect" id="node4" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="387,41,498,68"/>
-<area shape="rect" id="node6" href="$classCOM_1_1COM__base_a9fd7945150b9f390f5560bce2b7ea375.html#a9fd7945150b9f390f5560bce2b7ea375" title="COM::COM_base::get\l_dataitem_handle" alt="" coords="366,93,519,134"/>
-<area shape="rect" id="node5" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="569,41,754,68"/>
-</map>

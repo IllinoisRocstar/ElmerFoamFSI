@@ -1,12 +1,3 @@
 <map id="main" name="main">
-<area shape="rect" id="node2" href="$com__c_09_09_8hpp_a6f9e4ea8f2cb977968964f4cb5a4b4f6.html#a6f9e4ea8f2cb977968964f4cb5a4b4f6" title="COM_call_function" alt="" coords="125,5,259,32"/>
-<area shape="rect" id="node3" href="$com__c_09_09_8hpp_a47ed797bddcdd0aabcd9f8e47f326744.html#a47ed797bddcdd0aabcd9f8e47f326744" title="COM_finalize" alt="" coords="141,56,243,83"/>
-<area shape="rect" id="node5" href="$com__c_09_09_8hpp_acbbf9749cce36d33b4c60c100bdfaea2.html#acbbf9749cce36d33b4c60c100bdfaea2" title="COM_get_function_handle" alt="" coords="104,107,280,133"/>
-<area shape="rect" id="node9" href="$com__c_09_09_8hpp_ac0f80d6e63759a2afe40ed883cea3d5e.html#ac0f80d6e63759a2afe40ed883cea3d5e" title="COM_init" alt="" coords="153,157,231,184"/>
-<area shape="rect" id="node11" href="$ElmerTest_2trunk_2src_2SolverModuleDriver_8C_a20c52ceae4a26c2a523366ace5cab784.html#a20c52ceae4a26c2a523366ace5cab784" title="usage" alt="" coords="163,208,221,235"/>
-<area shape="rect" id="node4" href="$classCOM_1_1COM__base_aa77ce2c05f3e9d82815db88996cfc1ed.html#aa77ce2c05f3e9d82815db88996cfc1ed" title="COM::COM_base::finalize" alt="" coords="328,27,504,53"/>
-<area shape="rect" id="node6" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="361,77,471,104"/>
-<area shape="rect" id="node8" href="$classCOM_1_1COM__base_a640995dd65a1fb030650457b9cf10b26.html#a640995dd65a1fb030650457b9cf10b26" title="COM::COM_base::get\l_function_handle" alt="" coords="339,129,493,170"/>
-<area shape="rect" id="node7" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="553,77,738,104"/>
-<area shape="rect" id="node10" href="$classCOM_1_1COM__base_a38b2bac03bb06f2d0ea5c99760da5f1c.html#a38b2bac03bb06f2d0ea5c99760da5f1c" title="COM::COM_base::init" alt="" coords="340,195,492,221"/>
+<area shape="rect" id="node2" href="$ElmerTest_2trunk_2src_2SolverModuleDriver_8C_a20c52ceae4a26c2a523366ace5cab784.html#a20c52ceae4a26c2a523366ace5cab784" title="usage" alt="" coords="105,5,162,32"/>
 </map>
