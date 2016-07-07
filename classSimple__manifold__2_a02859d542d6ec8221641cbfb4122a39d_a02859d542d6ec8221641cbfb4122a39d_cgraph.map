@@ -1,0 +1,11 @@
+<map id="get_next_edge" name="get_next_edge">
+<area shape="rect" id="node2" href="$classSimple__manifold__2_a71b06b680614a7e0c0947ec3899b913c.html#a71b06b680614a7e0c0947ec3899b913c" title="get_next_edge_interior" alt="" coords="173,179,326,205"/>
+<area shape="rect" id="node7" href="$classSimple__manifold__2_aef03f5e4c6a6a5d7c98c42ae04a241e2.html#aef03f5e4c6a6a5d7c98c42ae04a241e2" title="Get the opposite edge of a border edge for the whole pane. " alt="" coords="162,280,337,307"/>
+<area shape="rect" id="node9" href="$classSimple__manifold__2_a1250f39747158bc5a1ed2fa7a7013978.html#a1250f39747158bc5a1ed2fa7a7013978" title="Get the opposite edge of an interior edge of the whole pane. " alt="" coords="161,229,338,256"/>
+<area shape="rect" id="node10" href="$classSimple__manifold__2_ae3fa513cd4d468860658ba8f800ce661.html#ae3fa513cd4d468860658ba8f800ce661" title="get_prev_edge_interior" alt="" coords="173,77,326,104"/>
+<area shape="rect" id="node8" href="$classFacet__ID_aa126fd94949c810d24869ad04cd97e15.html#aa126fd94949c810d24869ad04cd97e15" title="Determines whether the facet is on border. " alt="" coords="387,331,525,357"/>
+<area shape="rect" id="node3" href="$classFacet__ID_a1dea367be190d5726e3aa6b8d0c47076.html#a1dea367be190d5726e3aa6b8d0c47076" title="Element ID of the halfedge. " alt="" coords="573,153,675,180"/>
+<area shape="rect" id="node4" href="$classSimple__manifold__2_a678219ca5d2b29febb0820f195f668ba.html#a678219ca5d2b29febb0820f195f668ba" title="Get an index for internal edges. " alt="" coords="399,179,513,205"/>
+<area shape="rect" id="node6" href="$classSimple__manifold__2_ab06c9b0093094a1e15b3c1d91b6d7012.html#ab06c9b0093094a1e15b3c1d91b6d7012" title="Is the element incident on the give edge a ghost element? " alt="" coords="394,77,518,104"/>
+<area shape="rect" id="node5" href="$classFacet__ID_ae7df635a2e18521c31e7da0b999b802b.html#ae7df635a2e18521c31e7da0b999b802b" title="Local edge ID of the halfedge within its element. " alt="" coords="575,229,673,256"/>
+</map>

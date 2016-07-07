@@ -1,0 +1,4 @@
+<map id="dimension" name="dimension">
+<area shape="rect" id="node2" href="$classConnectivity_aceba035151479eca5c69f9c88563e153.html#aceba035151479eca5c69f9c88563e153" title="Get the number of nodes in j&#45;dimension if the mesh is structured. " alt="" coords="139,5,195,32"/>
+<area shape="rect" id="node3" href="$classConnectivity_a66444a3572b3c45f5c5d6eb260238fc3.html#a66444a3572b3c45f5c5d6eb260238fc3" title="Get the number of nodes in k&#45;dimension if the mesh is structured. " alt="" coords="137,56,197,83"/>
+</map>

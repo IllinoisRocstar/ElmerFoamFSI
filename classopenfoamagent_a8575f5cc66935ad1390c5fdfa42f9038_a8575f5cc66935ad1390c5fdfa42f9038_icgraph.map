@@ -1,0 +1,8 @@
+<map id="returnNodeCoords" name="returnNodeCoords">
+<area shape="rect" id="node2" href="$classElmerFoamFSI_1_1TestingObject_a08d0370a943e7c47c0098eb76664a71b.html#a08d0370a943e7c47c0098eb76664a71b" title="Run an initialization check to make sure the OpenFoamFluids are running as they should. " alt="" coords="182,38,381,79"/>
+<area shape="rect" id="node3" href="$classElmerFoamFSI_1_1TestingObject_a046f7ab06db0acf616b0d2bf3d3146aa.html#a046f7ab06db0acf616b0d2bf3d3146aa" title="Runs all tests implemented by the ElmerFoamFSI::TestingObject. " alt="" coords="430,5,629,46"/>
+<area shape="rect" id="node6" href="$classElmerFoamFSI_1_1TestingObject_af1f07f14b9af7708e4264bb38937eed2.html#af1f07f14b9af7708e4264bb38937eed2" title="Runs a test specified by name. " alt="" coords="430,70,629,111"/>
+<area shape="rect" id="node4" href="$namespaceElmerFoamFSI_aeb590657609088b8ab12a5cbd164fcfa.html#aeb590657609088b8ab12a5cbd164fcfa" title="Drives the ElmerFoamFSI::TestObject. " alt="" coords="705,16,849,43"/>
+<area shape="rect" id="node5" href="$TestElmerFoamFSI_8C_a0ddf1224851353fc92bfbff6f499fa97.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="925,16,976,43"/>
+<area shape="rect" id="node7" href="$classElmerFoamFSI_1_1TestingObject_a21159bd2efac623e5a5079f6a20f3444.html#a21159bd2efac623e5a5079f6a20f3444" title="Runs a list of tests specified by name. " alt="" coords="678,70,877,111"/>
+</map>

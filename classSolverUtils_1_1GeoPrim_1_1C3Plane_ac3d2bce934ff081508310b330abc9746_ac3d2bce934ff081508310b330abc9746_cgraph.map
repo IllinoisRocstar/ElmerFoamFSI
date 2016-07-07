@@ -1,0 +1,9 @@
+<map id="contains_point" name="contains_point">
+<area shape="rect" id="node2" href="$classSolverUtils_1_1GeoPrim_1_1C3Plane_a59d61124cf2c200bc9417c5e5f3ca029.html#a59d61124cf2c200bc9417c5e5f3ca029" title="D" alt="" coords="161,176,199,203"/>
+<area shape="rect" id="node3" href="$classSolverUtils_1_1GeoPrim_1_1C3Point_a3b195b867437acf8de45f48c83e81932.html#a3b195b867437acf8de45f48c83e81932" title="SolverUtils::GeoPrim\l::C3Point::x" alt="" coords="249,5,394,46"/>
+<area shape="rect" id="node4" href="$classSolverUtils_1_1GeoPrim_1_1C3Vector_a3b195b867437acf8de45f48c83e81932.html#a3b195b867437acf8de45f48c83e81932" title="SolverUtils::GeoPrim\l::C3Vector::x" alt="" coords="249,70,394,111"/>
+<area shape="rect" id="node5" href="$classSolverUtils_1_1GeoPrim_1_1C3Point_ad927d9808ded1fc49c05ae9e1a3ed2a6.html#ad927d9808ded1fc49c05ae9e1a3ed2a6" title="SolverUtils::GeoPrim\l::C3Point::y" alt="" coords="249,135,394,177"/>
+<area shape="rect" id="node6" href="$classSolverUtils_1_1GeoPrim_1_1C3Vector_ad927d9808ded1fc49c05ae9e1a3ed2a6.html#ad927d9808ded1fc49c05ae9e1a3ed2a6" title="SolverUtils::GeoPrim\l::C3Vector::y" alt="" coords="249,201,394,242"/>
+<area shape="rect" id="node7" href="$classSolverUtils_1_1GeoPrim_1_1C3Point_a2134ad02d68f29e9c7cd87e4cd4c75b8.html#a2134ad02d68f29e9c7cd87e4cd4c75b8" title="SolverUtils::GeoPrim\l::C3Point::z" alt="" coords="249,266,394,307"/>
+<area shape="rect" id="node8" href="$classSolverUtils_1_1GeoPrim_1_1C3Vector_a2134ad02d68f29e9c7cd87e4cd4c75b8.html#a2134ad02d68f29e9c7cd87e4cd4c75b8" title="SolverUtils::GeoPrim\l::C3Vector::z" alt="" coords="249,331,394,373"/>
+</map>

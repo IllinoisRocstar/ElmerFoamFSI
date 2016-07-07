@@ -1,0 +1,5 @@
+<map id="Finalize" name="Finalize">
+<area shape="rect" id="node2" href="$classIRAD_1_1Global_1_1GlobalObj_a6068a393f390317c207fce14a60f9ef4.html#a6068a393f390317c207fce14a60f9ef4" title="Finalizes the global object, and it&#39;s profiler object. " alt="" coords="120,31,317,87"/>
+<area shape="rect" id="node3" href="$classIRAD_1_1Profiler_1_1ProfilerObj_aaacf18af7288392a800c7c449830fd06.html#aaacf18af7288392a800c7c449830fd06" title="Ready to finalize? " alt="" coords="366,5,519,46"/>
+<area shape="rect" id="node4" href="$classIRAD_1_1Profiler_1_1ProfilerObj_a47a17e5fa173afb5e3259c913ccee89c.html#a47a17e5fa173afb5e3259c913ccee89c" title="Shut down profiler. " alt="" coords="366,70,519,111"/>
+</map>

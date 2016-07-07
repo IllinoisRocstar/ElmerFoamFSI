@@ -1,0 +1,11 @@
+<map id="PopulateSolutionMetaDataFromPane" name="PopulateSolutionMetaDataFromPane">
+<area shape="rect" id="node2" href="$com__c_09_09_8hpp_a16b2a9aeed9d53bd2d11d4221ef2c148.html#a16b2a9aeed9d53bd2d11d4221ef2c148" title="COM_get_dataitem" alt="" coords="254,5,389,32"/>
+<area shape="rect" id="node6" href="$classSolverUtils_1_1FEM_1_1SolutionData_addf180ac6b7ba13756908f2f6218230c.html#addf180ac6b7ba13756908f2f6218230c" title="SolverUtils::FEM::Solution\lData::Data" alt="" coords="233,57,410,98"/>
+<area shape="rect" id="node7" href="$namespaceSolverUtils_a8a5727f4056aa951041899bcaa014800.html#a8a5727f4056aa951041899bcaa014800" title="GetDataItemNames" alt="" coords="252,123,391,149"/>
+<area shape="rect" id="node10" href="$classSolverUtils_1_1FEM_1_1SolutionData_a62680bd659e55d37f379eb09498faf92.html#a62680bd659e55d37f379eb09498faf92" title="SolverUtils::FEM::Solution\lData::Meta" alt="" coords="233,174,410,215"/>
+<area shape="rect" id="node3" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="683,35,794,61"/>
+<area shape="rect" id="node5" href="$classCOM_1_1COM__base_a74a5100529115d055808ef9aa5c369ba.html#a74a5100529115d055808ef9aa5c369ba" title="Information retrieval Get the information about an dataitem. " alt="" coords="459,57,613,98"/>
+<area shape="rect" id="node4" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="865,35,1050,61"/>
+<area shape="rect" id="node8" href="$com__c_09_09_8hpp_a48824b0cc48b3d1310e84d87c7af9c80.html#a48824b0cc48b3d1310e84d87c7af9c80" title="COM_get_dataitems" alt="" coords="465,123,607,149"/>
+<area shape="rect" id="node9" href="$classCOM_1_1COM__base_ac64b4d78268b8bf76bde91677b51a819.html#ac64b4d78268b8bf76bde91677b51a819" title="Obtain the user&#45;defined dataitems of the given window. " alt="" coords="662,115,815,157"/>
+</map>

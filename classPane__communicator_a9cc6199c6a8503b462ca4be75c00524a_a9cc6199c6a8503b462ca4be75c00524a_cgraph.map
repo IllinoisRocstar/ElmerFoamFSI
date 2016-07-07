@@ -1,0 +1,3 @@
+<map id="begin_update_shared_nodes" name="begin_update_shared_nodes">
+<area shape="rect" id="node2" href="$classPane__communicator_a02cc2c24d239640658d99057119afe2b.html#a02cc2c24d239640658d99057119afe2b" title="Initiates updating by calling MPI_Isend and MPI_Irecv. " alt="" coords="200,12,299,39"/>
+</map>

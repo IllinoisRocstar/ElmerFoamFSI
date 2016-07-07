@@ -1,0 +1,17 @@
+<map id="COM_base" name="COM_base">
+<area shape="rect" id="node2" href="$classCOM__map.html" title="COM_map\&lt; Window * \&gt;" alt="" coords="2024,923,2189,949"/>
+<area shape="rect" id="node24" href="$classCOM__map.html" title="Supports mapping from names to handles and vice&#45;versa for a module, window, function, or attribute. " alt="" coords="1381,980,1528,1007"/>
+<area shape="rect" id="node27" href="$classCOM__map.html" title="COM_map\&lt; Function * \&gt;" alt="" coords="1733,1208,1901,1235"/>
+<area shape="rect" id="node32" href="$classCOM__map.html" title="COM_map\&lt; std::pair\l\&lt; void *, std::set\&lt;\l std::string \&gt; \&gt; \&gt;" alt="" coords="1745,1025,1889,1081"/>
+<area shape="rect" id="node34" href="$classCOM__map.html" title="COM_map\&lt; DataItem * \&gt;" alt="" coords="2635,739,2807,765"/>
+<area shape="rect" id="node4" title="STL class. " alt="" coords="487,367,542,393"/>
+<area shape="rect" id="node12" href="$classFunction.html" title="A Function object corresponds to a function member of a window. " alt="" coords="772,456,844,483"/>
+<area shape="rect" id="node15" href="$classDataItem.html" title="A DataItem object is a data member of a window. " alt="" coords="2069,471,2145,497"/>
+<area shape="rect" id="node10" href="$classComponentInterface.html" title="A ComponentInterface object contains multiple panes and multiple data dataitems. " alt="" coords="1385,296,1525,323"/>
+<area shape="rect" id="node5" title="STL class. " alt="" coords="152,367,293,393"/>
+<area shape="rect" id="node6" title="STL class. " alt="" coords="760,165,856,192"/>
+<area shape="rect" id="node14" title="STL class. " alt="" coords="177,1039,268,1065"/>
+<area shape="rect" id="node16" href="$classPane.html" title="A Pane object contains a mesh, pane dataitem, and field variables. " alt="" coords="1791,343,1843,369"/>
+<area shape="rect" id="node18" href="$classConnectivity.html" title="Encapsulates an element&#45;connectivity of a mesh. " alt="" coords="2351,445,2446,472"/>
+<area shape="rect" id="node26" href="$classFunction__map.html" title="A map functions. " alt="" coords="2055,1332,2159,1359"/>
+</map>

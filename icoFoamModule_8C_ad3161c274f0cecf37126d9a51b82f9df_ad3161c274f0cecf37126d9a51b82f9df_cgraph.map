@@ -1,0 +1,9 @@
+<map id="IcoFoamModule_unload_module" name="IcoFoamModule_unload_module">
+<area shape="rect" id="node2" href="$classIcoFoamMod_1_1IcoFoamModule_a1103cacab6c0af000e9c5aa579a3fc5f.html#a1103cacab6c0af000e9c5aa579a3fc5f" title="Unloads the IcoFoamModule. " alt="" coords="214,63,413,105"/>
+<area shape="rect" id="node3" href="$com__c_09_09_8hpp_a51cd80e32371211a6a01185579eff4ee.html#a51cd80e32371211a6a01185579eff4ee" title="COM_get_object" alt="" coords="475,45,595,72"/>
+<area shape="rect" id="node7" href="$com__c_09_09_8hpp_aee2bdea02bb47943444e452f62372e33.html#aee2bdea02bb47943444e452f62372e33" title="COM_delete_window" alt="" coords="461,96,608,123"/>
+<area shape="rect" id="node4" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="686,71,797,97"/>
+<area shape="rect" id="node6" href="$classCOM_1_1COM__base_aec4f9e2e59d11104d344161f74803222.html#aec4f9e2e59d11104d344161f74803222" title="Associates an object with a specific window. " alt="" coords="665,5,818,46"/>
+<area shape="rect" id="node5" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="875,71,1061,97"/>
+<area shape="rect" id="node8" href="$classCOM_1_1COM__base_ad19a2baf9f3506b153d077429ad0cf4c.html#ad19a2baf9f3506b153d077429ad0cf4c" title="Deletes a window with given name. " alt="" coords="656,122,827,163"/>
+</map>

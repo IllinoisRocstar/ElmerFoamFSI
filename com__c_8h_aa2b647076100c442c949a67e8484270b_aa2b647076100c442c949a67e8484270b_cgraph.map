@@ -1,0 +1,5 @@
+<map id="COM_get_size" name="COM_get_size">
+<area shape="rect" id="node2" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="199,5,310,32"/>
+<area shape="rect" id="node4" href="$classCOM_1_1COM__base_a0059534958a2bbdd57080473206cd1d0.html#a0059534958a2bbdd57080473206cd1d0" title="Get the sizes of an dataitem. The opposite of set_size. " alt="" coords="163,56,347,83"/>
+<area shape="rect" id="node3" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="395,5,581,32"/>
+</map>

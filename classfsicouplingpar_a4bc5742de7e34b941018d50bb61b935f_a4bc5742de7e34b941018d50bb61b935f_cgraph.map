@@ -1,0 +1,10 @@
+<map id="writeWin" name="writeWin">
+<area shape="rect" id="node2" href="$com__c_09_09_8hpp_a6f9e4ea8f2cb977968964f4cb5a4b4f6.html#a6f9e4ea8f2cb977968964f4cb5a4b4f6" title="COM_call_function" alt="" coords="156,5,289,32"/>
+<area shape="rect" id="node3" href="$com__c_09_09_8hpp_a86224e33f2e17b4cee6c3256bfdff75d.html#a86224e33f2e17b4cee6c3256bfdff75d" title="COM_get_dataitem_handle" alt="" coords="133,56,313,83"/>
+<area shape="rect" id="node7" href="$com__c_09_09_8hpp_acbbf9749cce36d33b4c60c100bdfaea2.html#acbbf9749cce36d33b4c60c100bdfaea2" title="COM_get_function_handle" alt="" coords="135,107,311,133"/>
+<area shape="rect" id="node9" href="$classIRAD_1_1Global_1_1ParallelGlobalObj_a4dd674ae0f9681623f01b889752c92ff.html#a4dd674ae0f9681623f01b889752c92ff" title="IRAD::Global::ParallelGlobal\lObj::Rank" alt="" coords="129,158,317,199"/>
+<area shape="rect" id="node4" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="387,81,498,108"/>
+<area shape="rect" id="node6" href="$classCOM_1_1COM__base_a9fd7945150b9f390f5560bce2b7ea375.html#a9fd7945150b9f390f5560bce2b7ea375" title="COM::COM_base::get\l_dataitem_handle" alt="" coords="366,15,519,57"/>
+<area shape="rect" id="node5" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="569,81,754,108"/>
+<area shape="rect" id="node8" href="$classCOM_1_1COM__base_a640995dd65a1fb030650457b9cf10b26.html#a640995dd65a1fb030650457b9cf10b26" title="COM::COM_base::get\l_function_handle" alt="" coords="366,133,519,174"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="get_next_real_edge_interior" name="get_next_real_edge_interior">
+<area shape="rect" id="node2" href="$classSimple__manifold__2_a5526ffd6e536b2c699cd80d42c05d534.html#a5526ffd6e536b2c699cd80d42c05d534" title="Get the ID of an incident real edge within the pane of a given node The incident edge may encode an i..." alt="" coords="190,5,357,32"/>
+<area shape="rect" id="node3" href="$classSimple__manifold__2_a34afa4fb2467f7b53bfb153b728f08e0.html#a34afa4fb2467f7b53bfb153b728f08e0" title="Get the ID of the next real edge of the element or along the boundary. " alt="" coords="206,56,341,83"/>
+<area shape="rect" id="node4" href="$classSimple__manifold__2_ab2686d48e0f5957e3414e5e474803831.html#ab2686d48e0f5957e3414e5e474803831" title="Get the ID of the previous real edge of the element or along the boundary. " alt="" coords="206,107,341,133"/>
+</map>

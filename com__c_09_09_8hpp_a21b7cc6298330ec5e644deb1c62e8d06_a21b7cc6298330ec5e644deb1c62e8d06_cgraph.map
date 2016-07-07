@@ -1,0 +1,5 @@
+<map id="COM_deallocate_array" name="COM_deallocate_array">
+<area shape="rect" id="node2" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="250,5,361,32"/>
+<area shape="rect" id="node4" href="$classCOM_1_1COM__base_adc7d480f360dc3467302f5c6fd863f55.html#adc7d480f360dc3467302f5c6fd863f55" title="Deallocate space for an dataitem in a pane, asuming the memory was allocated allocate_mesh or allocat..." alt="" coords="208,57,403,98"/>
+<area shape="rect" id="node3" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="451,5,637,32"/>
+</map>

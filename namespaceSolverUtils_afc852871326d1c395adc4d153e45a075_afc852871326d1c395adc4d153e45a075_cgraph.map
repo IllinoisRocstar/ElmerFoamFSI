@@ -1,0 +1,10 @@
+<map id="PaneToUnstructuredMesh" name="PaneToUnstructuredMesh">
+<area shape="rect" id="node2" href="$classSolverUtils_1_1Mesh_1_1Connectivity_accee58099f80bf9563feaab47f721134.html#accee58099f80bf9563feaab47f721134" title="SolverUtils::Mesh::\lConnectivity::AddElement" alt="" coords="235,5,410,46"/>
+<area shape="rect" id="node3" href="$com__c_8h_a6dd240c15a2b3e85d2d91cbe9eec6611.html#a6dd240c15a2b3e85d2d91cbe9eec6611" title="Get the address for an dataitem on a specific pane. " alt="" coords="265,71,380,97"/>
+<area shape="rect" id="node4" href="$com__c_09_09_8hpp_a390dfbadbcb267ac867fabbcd586683b.html#a390dfbadbcb267ac867fabbcd586683b" title="COM_get_connectivities" alt="" coords="240,121,405,148"/>
+<area shape="rect" id="node8" href="$classSolverUtils_1_1Mesh_1_1NodalCoordinates_a63168d7692629b18626db5341564797a.html#a63168d7692629b18626db5341564797a" title="SolverUtils::Mesh::\lNodalCoordinates::init_copy" alt="" coords="229,173,416,214"/>
+<area shape="rect" id="node9" href="$classSolverUtils_1_1Mesh_1_1Connectivity_a8b1fa3c57790c589817637cca2118cfe.html#a8b1fa3c57790c589817637cca2118cfe" title="SolverUtils::Mesh::\lConnectivity::ShrinkWrap" alt="" coords="237,238,408,279"/>
+<area shape="rect" id="node5" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="486,92,597,119"/>
+<area shape="rect" id="node7" href="$classCOM_1_1COM__base_a21440170f046287a32a2ca776c9fd16c.html#a21440170f046287a32a2ca776c9fd16c" title="Obtain the connectivity tables of a pane of the given window. " alt="" coords="465,143,618,185"/>
+<area shape="rect" id="node6" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="667,92,853,119"/>
+</map>

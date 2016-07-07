@@ -1,0 +1,6 @@
+<map id="GetDataItemNames" name="GetDataItemNames">
+<area shape="rect" id="node2" href="$com__c_09_09_8hpp_a48824b0cc48b3d1310e84d87c7af9c80.html#a48824b0cc48b3d1310e84d87c7af9c80" title="COM_get_dataitems" alt="" coords="193,35,335,61"/>
+<area shape="rect" id="node3" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="406,5,517,32"/>
+<area shape="rect" id="node5" href="$classCOM_1_1COM__base_ac64b4d78268b8bf76bde91677b51a819.html#ac64b4d78268b8bf76bde91677b51a819" title="Obtain the user&#45;defined dataitems of the given window. " alt="" coords="385,57,538,98"/>
+<area shape="rect" id="node4" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="587,5,773,32"/>
+</map>

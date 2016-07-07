@@ -1,0 +1,26 @@
+var GeoPrimitives_8H =
+[
+    [ "CPoint", "classSolverUtils_1_1GeoPrim_1_1CPoint.html", "classSolverUtils_1_1GeoPrim_1_1CPoint" ],
+    [ "CVector", "classSolverUtils_1_1GeoPrim_1_1CVector.html", "classSolverUtils_1_1GeoPrim_1_1CVector" ],
+    [ "C3Point", "classSolverUtils_1_1GeoPrim_1_1C3Point.html", "classSolverUtils_1_1GeoPrim_1_1C3Point" ],
+    [ "C3Vector", "classSolverUtils_1_1GeoPrim_1_1C3Vector.html", "classSolverUtils_1_1GeoPrim_1_1C3Vector" ],
+    [ "CLine", "classSolverUtils_1_1GeoPrim_1_1CLine.html", "classSolverUtils_1_1GeoPrim_1_1CLine" ],
+    [ "CLineSegment", "classSolverUtils_1_1GeoPrim_1_1CLineSegment.html", "classSolverUtils_1_1GeoPrim_1_1CLineSegment" ],
+    [ "C3Line", "classSolverUtils_1_1GeoPrim_1_1C3Line.html", "classSolverUtils_1_1GeoPrim_1_1C3Line" ],
+    [ "C3LineSegment", "classSolverUtils_1_1GeoPrim_1_1C3LineSegment.html", "classSolverUtils_1_1GeoPrim_1_1C3LineSegment" ],
+    [ "CBox", "classSolverUtils_1_1GeoPrim_1_1CBox.html", "classSolverUtils_1_1GeoPrim_1_1CBox" ],
+    [ "C3Box", "classSolverUtils_1_1GeoPrim_1_1C3Box.html", "classSolverUtils_1_1GeoPrim_1_1C3Box" ],
+    [ "CPlane", "classSolverUtils_1_1GeoPrim_1_1CPlane.html", "classSolverUtils_1_1GeoPrim_1_1CPlane" ],
+    [ "C3Plane", "classSolverUtils_1_1GeoPrim_1_1C3Plane.html", "classSolverUtils_1_1GeoPrim_1_1C3Plane" ],
+    [ "CFacet", "classSolverUtils_1_1GeoPrim_1_1CFacet.html", "classSolverUtils_1_1GeoPrim_1_1CFacet" ],
+    [ "C3Facet", "classSolverUtils_1_1GeoPrim_1_1C3Facet.html", "classSolverUtils_1_1GeoPrim_1_1C3Facet" ],
+    [ "C3Centroid", "GeoPrimitives_8H.html#aff0e18a324aa98aadd0903809e17e47f", null ],
+    [ "Centroid", "GeoPrimitives_8H.html#a30f39235fc9522905b0566e9185d47f1", null ],
+    [ "Distance", "GeoPrimitives_8H.html#a6d1b15740956b6c5e3cdc8fe7a02fb8b", null ],
+    [ "Distance", "GeoPrimitives_8H.html#a0bfd2d3d247f56e0e732cc3ebff2be45", null ],
+    [ "Distance", "GeoPrimitives_8H.html#aa96cef4817f4067cd95e1928190ef047", null ],
+    [ "Transpose", "GeoPrimitives_8H.html#ac6faa8a1f4b0e3ba56ad35bdf78a7600", null ],
+    [ "Transpose_2x3", "GeoPrimitives_8H.html#a969e92696e75af58e78d085c94df4d85", null ],
+    [ "PI", "GeoPrimitives_8H.html#a952eac791b596a61bba0a133a3bb439f", null ],
+    [ "TOL", "GeoPrimitives_8H.html#a826e1b6d8f7888032cded335c8f5a8b2", null ]
+];

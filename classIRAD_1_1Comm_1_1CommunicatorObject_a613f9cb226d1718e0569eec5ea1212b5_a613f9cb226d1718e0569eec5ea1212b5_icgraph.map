@@ -1,0 +1,8 @@
+<map id="Gather" name="Gather">
+<area shape="rect" id="node2" href="$classIRAD_1_1Comm_1_1CommunicatorObject_a105abb0b07bba73ac96ea42d21b31bb1.html#a105abb0b07bba73ac96ea42d21b31bb1" title="AllGatherMO" alt="" coords="119,5,217,32"/>
+<area shape="rect" id="node3" href="$classIRAD_1_1Comm_1_1CommunicatorObject_af8875a37d3350bba6bc6836d5e52557b.html#af8875a37d3350bba6bc6836d5e52557b" title="AllGatherMOV" alt="" coords="115,56,221,83"/>
+<area shape="rect" id="node4" href="$classIRAD_1_1Comm_1_1CommunicatorObject_af30bbfabcc659ee2de92caa170cfa080.html#af30bbfabcc659ee2de92caa170cfa080" title="GatherMO" alt="" coords="127,107,209,133"/>
+<area shape="rect" id="node5" href="$classIRAD_1_1Comm_1_1CommunicatorObject_a2e690f599d0d101ad0fb1e127a65ca3b.html#a2e690f599d0d101ad0fb1e127a65ca3b" title="GatherMOV" alt="" coords="123,157,213,184"/>
+<area shape="rect" id="node6" href="$classIRAD_1_1Comm_1_1CommunicatorObject_ac14d54654ce657276552aa315da5ab37.html#ac14d54654ce657276552aa315da5ab37" title="Gatherv" alt="" coords="134,208,202,235"/>
+<area shape="rect" id="node7" href="$namespaceCOM_ac3c87a84f9357bebe23933f58fa16aef.html#ac3c87a84f9357bebe23933f58fa16aef" title="COM::parallelProgram" alt="" coords="270,208,421,235"/>
+</map>

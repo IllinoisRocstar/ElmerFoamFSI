@@ -1,0 +1,8 @@
+<map id="get_incident_edge" name="get_incident_edge">
+<area shape="rect" id="node2" href="$classFacet__ID_a1dea367be190d5726e3aa6b8d0c47076.html#a1dea367be190d5726e3aa6b8d0c47076" title="Element ID of the halfedge. " alt="" coords="368,7,469,33"/>
+<area shape="rect" id="node3" href="$classSimple__manifold__2_a678219ca5d2b29febb0820f195f668ba.html#a678219ca5d2b29febb0820f195f668ba" title="Get an index for internal edges. " alt="" coords="194,32,307,59"/>
+<area shape="rect" id="node5" href="$classSimple__manifold__2_a96857d0e0525ef06c2590d22d2acf0c1.html#a96857d0e0525ef06c2590d22d2acf0c1" title="Get the ID of the origin of a given edge. " alt="" coords="211,83,290,109"/>
+<area shape="rect" id="node6" href="$classFacet__ID_aa126fd94949c810d24869ad04cd97e15.html#aa126fd94949c810d24869ad04cd97e15" title="Determines whether the facet is on border. " alt="" coords="182,133,319,160"/>
+<area shape="rect" id="node7" href="$classSimple__manifold__2_ab10e70cbf6e6aeedb1e3dd1cab81ebf8.html#ab10e70cbf6e6aeedb1e3dd1cab81ebf8" title="Is the given node a ghost node? " alt="" coords="197,184,304,211"/>
+<area shape="rect" id="node4" href="$classFacet__ID_ae7df635a2e18521c31e7da0b999b802b.html#ae7df635a2e18521c31e7da0b999b802b" title="Local edge ID of the halfedge within its element. " alt="" coords="370,83,467,109"/>
+</map>

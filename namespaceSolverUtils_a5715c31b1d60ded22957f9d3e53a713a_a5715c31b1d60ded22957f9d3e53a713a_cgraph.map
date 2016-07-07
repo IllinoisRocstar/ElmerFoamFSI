@@ -1,0 +1,12 @@
+<map id="CreateDataItemsFromSolution" name="CreateDataItemsFromSolution">
+<area shape="rect" id="node2" href="$com__c_09_09_8hpp_a8d14cf34eccebd1168103d4624ac2677.html#a8d14cf34eccebd1168103d4624ac2677" title="Registering an dataitem type. " alt="" coords="272,96,413,123"/>
+<area shape="rect" id="node6" href="$com__c_09_09_8hpp_adca6827f3c065859156fa3562c2cd9a8.html#adca6827f3c065859156fa3562c2cd9a8" title="Associates an array with an dataitem for a specific pane. " alt="" coords="285,45,400,72"/>
+<area shape="rect" id="node8" href="$com__c_09_09_8hpp_a000a075fb1782d7eeaae75a7136e6411.html#a000a075fb1782d7eeaae75a7136e6411" title="Set sizes of for a specific dataitem. " alt="" coords="288,147,397,173"/>
+<area shape="rect" id="node10" href="$classSolverUtils_1_1FEM_1_1SolutionData_addf180ac6b7ba13756908f2f6218230c.html#addf180ac6b7ba13756908f2f6218230c" title="SolverUtils::FEM::Solution\lData::Data" alt="" coords="254,198,431,239"/>
+<area shape="rect" id="node11" href="$classSolverUtils_1_1FEM_1_1SolutionData_a62680bd659e55d37f379eb09498faf92.html#a62680bd659e55d37f379eb09498faf92" title="SolverUtils::FEM::Solution\lData::Meta" alt="" coords="254,263,431,305"/>
+<area shape="rect" id="node3" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="517,71,627,97"/>
+<area shape="rect" id="node5" href="$classCOM_1_1COM__base_a3f8b62a994717d5b99e6e48280ea94a1.html#a3f8b62a994717d5b99e6e48280ea94a1" title="Creates a new dataitem for a window. " alt="" coords="493,122,651,163"/>
+<area shape="rect" id="node4" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="713,71,898,97"/>
+<area shape="rect" id="node7" href="$classCOM_1_1COM__base_a57c037aa472a815dda4667bb7cb2f986.html#a57c037aa472a815dda4667bb7cb2f986" title="Associates an array with an dataitem for a specific pane. " alt="" coords="495,5,649,46"/>
+<area shape="rect" id="node9" href="$classCOM_1_1COM__base_aeeab27fa8f95627604ddb3d48dcc15d0.html#aeeab27fa8f95627604ddb3d48dcc15d0" title="Set the sizes of an dataitem. " alt="" coords="480,188,664,215"/>
+</map>

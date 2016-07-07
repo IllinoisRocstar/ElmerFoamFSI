@@ -1,0 +1,25 @@
+\form#0:$ F $
+\form#1:$ S $
+\form#2:$ \delta_y $
+\form#3:$ \bar{U}=2 m/s $
+\form#4:$ T_{trans} = 0.1s $
+\form#5:$ U $
+\form#6:$ p $
+\form#7:$ \delta_z $
+\form#8:$ L = 1.0 m $
+\form#9:$ h_s = 0.01 m $
+\form#10:$ h_f = 0.9 m $
+\form#11:$ U_{max} = 1.5 m/s $
+\form#12:$ y = 0.46 m $
+\form#13:$ T = 5 $
+\form#14:$\pi$
+\form#15:$2x$
+\form#16:$3x^2$
+\form#17:$[x_0,x_n]$
+\form#18:$\int_{x_0}^{x_n}{f(x)}{dx}$
+\form#19:$h = \frac{(x_n - x_0)}{n}$
+\form#20:$x_i = x_0 + {i}{h}$
+\form#21:$\int_{x_0}^{x_n}{f(x)}{dx} \approx \frac{h}{2}\sum_{i=1}^{n}(f(x_{i-1}) + f(x_i))$
+\form#22:$O(h^2)$
+\form#23:$x_i = x_0 + h(i-\frac{1}{2})$
+\form#24:$\int_{x_0}^{x_n}{f(x)}{dx} \approx h\sum_{i=1}^{n}f(x_i)$

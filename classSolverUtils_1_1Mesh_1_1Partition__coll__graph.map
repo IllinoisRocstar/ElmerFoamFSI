@@ -1,0 +1,15 @@
+<map id="Partition" name="Partition">
+<area shape="rect" id="node2" href="$structSolverUtils_1_1Mesh_1_1PartInfo.html" title="PartInfo" alt="" coords="1487,63,1555,89"/>
+<area shape="rect" id="node3" href="$classSolverUtils_1_1Mesh_1_1MeshUtilityObject.html" title="MeshUtilityObject" alt="" coords="1458,492,1585,519"/>
+<area shape="rect" id="node5" href="$classSolverUtils_1_1Mesh_1_1Connectivity.html" title="General connectivity object. " alt="" coords="906,525,1001,552"/>
+<area shape="rect" id="node6" title="STL class. " alt="" coords="342,513,501,554"/>
+<area shape="rect" id="node9" title="STL class. " alt="" coords="207,185,297,212"/>
+<area shape="rect" id="node17" href="$structSolverUtils_1_1Mesh_1_1BorderData.html" title="Border data in CSR format. " alt="" coords="909,323,997,349"/>
+<area shape="rect" id="node16" href="$structSolverUtils_1_1Mesh_1_1Border.html" title="Border" alt="" coords="1181,261,1241,288"/>
+<area shape="rect" id="node10" href="$classSolverUtils_1_1Mesh_1_1NodalCoordinates.html" title="NodalCoordinates" alt="" coords="1147,561,1274,588"/>
+<area shape="rect" id="node11" title="STL class. " alt="" coords="919,576,988,603"/>
+<area shape="rect" id="node12" title="STL class. " alt="" coords="539,576,695,603"/>
+<area shape="rect" id="node13" title="STL class. " alt="" coords="187,576,317,603"/>
+<area shape="rect" id="node14" title="STL class. " alt="" coords="5,576,80,603"/>
+<area shape="rect" id="node19" href="$classIRAD_1_1Comm_1_1CommunicatorObject.html" title="Main encapsulation of MPI. " alt="" coords="881,83,1026,109"/>
+</map>

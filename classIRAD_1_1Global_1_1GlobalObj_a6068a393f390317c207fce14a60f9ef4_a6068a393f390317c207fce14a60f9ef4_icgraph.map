@@ -1,0 +1,5 @@
+<map id="Finalize" name="Finalize">
+<area shape="rect" id="node2" href="$classIRAD_1_1Global_1_1ParallelGlobalObj_a6068a393f390317c207fce14a60f9ef4.html#a6068a393f390317c207fce14a60f9ef4" title="Finalizes the global object, and it&#39;s profiler object. " alt="" coords="125,5,313,46"/>
+<area shape="rect" id="node4" href="$classIRAD_1_1Global_1_1GlobalObj_a1002b39fde269968d0cd89e5c65156bc.html#a1002b39fde269968d0cd89e5c65156bc" title="Destructor. " alt="" coords="120,71,317,127"/>
+<area shape="rect" id="node3" href="$classIRAD_1_1Global_1_1ParallelGlobalObj_a296775151b07a657e5ab3ed954284d96.html#a296775151b07a657e5ab3ed954284d96" title="IRAD::Global::ParallelGlobal\lObj::~ParallelGlobalObj" alt="" coords="366,5,554,46"/>
+</map>

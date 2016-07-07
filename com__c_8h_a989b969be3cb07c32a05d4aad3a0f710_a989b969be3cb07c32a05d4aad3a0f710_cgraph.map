@@ -1,0 +1,5 @@
+<map id="COM_allocate_array" name="COM_allocate_array">
+<area shape="rect" id="node2" href="$classCOM_1_1COM__base_a35f0eafbb78399e7cfc8f8cfb34bdc35.html#a35f0eafbb78399e7cfc8f8cfb34bdc35" title="Allocate space for an dataitem on a specific pane and return the address by setting addr..." alt="" coords="195,5,375,46"/>
+<area shape="rect" id="node3" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="230,71,341,97"/>
+<area shape="rect" id="node4" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="425,71,610,97"/>
+</map>

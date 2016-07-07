@@ -1,0 +1,14 @@
+<map id="get_incident_ghost_edge" name="get_incident_ghost_edge">
+<area shape="rect" id="node2" href="$classFacet__ID_a1dea367be190d5726e3aa6b8d0c47076.html#a1dea367be190d5726e3aa6b8d0c47076" title="Element ID of the halfedge. " alt="" coords="813,239,915,265"/>
+<area shape="rect" id="node3" href="$classSimple__manifold__2_a5a0839973515aaf6ec86f3e88d6e1034.html#a5a0839973515aaf6ec86f3e88d6e1034" title="get_next_real_edge\l_interior" alt="" coords="437,5,571,46"/>
+<area shape="rect" id="node7" href="$classSimple__manifold__2_aaadb5ad421b2b96276a92c40c3331517.html#aaadb5ad421b2b96276a92c40c3331517" title="Get the opposite edge of a border edge for the real pane. " alt="" coords="222,426,381,467"/>
+<area shape="rect" id="node10" href="$classSimple__manifold__2_a97484283cf37c9ffd5d002c22335d5db.html#a97484283cf37c9ffd5d002c22335d5db" title="Get the opposite edge of an interior edge of the real part. " alt="" coords="222,231,381,273"/>
+<area shape="rect" id="node8" href="$classFacet__ID_aa126fd94949c810d24869ad04cd97e15.html#aa126fd94949c810d24869ad04cd97e15" title="Determines whether the facet is on border. " alt="" coords="627,315,765,341"/>
+<area shape="rect" id="node12" href="$classSimple__manifold__2_a219c54c922bc32a373e463ccb5d683c8.html#a219c54c922bc32a373e463ccb5d683c8" title="Determine whether a given edge is a border edge of ghost part of the pane (either on physical border ..." alt="" coords="429,492,579,519"/>
+<area shape="rect" id="node13" href="$classSimple__manifold__2_ab10e70cbf6e6aeedb1e3dd1cab81ebf8.html#ab10e70cbf6e6aeedb1e3dd1cab81ebf8" title="Is the given node a ghost node? " alt="" coords="248,644,355,671"/>
+<area shape="rect" id="node4" href="$classSimple__manifold__2_a678219ca5d2b29febb0820f195f668ba.html#a678219ca5d2b29febb0820f195f668ba" title="Get an index for internal edges. " alt="" coords="639,87,753,113"/>
+<area shape="rect" id="node6" href="$classSimple__manifold__2_ab06c9b0093094a1e15b3c1d91b6d7012.html#ab06c9b0093094a1e15b3c1d91b6d7012" title="Is the element incident on the give edge a ghost element? " alt="" coords="634,137,758,164"/>
+<area shape="rect" id="node5" href="$classFacet__ID_ae7df635a2e18521c31e7da0b999b802b.html#ae7df635a2e18521c31e7da0b999b802b" title="Local edge ID of the halfedge within its element. " alt="" coords="815,87,913,113"/>
+<area shape="rect" id="node9" href="$classSimple__manifold__2_ae1611b1b5b6feb95d11d299ef4150866.html#ae1611b1b5b6feb95d11d299ef4150866" title="Is the element incident on the give edge a real element? " alt="" coords="447,391,561,417"/>
+<area shape="rect" id="node11" href="$classSimple__manifold__2_aa81d979ace76b3412a00645efe09cfff.html#aa81d979ace76b3412a00645efe09cfff" title="Get the opposite edge of an interior edge of the ghost part. " alt="" coords="437,173,571,214"/>
+</map>

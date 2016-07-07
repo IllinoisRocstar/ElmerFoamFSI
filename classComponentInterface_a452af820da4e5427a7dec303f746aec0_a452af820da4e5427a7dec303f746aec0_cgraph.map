@@ -1,0 +1,3 @@
+<map id="resize_array" name="resize_array">
+<area shape="rect" id="node2" href="$classComponentInterface_a75ab2c76d299590bf8e3b23885b6a5bd.html#a75ab2c76d299590bf8e3b23885b6a5bd" title="Template implementation for setting (op==OP_SET or OP_SET_CONST), allocating (op==OP_ALLOC), resizing (op==OP_RESIZE) and deallocating (op==OP_DEALLOC) an array for a specific connectivity table. " alt="" coords="147,5,232,32"/>
+</map>

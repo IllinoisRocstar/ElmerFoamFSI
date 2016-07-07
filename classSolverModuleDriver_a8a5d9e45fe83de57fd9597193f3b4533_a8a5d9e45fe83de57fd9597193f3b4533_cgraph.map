@@ -1,0 +1,9 @@
+<map id="finalize" name="finalize">
+<area shape="rect" id="node2" href="$com__c_09_09_8hpp_a6f9e4ea8f2cb977968964f4cb5a4b4f6.html#a6f9e4ea8f2cb977968964f4cb5a4b4f6" title="COM_call_function" alt="" coords="139,5,272,32"/>
+<area shape="rect" id="node3" href="$com__c_09_09_8hpp_a47ed797bddcdd0aabcd9f8e47f326744.html#a47ed797bddcdd0aabcd9f8e47f326744" title="COM_finalize" alt="" coords="155,56,256,83"/>
+<area shape="rect" id="node5" href="$com__c_09_09_8hpp_acbbf9749cce36d33b4c60c100bdfaea2.html#acbbf9749cce36d33b4c60c100bdfaea2" title="COM_get_function_handle" alt="" coords="117,107,293,133"/>
+<area shape="rect" id="node4" href="$classCOM_1_1COM__base_aa77ce2c05f3e9d82815db88996cfc1ed.html#aa77ce2c05f3e9d82815db88996cfc1ed" title="COM::COM_base::finalize" alt="" coords="341,56,517,83"/>
+<area shape="rect" id="node6" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="374,107,485,133"/>
+<area shape="rect" id="node8" href="$classCOM_1_1COM__base_a640995dd65a1fb030650457b9cf10b26.html#a640995dd65a1fb030650457b9cf10b26" title="COM::COM_base::get\l_function_handle" alt="" coords="353,158,506,199"/>
+<area shape="rect" id="node7" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="566,107,751,133"/>
+</map>

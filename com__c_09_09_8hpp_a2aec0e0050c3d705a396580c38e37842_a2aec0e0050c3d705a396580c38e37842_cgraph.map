@@ -1,0 +1,5 @@
+<map id="COM_wait" name="COM_wait">
+<area shape="rect" id="node2" href="$COM__base_8hpp_a49353596e53127db61529b5c9000549d.html#a49353596e53127db61529b5c9000549d" title="COM_get_com" alt="" coords="163,5,274,32"/>
+<area shape="rect" id="node4" href="$classCOM_1_1COM__base_a7db6a06f2a8c8172040f5b1b6b161e3e.html#a7db6a06f2a8c8172040f5b1b6b161e3e" title="Wait for the completion of a nonblocking call. " alt="" coords="139,56,298,83"/>
+<area shape="rect" id="node3" href="$classCOM_1_1COM__base_a77bb770b9ec1aac99361c45efbccabc1.html#a77bb770b9ec1aac99361c45efbccabc1" title="Get a pointer to the COM object. " alt="" coords="347,5,533,32"/>
+</map>

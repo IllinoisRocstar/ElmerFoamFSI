@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classimpact_1_1orchestrator_1_1couplingbase.html" title="couplingbase" alt="" coords="43,5,141,32"/>
+<area shape="rect" id="node2" href="$classfsicoupling.html" title="fsicoupling" alt="" coords="293,31,377,57"/>
+<area shape="rect" id="node3" href="$classfsicouplingpar.html" title="fsicouplingpar" alt="" coords="491,39,594,65"/>
+<area shape="rect" id="node4" href="$classIRAD_1_1Global_1_1GlobalObj.html" title="Base global object. " alt="" coords="5,59,179,101"/>
+<area shape="rect" id="node5" href="$classIRAD_1_1Global_1_1ParallelGlobalObj.html" title="ParallelGlobalObj\&lt;\l CommunicatorType, StackType,\l ErrorType, ProfilerType \&gt;" alt="" coords="227,81,442,137"/>
+</map>

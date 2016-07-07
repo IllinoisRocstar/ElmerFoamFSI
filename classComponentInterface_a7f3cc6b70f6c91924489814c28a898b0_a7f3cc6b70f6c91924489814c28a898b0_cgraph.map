@@ -1,0 +1,3 @@
+<map id="resize_array" name="resize_array">
+<area shape="rect" id="node2" href="$classComponentInterface_a5c248ed8f035deb9121bc772abfff4ef.html#a5c248ed8f035deb9121bc772abfff4ef" title="Implementation for setting (op==OP_SET or OP_SET_CONST), allocating (op==OP_ALLOC), resizing (op==OP_RESIZE) and deallocating (op==OP_DEALLOC) an array for a specific dataitem. " alt="" coords="147,5,253,32"/>
+</map>
