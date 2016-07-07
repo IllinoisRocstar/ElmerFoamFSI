@@ -1,2 +1,5 @@
 ilrocstar_workstation_parallel.csh
 ilrocstar_workstation_parallel2.csh
+regDynamic_4.csh
+regStatic_4.csh
+regHTFSI3_4.csh

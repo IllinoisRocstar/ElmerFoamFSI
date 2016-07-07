@@ -1,0 +1,1 @@
+../Testing/test_scripts/regDynamic_4.csh

@@ -1,0 +1,1 @@
+../Testing/test_scripts/regStatic_4.csh
