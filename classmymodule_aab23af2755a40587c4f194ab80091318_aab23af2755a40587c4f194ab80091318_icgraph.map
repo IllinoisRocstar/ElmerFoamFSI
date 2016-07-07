@@ -1,5 +1,0 @@
-<map id="setinitialconditions" name="setinitialconditions">
-<area shape="rect" id="node3" href="$MyInitialize_8F90_a5efd0681c40e89427aed63760a3dd706.html#a5efd0681c40e89427aed63760a3dd706" title="ElmerLib Elmer library routines " alt="" coords="185,5,271,35"/>
-<area shape="rect" id="node5" href="$SolverModule_8F90_a4de4792abefc1f58f85b334aa265a623.html#a4de4792abefc1f58f85b334aa265a623" title="A caller for the Elmer main program. " alt="" coords="321,5,393,35"/>
-<area shape="rect" id="node7" href="$SolverModule_8F90_a2363fcb6699317c59c1f2f041ee860d2.html#a2363fcb6699317c59c1f2f041ee860d2" title="solvermodule_load_module" alt="" coords="443,5,621,35"/>
-</map>

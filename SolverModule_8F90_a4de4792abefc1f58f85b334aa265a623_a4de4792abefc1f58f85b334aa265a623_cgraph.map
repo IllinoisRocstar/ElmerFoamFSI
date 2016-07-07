@@ -1,9 +1,0 @@
-<map id="initializer" name="initializer">
-<area shape="rect" id="node3" href="$MyInitialize_8F90_a5efd0681c40e89427aed63760a3dd706.html#a5efd0681c40e89427aed63760a3dd706" title="ElmerLib Elmer library routines " alt="" coords="129,85,215,115"/>
-<area shape="rect" id="node5" href="$classmymodule_a365409624821229f0d7ab61da0d3c6ba.html#a365409624821229f0d7ab61da0d3c6ba" title="Adds coordinate and time variables to the current mesh structure. " alt="" coords="264,5,520,35"/>
-<area shape="rect" id="node7" href="$classmymodule_a9fa4925b1884bc7bd5f9bb2cdddf2bbe.html#a9fa4925b1884bc7bd5f9bb2cdddf2bbe" title="Adds flags for active solvers. " alt="" coords="316,59,468,88"/>
-<area shape="rect" id="node9" href="$classmymodule_ace41a25456bb516f0f9ee96e9eed55ed.html#ace41a25456bb516f0f9ee96e9eed55ed" title="mymodule::addvtuoutputsolverhack" alt="" coords="279,112,505,141"/>
-<area shape="rect" id="node11" href="$classmymodule_aab23af2755a40587c4f194ab80091318.html#aab23af2755a40587c4f194ab80091318" title="Sets initial conditions for the fields. " alt="" coords="293,165,491,195"/>
-<area shape="rect" id="node13" href="$classmymodule_a35170c044edf9e26057c957be782d749.html#a35170c044edf9e26057c957be782d749" title="Check if we are restarting are if yes, read in field values. " alt="" coords="573,139,699,168"/>
-<area shape="rect" id="node15" href="$classmymodule_af55e87fced73725324f9022ee5612521.html#af55e87fced73725324f9022ee5612521" title="mymodule::initcond" alt="" coords="569,192,703,221"/>
-</map>

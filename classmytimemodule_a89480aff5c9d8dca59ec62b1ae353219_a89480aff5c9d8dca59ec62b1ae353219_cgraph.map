@@ -1,5 +1,0 @@
-<map id="mytimestepper" name="mytimestepper">
-<area shape="rect" id="node3" href="$classmymodule_a22c594fc74d4a28dc4fd20412caed9c5.html#a22c594fc74d4a28dc4fd20412caed9c5" title="Saves current timestep to external files. " alt="" coords="164,5,321,35"/>
-<area shape="rect" id="node5" href="$classmymodule_aa4606faf69704584d197ae7ccfbf8068.html#aa4606faf69704584d197ae7ccfbf8068" title="Saves results file to post processing file of ElmerPost format, if requested. " alt="" coords="371,32,525,61"/>
-<area shape="rect" id="node8" href="$classmytimemodule_ac02e054b725f683bf66b8d664a323d2d.html#ac02e054b725f683bf66b8d664a323d2d" title="updateloads" alt="" coords="197,109,288,139"/>
-</map>

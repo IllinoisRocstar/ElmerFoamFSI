@@ -1,9 +1,0 @@
-<map id="savecurrent" name="savecurrent">
-<area shape="rect" id="node3" href="$classmymodule_aa88ce66b9b7ef1a10643fdc4fe416855.html#aa88ce66b9b7ef1a10643fdc4fe416855" title="Execute the individual solvers in defined sequence. " alt="" coords="191,5,300,35"/>
-<area shape="rect" id="node5" href="$MyTimeStepper_8F90_a237a61ca1fd44e17d8c988a27b400ef4.html#a237a61ca1fd44e17d8c988a27b400ef4" title="mydeprecatedtimestepper" alt="" coords="160,59,331,88"/>
-<area shape="rect" id="node7" href="$MyFinalize_8F90_a8f0a6f152f814befec4a1a2e5752bd58.html#a8f0a6f152f814befec4a1a2e5752bd58" title="ElmerLib Elmer library routines " alt="" coords="205,112,285,141"/>
-<area shape="rect" id="node13" href="$classmytimemodule_a89480aff5c9d8dca59ec62b1ae353219.html#a89480aff5c9d8dca59ec62b1ae353219" title="mytimemodule::mytimestepper" alt="" coords="145,165,345,195"/>
-<area shape="rect" id="node9" href="$SolverModule_8F90_af3d36f75ef0281d05095a89df472fa2f.html#af3d36f75ef0281d05095a89df472fa2f" title="finalize" alt="" coords="396,112,457,141"/>
-<area shape="rect" id="node11" href="$SolverModule_8F90_a2363fcb6699317c59c1f2f041ee860d2.html#a2363fcb6699317c59c1f2f041ee860d2" title="solvermodule_load_module" alt="" coords="507,139,685,168"/>
-<area shape="rect" id="node15" href="$SolverModule_8F90_a8b10c4eb645aab66861aa1220c4adae1.html#a8b10c4eb645aab66861aa1220c4adae1" title="run" alt="" coords="407,165,447,195"/>
-</map>

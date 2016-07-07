@@ -1,5 +1,0 @@
-<map id="finalize" name="finalize">
-<area shape="rect" id="node3" href="$MyFinalize_8F90_a8f0a6f152f814befec4a1a2e5752bd58.html#a8f0a6f152f814befec4a1a2e5752bd58" title="ElmerLib Elmer library routines " alt="" coords="119,32,199,61"/>
-<area shape="rect" id="node5" href="$classmymodule_a22c594fc74d4a28dc4fd20412caed9c5.html#a22c594fc74d4a28dc4fd20412caed9c5" title="Saves current timestep to external files. " alt="" coords="249,5,407,35"/>
-<area shape="rect" id="node7" href="$classmymodule_aa4606faf69704584d197ae7ccfbf8068.html#aa4606faf69704584d197ae7ccfbf8068" title="Saves results file to post processing file of ElmerPost format, if requested. " alt="" coords="456,32,611,61"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="run" name="run">
-<area shape="rect" id="node3" href="$classmytimemodule_a89480aff5c9d8dca59ec62b1ae353219.html#a89480aff5c9d8dca59ec62b1ae353219" title="mytimemodule::mytimestepper" alt="" coords="95,57,295,87"/>
-<area shape="rect" id="node12" href="$SolverModule_8F90_ac6c99ca7368bb6db20d3a6df1f442f49.html#ac6c99ca7368bb6db20d3a6df1f442f49" title="updatedisplacements" alt="" coords="123,111,267,140"/>
-<area shape="rect" id="node5" href="$classmytimemodule_ac02e054b725f683bf66b8d664a323d2d.html#ac02e054b725f683bf66b8d664a323d2d" title="mytimemodule::updateloads" alt="" coords="345,5,529,35"/>
-<area shape="rect" id="node7" href="$classmymodule_aa4606faf69704584d197ae7ccfbf8068.html#aa4606faf69704584d197ae7ccfbf8068" title="Saves results file to post processing file of ElmerPost format, if requested. " alt="" coords="579,84,733,113"/>
-<area shape="rect" id="node9" href="$classmymodule_a22c594fc74d4a28dc4fd20412caed9c5.html#a22c594fc74d4a28dc4fd20412caed9c5" title="Saves current timestep to external files. " alt="" coords="359,109,516,139"/>
-</map>
