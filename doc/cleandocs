@@ -1,2 +1,2 @@
-rm -rf html latex man doxywarn.txt elmerfoamfsi_html_docs.tgz
+rm -rf ./documentation doxywarn.txt elmerfoamfsi_html_docs.tgz
 
