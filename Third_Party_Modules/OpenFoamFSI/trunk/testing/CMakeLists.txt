@@ -95,8 +95,7 @@ ${LDUSOLVERS_LIB} ${FOAM_LIB} ${IMPACT_LIB} ${SolverUtils_LIB} ${IRAD_LIB})
 #ENDIF()
 
 # The 3 tests below actually run all the tests
-ADD_TEST(RunOpenFoamModuleDriverUnitTests
-${EXECUTABLE_OUTPUT_PATH}/OFModuleTest -s ${PROJECT_SOURCE_DIR} -com-mpi -o testresults.txt)
+ADD_TEST(RunOpenFoamModuleDriverUnitTests ${EXECUTABLE_OUTPUT_PATH}/OFModuleTest -s ${PROJECT_SOURCE_DIR} -com-mpi -o testresults.txt)
 ADD_TEST(RunTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/tests.list -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o testresults.txt)
 ADD_TEST(OpenFoamFsiRegressionTest:Works ${TESTRESULT} OpenFoamFsiRegressionTest:Works testresults.txt)
 ADD_TEST(HronTurekFsiRegressionTest:Works ${TESTRESULT} HronTurekFsiRegressionTest:Works testresults.txt)
@@ -167,9 +166,9 @@ IF(MPI_CXX_COMPILER)
    ADD_EXECUTABLE(OFModuleTestPar src/ParallelTestOpenFoamModuleDriver.C)
    target_link_libraries(OFModuleTestPar ${IMPACT_LIB} ${SolverUtils_LIB} ${IRAD_LIB})
    # The parallel unit/regression tests are actually run by following two lines
-   ADD_TEST(RunParallelPlatformUnitTests:Runs ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/parallel_platforms -s
-   ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -o testresults.txt)
-   ADD_TEST(RunParallelTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/testsPar.list -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o testresults.txt)
+   ADD_TEST(RunParallelPlatformTests:Runs ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/parallel_platforms -s
+   ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -o testresults.txt -a ${IRAD_EXEPATH})
+   #ADD_TEST(RunParallelTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/testsPar.list -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -a ${IRAD_EXEPATH} -v 2 -o testresults.txt)
    # The remainder use "testresults" utility to check the results of the parallel tests run above
    ADD_TEST(ParOpenFoamFsiRegressionTest:Works ${TESTRESULT} ParOpenFoamFsiRegressionTest:Works testresults.txt)
    ADD_TEST(ParOpenFoamModuleRegressionTest:Works ${TESTRESULT} ParOpenFoamModuleRegressionTest:Works testresults.txt)

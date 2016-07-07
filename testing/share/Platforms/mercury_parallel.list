@@ -1,2 +1,7 @@
 mercury_parallel_test1.csh
 mercury_parallel_test2.csh
+mercury_regStatic_4.csh
+mercury_regDynamic_4.csh
+mercury_regHTFSI3_4.csh
+!mercury_regHTFSI3_16.csh
+mercury_regHTFSI3_136.csh

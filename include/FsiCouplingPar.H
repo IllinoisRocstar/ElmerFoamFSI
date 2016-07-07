@@ -282,6 +282,7 @@ public:
       fluidsAgent->Initialize(fluidsInterfaceName, verblevel);
     Communicator().Barrier();
     writeWin((const char *)fluidsInterfaceName.c_str(), "0", fluidsWinFnameHDF); 
+    Communicator().Barrier();
 
        
     // Initialize the structures module and writing the window
@@ -301,7 +302,7 @@ public:
                  << "Item = " << Disps[i]
                  << std::endl;
     */
- 
+
     // Initialize the transfer module's common refinement
     if(runMode == 0) {
       transferAgent->Overlay(structuresInterfaceName, fluidsInterfaceName,

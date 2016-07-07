@@ -80,9 +80,9 @@ IF(MPI_CXX_COMPILER)
   # The parallel tests are actually run by this command
   ADD_TEST(ElmerFoamFSI::RunParallelPlatformTests ${RUNTEST} -p ${PROJECT_SOURCE_DIR}/share/Platforms/parallel_platforms -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 3 -o elmerfoamfsi_testresults.txt)
   # The regression test scripts 
-  ADD_TEST(ParSimpleStatic:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regStatic_4.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt)
-  ADD_TEST(ParSimpleDynamic:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regDynamic_4.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt)
-  ADD_TEST(ParHronTurekFSI3:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regHTFSI3_4.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt)
+  #ADD_TEST(ParSimpleStatic:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regStatic_4.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt)
+  #ADD_TEST(ParSimpleDynamic:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regDynamic_4.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt)
+  #ADD_TEST(ParHronTurekFSI3:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/regHTFSI3_4.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmerfoamfsi_testresults.txt)
   # The remainder use "testresults" utility to check the results of the parallel tests run above
   ADD_TEST(ParExample:Runs ${TESTRESULT} PEPI:Runs elmerfoamfsi_testresults.txt)
   ADD_TEST(ParExample:Works ${TESTRESULT} PEPI:Works elmerfoamfsi_testresults.txt)
@@ -112,4 +112,5 @@ IF(MPI_CXX_COMPILER)
   ADD_TEST(ParSimpleStatic:Works ${TESTRESULT} SimpleStatic_4:Works elmerfoamfsi_testresults.txt)
   ADD_TEST(ParSimpleDynamic:Works ${TESTRESULT} SimpleDynamic_4:Works elmerfoamfsi_testresults.txt)
   ADD_TEST(ParHronTurekFSI3:Works ${TESTRESULT} HronTurekFSI3_4:Works elmerfoamfsi_testresults.txt)
+  ADD_TEST(HG_ParHronTurekFSI3_136:Works ${TESTRESULT} HronTurekFSI3_136:Works elmerfoamfsi_testresults.txt)
 ENDIF()

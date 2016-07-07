@@ -57,8 +57,7 @@ ENDIF()
 
 # The 3 tests below actually run all the tests
 ADD_TEST(RunElmerModuleDriverUnitTests ${EXECUTABLE_OUTPUT_PATH}/elmermoduledriver_test -s ${PROJECT_SOURCE_DIR} -com-mpi -o elmermoduledriver_testresults.txt)
-ADD_TEST(RunElasticBeam3DUnitTests
-${EXECUTABLE_OUTPUT_PATH}/elmermoduledriver_test -s ${PROJECT_SOURCE_DIR} -com-mpi -n ElasticBeam3D_LoadFunction -o elmermoduledriver_testresults_2.txt)
+ADD_TEST(RunElasticBeam3DUnitTests ${EXECUTABLE_OUTPUT_PATH}/elmermoduledriver_test -s ${PROJECT_SOURCE_DIR} -com-mpi -n ElasticBeam3D_LoadFunction -o elmermoduledriver_testresults_2.txt)
 ADD_TEST(RunTestScripts ${RUNTEST} -l ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/tests.list -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmermoduledriver_testresults.txt)
 #ADD_TEST(FSIobstacleRegressionTest:Runs ${RUNTEST} -f ${PROJECT_SOURCE_DIR}/share/Testing/test_scripts/FSIobstacle.csh -s ${PROJECT_SOURCE_DIR} -b ${CMAKE_BINARY_DIR}/bin -v 2 -o elmermoduledriver_testresults.txt)
 ADD_TEST(FSIobstacleRegressionTest:Runs ${RUNTEST} -f

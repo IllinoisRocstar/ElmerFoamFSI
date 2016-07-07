@@ -171,7 +171,7 @@ public:
                      accumulatedFluidInterfaceDisplacementPtr(NULL),
                      interpolatorFluidSolidPtr(NULL), interpolatorSolidFluidPtr(NULL),
                      patchPointInterpolatorPtr(NULL), 
-                     dynamicMeshDictPtr(NULL)//, 
+                     dynamicMeshDictPtr(NULL), numPointsSurface(0), numElementsSurface(0) 
   {};
 
   fsifoam_module(int argc,char *argv[]) : argsPtr(NULL), runTimePtr(NULL),
@@ -189,7 +189,8 @@ public:
                                           accumulatedFluidInterfaceDisplacementPtr(NULL),
                                           interpolatorFluidSolidPtr(NULL), interpolatorSolidFluidPtr(NULL),
                                           patchPointInterpolatorPtr(NULL), 
-                                          dynamicMeshDictPtr(NULL)//, 
+                                          dynamicMeshDictPtr(NULL), numPointsSurface(0),
+                                          numElementsSurface(0)
   {Initialize(argc,argv);};
 
   int Initialize(int argc,char *argv[]);

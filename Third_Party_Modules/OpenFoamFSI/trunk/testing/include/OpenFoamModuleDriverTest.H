@@ -1809,6 +1809,7 @@ namespace OpenFoamModuleDriver {
       int initHandle = COM_get_function_handle("OFModule.InitFoam");
       COM_call_function(initHandle, &dummy1, &dummy2, &verb);
       std::cout << "Rank #"<< myRank << ", Initialization is finished. "<<std::endl;
+      _communicator.Barrier();
 
       // list of panes in this window
       int numPanes;
@@ -1816,7 +1817,9 @@ namespace OpenFoamModuleDriver {
       COM_get_panes("OFModule", &numPanes, &paneList);
 
       // assuming only one pane per process
-      int pane = paneList[myRank];
+      int pane = paneList[0];
+      std::cout << "Rank "<< myRank << " numPanes = " << numPanes << std::endl;
+      std::cout << "Rank "<< myRank << " pane ID = " << pane << std::endl;
 
       // check that the pressure is registered
       int status = COM_get_status("OFModule.pressure", pane);
