@@ -11,15 +11,19 @@
 \form#10:$ h_f = 0.9 m $
 \form#11:$ U_{max} = 1.5 m/s $
 \form#12:$ y = 0.46 m $
-\form#13:$ T = 5 $
-\form#14:$2x$
-\form#15:$3x^2$
-\form#16:$[x_0,x_n]$
-\form#17:$\int_{x_0}^{x_n}{f(x)}{dx}$
-\form#18:$h = \frac{(x_n - x_0)}{n}$
-\form#19:$x_i = x_0 + {i}{h}$
-\form#20:$\int_{x_0}^{x_n}{f(x)}{dx} \approx \frac{h}{2}\sum_{i=1}^{n}(f(x_{i-1}) + f(x_i))$
-\form#21:$O(h^2)$
-\form#22:$x_i = x_0 + h(i-\frac{1}{2})$
-\form#23:$\int_{x_0}^{x_n}{f(x)}{dx} \approx h\sum_{i=1}^{n}f(x_i)$
-\form#24:$\pi$
+\form#13:$ T = 5s $
+\form#14:$ h_s = 0.1 m $
+\form#15:$ h_f = 1.0 m $
+\form#16:$ 0.0 m/s $
+\form#17:$ 1.0 Pa $
+\form#18:$2x$
+\form#19:$3x^2$
+\form#20:$[x_0,x_n]$
+\form#21:$\int_{x_0}^{x_n}{f(x)}{dx}$
+\form#22:$h = \frac{(x_n - x_0)}{n}$
+\form#23:$x_i = x_0 + {i}{h}$
+\form#24:$\int_{x_0}^{x_n}{f(x)}{dx} \approx \frac{h}{2}\sum_{i=1}^{n}(f(x_{i-1}) + f(x_i))$
+\form#25:$O(h^2)$
+\form#26:$x_i = x_0 + h(i-\frac{1}{2})$
+\form#27:$\int_{x_0}^{x_n}{f(x)}{dx} \approx h\sum_{i=1}^{n}f(x_i)$
+\form#28:$\pi$

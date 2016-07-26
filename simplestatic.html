@@ -107,39 +107,44 @@ $(document).ready(function(){initNavTree('simplestatic.html','');});
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="description"></a>
 Problem Description</h1>
-<p>The first simple verification problem selected for the <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> suite is a static case of a viscous fluid applying uniform pressure to a beam. The fluid domain is square with uniform pressure, no fluid velocity, and no motion on the side and top walls. The bottom wall consists of a solid beam, attached on one side but free to move in the y-direction elsewhere. Since there is no fluid velocity the only contributing factor affecting the beam’s displacement is due to the pressure from the fluid with no traction. Therefore, this first problem verifies the pressure component of the total force being applied to the beam, ensuring that this piece of the coupling of the fluid and solid applications is correct. Figure 1 shows the geometry of the problem.</p>
+<p>The first simple verification problem selected for the <em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em> suite is a static case of a viscous fluid applying uniform pressure to a cantilever beam. The fluid domain is square with uniform pressure, there exists no fluid velocity, and no motion occurs on the side and top walls. The bottom wall consists of a solid cantilever beam, attached on one side but free to move in the y-direction elsewhere. Since there is no fluid velocity the only contributing factor affecting the beam’s displacement is due to the pressure from the fluid with no traction. Therefore, this first problem verifies the pressure component of the total force being applied to the beam, ensuring that this piece of the coupling of the fluid and solid applications is correct. Figure 1 shows the geometry of the problem.</p>
 <div class="image">
 <img src="simplestaticgeo.png" alt="simplestaticgeo.png"/>
 <div class="caption">
 Figure 1. Domain and boundary conditions for simple static verification problem</div></div>
-<p> The dimensions of the domain are L = 1.0 m, hs = 0.1 m, and hf = 1.0 m. The out-of-plane dimension is selected to be 0.1 m for both domains, arbitrarily. The velocity is initialized to 0.0 m/s throughout the fluid domain and the pressure given a uniform value of 1.0 Pa.</p>
-<h1><a class="anchor" id="runningsimple"></a>
+<p> The dimensions of the domain are <img class="formulaInl" alt="$ L = 1.0 m $" src="form_8.png"/>, <img class="formulaInl" alt="$ h_s = 0.1 m $" src="form_14.png"/>, and <img class="formulaInl" alt="$ h_f = 1.0 m $" src="form_15.png"/>. The velocity profile is initialized to <img class="formulaInl" alt="$ 0.0 m/s $" src="form_16.png"/> and the pressure is given a uniform value of <img class="formulaInl" alt="$ 1.0 Pa $" src="form_17.png"/>. <br/>
+The out-of-plane dimension is selected to be 0.1 m for both domains, arbitrarily. The table below summarizes the properties of the solid and fluid used in the simulation.</p>
+<div class="image">
+<img src="statictable.png" alt="statictable.png"/>
+<div class="caption">
+Table 1. Properties of fluid and solid domains.</div></div>
+ <h1><a class="anchor" id="runningsimple"></a>
 Running The Simple Static Problem</h1>
-<p>The instructions here utilize <a class="el" href="simpledynamic.html">Simple Dynamic Problem</a> as a starting point in terms of the input files and their functions. In order to execute the simple static verification problem with <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a>, Elmer input and <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> input file should be copied to the ./fluid. folder of the OpenFOAM input hierachy. Following directions are steps to take to run a problem :</p>
+<p>The instructions here utilize <a class="el" href="simpledynamic.html">Simple Dynamic Problem</a> as a starting point in terms of the input files and their functions. To execute the simple static verification problem with <em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em>, <em>Elmer</em> input and <em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em> input file should be copied to the <b>./fluid</b> folder of the <em>OpenFOAM</em> input hierachy. Following directions are steps to take to run a problem :</p>
 <ul>
-<li>Obtain input_data files of SimpleStatic problem.</li>
-<li>Create a folder and copy Allclean, Allrun (scripts), /fluid/ and /solid/ folders into this folder, make sure to copy all sub-folders as well. <blockquote class="doxtable">
+<li>Obtain input_data files for SimpleStatic problem</li>
+<li>Create a folder and copy the following two scripts: <em>Allclean</em>, <em>Allrun</em>; <b>./fluid/</b> and <b>./solid/</b> folders into this new folder, making sure to copy all sub-folders as well <blockquote class="doxtable">
 <p>Make sure your folder has following files: Allclean, Allrun, AllrunPar, makeLinks, makeSerialLinks, removeSerialLinks (scripts so far), fluid(folder), solid(folder)</p>
 <p></p>
 </blockquote>
 </li>
-<li>Copy elmer SIF, GRD and ELMERSOLVER_STARTINFO files to /fluid/.</li>
-<li>Run ./Allclean and ./Allrun to clean-up and prepare input files for the OpenFOAM.</li>
-<li>Go to ./fluid/ and type ElmerGrid 1 2 name where "name" should be replaced with the name of the GRD file for Elmer.</li>
-<li>Run <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> the FSI simulation by "elmerformfsi name" where name should be re-placed with the name of <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> input file. <blockquote class="doxtable">
+<li>Copy <em>Elmer</em> SIF, GRD and ELMERSOLVER_STARTINFO files to <b>/fluid/</b></li>
+<li>Run ./Allclean and ./Allrun to clean-up and prepare input files for the <em>OpenFOAM</em></li>
+<li>Go to <b>./fluid/</b> and type "ElmerGrid 1 2 name", where "name" should be replaced with the name of the GRD file for <em>Elmer</em></li>
+<li>Run <em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em>, the FSI simulation by "elmerformfsi name", where "name" should be re-placed with the name of <em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em> input file <blockquote class="doxtable">
 <p>./path/to/elmerfoamfsi/elmerfoamfsi test.config</p>
 <p></p>
 </blockquote>
 </li>
 </ul>
-<p>As a result of simulation, you will obtain VTK,VTU outputs along with many log files. Output files can be further post processed by using tools such as Paraview. </p>
+<p>As a result of simulation, you will obtain VTK,VTU outputs along with many log files. Output files can be further post processed by using tools such as <em>Paraview</em>. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="examples.html">Setting up Example Problems</a></li>
-    <li class="footer">Generated on Thu Jul 7 2016 15:53:04 for ElmerFoamFSI by
+    <li class="footer">Generated on Mon Jul 25 2016 15:50:54 for ElmerFoamFSI by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

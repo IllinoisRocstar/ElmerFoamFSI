@@ -106,7 +106,8 @@ $(document).ready(function(){initNavTree('manual_install.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>The general quick-start steps for installing <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> are as follows:</p>
-<dl class="section note"><dt>Note</dt><dd>The instructions presented herein require a Linux terminal. As such the commands are fairly general and are not shell specific. For these reasons instructions that require setting paths are left deliberately vague. Users should set path variables using the form dictated by their shell environment. The general forms for bash and csh are given here for ease-of-use. Note the syntax; it is <b><em>very</em></b> important! Users can determine their current shell environment by using SHELL. <blockquote class="doxtable">
+<dl class="section note"><dt>Note</dt><dd>The instructions presented herein require a Linux terminal. As such, the commands are as general as possible and are not shell specific. For these reasons, instructions that require setting paths are deliberately left vague. Users should set path variables using the form dictated by their shell environment. The general forms for bash and csh are given here for ease-of-use. Note the syntax; it is <b><em>very</em></b> important! <br/>
+You can determine your current shell environment using <b>SHELL</b>: <blockquote class="doxtable">
 <p>echo $SHELL <br/>
 /bin/bash: export USR_VAR="/path/to/user/location/" <br/>
 ../bin/csh: setenv USR_VAR /path/to/user/location</p>
@@ -114,43 +115,44 @@ $(document).ready(function(){initNavTree('manual_install.html','');});
 </blockquote>
 </dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd><ul>
-<li>Users will need to modify one critical file <em>before</em> building <b><em>OpenFOAM</em></b>. These changes enable options that are used to build other components of the <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> package. If users do not follow this step, <b><em>OpenFOAM</em></b> will need to be rebuilt after enabling these options.</li>
-<li>According to the <b><em>Elmer</em></b> forum, <b><em>Elmer</em></b> uses gfortran of versions 4.8 or later. Be sure to start with v-4.8+, or users will have rebuild the system from scratch. A consistent toolchain is <b><em>mandatory</em></b> to install the <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> application!</li>
+<li>Users will need to modify one critical file <em>before</em> building <b><em>OpenFOAM</em></b>. These changes enable options that are used to build other components of the <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> package. If you do not follow this step, <b><em>OpenFOAM</em></b> will need to be rebuilt after enabling these options.</li>
+<li>According to the <b><em>Elmer</em></b> forum, <b><em>Elmer</em></b> uses gfortran of versions 4.8 or later. Be sure to start with v-4.8+, or you will have rebuild the system from scratch. A consistent toolchain is <b><em>mandatory</em></b> for proper installation of the <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> application!</li>
 </ul>
 </dd></dl>
 <h3>1. Install <b><em>OpenFOAM</em></b> extend from <a href="http://www.extend-project.de/" title="OpenFOAM Extend Project">OpenFOAM-extend</a></h3>
 <ul>
 <li>Review the native <b><em>OpenFOAM</em></b> build instructions: <b>~/foam/foam-extend-&lt;version&gt;/doc/buildInstructions</b></li>
 <li>Install system packages (optional, but recommended)</li>
-<li>Modify the <em>%build</em> section of the spec file associated with the appropriate version of openmpi (e.g., openmpi-1.6.5.spec) (Note: likely the latest version, but ensure after building that your machine did use the spec file that you edited by checking the output from the OpenFoam build to see which openmpi package was used.) <blockquote class="doxtable">
+<li>Modify the <em>%build</em> section of the spec file associated with the appropriate version of openmpi (e.g., openmpi-1.6.5.spec) <br/>
+ (Note: this will likely install the latest version, but you should ensure after building that your machine used the spec file that you edited by checking the output from the <b><em>OpenFOAM</em></b> build to see which openmpi package was used) <blockquote class="doxtable">
 <p>cd ~/foam/foam-extend-&lt;version&gt; <br/>
 cd ./ThirdParty/rpmBuild/SPECS <br/>
 ls openmpi* <br/>
 <em>open associated spec file using editor of choice (e.g., vi or emacs)</em></p>
 <p></p>
 </blockquote>
-** In the section labeled "export WM settings in a form that GNU configure recognizes," add the "-fPIC" option flag to the <em>CC</em> and <em>CXX</em> lines: <blockquote class="doxtable">
+In the section labeled "export WM settings in a form that GNU configure recognizes," add the "-fPIC" option flag to the <em>CC</em> and <em>CXX</em> lines: <blockquote class="doxtable">
 <p>[ -n "$WM_CC" ] &amp;&amp; export CC="$WM_CC -fPIC" <br/>
 [ -n "$WM_CXX" ] &amp;&amp; export CXX="$WM_CXX -fPIC" <br/>
  </p>
 </blockquote>
-** Just below this same section, add two export statements before "unset mpiWith": <blockquote class="doxtable">
+Just below this same section, add two export statements before "unset mpiWith": <blockquote class="doxtable">
 <p>export FC="gfortran -fPIC" <br/>
 export F90="gfortran -fPIC" <br/>
 unset mpiWith</p>
 <p></p>
 </blockquote>
-** Slightly farther down in the <em>./configure</em> section, delete the following lines: <blockquote class="doxtable">
+Slightly farther down in the <em>./configure</em> section, delete the following lines: <blockquote class="doxtable">
 <p>--disable-mpi-f77 <br/>
 --disable-mpi-f90 <br/>
 --disable-mpi-cxx</p>
 <p></p>
 </blockquote>
 </li>
-<li>Modify the appropriate shell script. The user should navigate into $ELMERFOAMTOP/foam/foam-extend-&lt;version&gt;/etc and open the cshrc or bashrc file depening on if using Cshell or Bash respectively. In the file every instance of "$HOME" should be replaced with "$ElmerFoamTop" (Note: either manually enter the full path to the top level <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> directory for $ElmerFoamTop or set an environment variable equal to that path).</li>
+<li>Modify the appropriate shell script by navigating to <b>$ELMERFOAMTOP/foam/foam-extend-&lt;version&gt;/etc</b> and opening the cshrc or bashrc file (depending on if you are using Cshell or Bash, respectively) Within the file, every instance of "$HOME" should be replaced with "$ElmerFoamTop" (Note: either manually enter the full path to the top level <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> directory for $ElmerFoamTop or set an environment variable equal to that path)</li>
 <li>Source the appropriate shell script (bash or csh)</li>
 <li>Build with (or without) <b><em>ParaView</em></b> (user choice)</li>
-<li>Review the build output to make sure that the 5 stages of <b><em>OpenFOAM</em></b> built properly <blockquote class="doxtable">
+<li>Review the build output to make sure that the 5 stages of <b><em>OpenFOAM</em></b> were built properly <blockquote class="doxtable">
 <p>cd ~/foam/foam-extend*<br/>
  source etc/cshrc <br/>
 ./Allwmake.firstInstall | tee build_firstInstall.out <br/>
@@ -173,7 +175,7 @@ FC = mpif90</p>
 <p></p>
 </blockquote>
 </li>
-<li>Ensure that the correct version of compiler wrappers are being used. The system should return some <b><em>OpenFOAM</em></b> path to MPI and the system version of the compiler to which the wrapper points. <blockquote class="doxtable">
+<li>Ensure that the correct version of compiler wrappers are being used. The system should return an <b><em>OpenFOAM</em></b> path to MPI and the system version of the compiler to which the wrapper points: <blockquote class="doxtable">
 <p>which mpicc <br/>
 mpicc --version <br/>
 which mpicxx <br/>
@@ -183,11 +185,12 @@ mpif90 --version <br/>
  </p>
 </blockquote>
 </li>
-<li>If users receive a system error, it is likely associated with missing modifications to the openmpi spec file.</li>
+<li>If you receive a system error, it is likely associated with missing modifications to the openmpi spec file.</li>
 </ul>
 <h3>3. Install <b><em>IMPACT</em></b> and <b><em>IRAD</em></b> infrastructures</h3>
-<p>The <b><em>IMPACT</em></b> and <b><em>IRAD</em></b> infrastructures are used as <em>support</em> libraries, and the following build scenario is recommended. Note that these support libraries should be built <em>out-of-source</em> <b>but</b> installed <em>in the same place</em>.</p>
-<ul>
+<p>The <b><em>IMPACT</em></b> and <b><em>IRAD</em></b> infrastructures are used as <em>support</em> libraries, and the following build scenario is recommended. <br/>
+ </p>
+<dl class="section note"><dt>Note</dt><dd>These support libraries should be built <b>out-of-source</b> <em>but</em> installed <b>in the same place</b>.<ul>
 <li>Install <b><em>IMPACT</em></b> and include <b><em>IRAD</em></b> and HDF4 dependencies <blockquote class="doxtable">
 <p>sudo yum install hdf4 hdf4-devel <br/>
 cd $ELMERFOAMTOP/IMPACT <br/>
@@ -200,36 +203,37 @@ make install <br/>
 </blockquote>
 </li>
 </ul>
+</dd></dl>
 <h3>4. Build the <b><em>OpenFoamFSI</em></b> module</h3>
 <ul>
-<li>Set environment variable IRMULTIPHYSICS to install location of $ELMERFOAMTOP/support_install</li>
-<li>Check the definition of MPI_HOME that specifies the location of the desired openmpi libraries. <br/>
-The system should return some path containing "$ELMERFOAMTOP/foam/foam-extend-&lt;version&gt;/ThirdParty/packages/..." <br/>
-The path will look similar to the location of the spec file edited in Step 1. <blockquote class="doxtable">
+<li>Set environment variable IRMULTIPHYSICS to install location of <b>$ELMERFOAMTOP/support_install</b></li>
+<li>Check the definition of MPI_HOME that specifies the location of the desired openmpi libraries: <br/>
+The system should return some path containing <b>"$ELMERFOAMTOP/foam/foam-extend-&lt;version&gt;/ThirdParty/packages/..."</b> <br/>
+The path will look similar to the location of the spec file edited in Step 1: <blockquote class="doxtable">
 <p>echo $MPI_HOME</p>
 <p></p>
 </blockquote>
 </li>
-<li>Create the <b><em>OpenFoamFSI</em></b> library that will be automatically copied into the library directory of the unaltered <b><em>OpenFOAM</em></b> <blockquote class="doxtable">
+<li>Create the <b><em>OpenFoamFSI</em></b> library that will be automatically copied into the library directory of the unaltered <b><em>OpenFOAM</em></b>: <blockquote class="doxtable">
 <p>cd $ELMERFOAMTOP/Third_Party_Modules/OpenFoamFSI/native/ <br/>
 wmake libso .</p>
 <p></p>
 </blockquote>
 </li>
 </ul>
-<h3>5. Update (patch) <b><em>Elmer</em></b> and build (build the <b><em>ElmerFSI</em></b> module)</h3>
+<h3>5. Update (patch) <b><em>Elmer</em></b> and build (the <b><em>ElmerFSI</em></b> module)</h3>
 <blockquote class="doxtable">
 <p>cd $ELMERFOAMTOP/elmerfem/fem/src <br/>
 cp -r $ELMERFOAMTOP/Third_Party_Modules/ElmerFSI/trunk/native ElmerModule <br/>
  </p>
 </blockquote>
 <ul>
-<li>Patch the <b><em>Elmer</em></b> source <blockquote class="doxtable">
+<li>Patch the <b><em>Elmer</em></b> source: <blockquote class="doxtable">
 <p>patch &lt; ElmerModule/ElmerPatch</p>
 <p></p>
 </blockquote>
 </li>
-<li>Build <b><em>Elmer</em></b> and its module for interfacing with <b><em>IMPACT</em> <blockquote class="doxtable">
+<li>Build <b><em>Elmer</em></b> and its module for interfacing with <b><em>IMPACT</em>: <blockquote class="doxtable">
 <p>cd $ELMERFOAMTOP/elmerfem <br/>
 mkdir build <br/>
 cd build <br/>
@@ -239,19 +243,19 @@ make install <br/>
  </p>
 </blockquote>
 </b></li>
-<li><b>Link the <b><em>Elmer</em></b> libraries to a more convenient location <blockquote class="doxtable">
+<li><b>Link the <b><em>Elmer</em></b> libraries to a more convenient location: <blockquote class="doxtable">
 <p>ln -s $ELMERFOAMTOP/suppport_install/share/elmersolver/lib/* $ELMERFOAMTOP/support_install/lib/.</p>
 <p></p>
 </blockquote>
 </b></li>
-<li><b>Set the LD library path to the location of the Elmer native libraries. <blockquote class="doxtable">
+<li><b>Set the LD library path to the location of the Elmer native libraries: <blockquote class="doxtable">
 <p>LD_LIBRARY_PATH = $ELMERFOAMTOP/support_install/lib:$LD_LIBRARY_PATH <br/>
  </p>
 </blockquote>
 </b></li>
 </ul>
 <p><b></p>
-<dl class="section warning"><dt>Warning</dt><dd>After completing <b>Steps 1 - 5</b>, users should have the following installed components <blockquote class="doxtable">
+<dl class="section warning"><dt>Warning</dt><dd>After completing <b>Steps 1 - 5</b>, users should have the following installed components: <blockquote class="doxtable">
 <p>~/foam (+ module) <br/>
 ~/elmer (+ module) <br/>
 ~/fsiSupport (IMPACT + IRAD)</p>
@@ -260,11 +264,11 @@ make install <br/>
 If, for whatever reason, one or more of these directories does not exist, start over at the appropriate step! <br/>
 If one or more of these directories does not appear to be correct, remove the attempted build of the associated component, and start over at the appropriate step! O_o <br/>
 If everything looks good, the last step in building <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> can be completed! ^_^</dd></dl>
-<h3>6. Install <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> orchestrator (OpenFOAM-Elmer system driver for FSI problems)</h3>
+<h3>6. Install <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> orchestrator (<b><em>OpenFOAM-Elmer</em></b> system driver for FSI problems)</h3>
 <p></b></p>
 <p><b></p>
 <ul>
-<li>Build and test the <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> driver: XX tests in approximately XX min. <blockquote class="doxtable">
+<li>Build and test the <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> driver (as tests are added, the time required for the build to complete is extended): <blockquote class="doxtable">
 <p>cd $ELMERFOAMTOP <br/>
 mkdir build <br/>
 cd build <br/>
@@ -283,7 +287,7 @@ make test <br/>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="index.html">ElmerFoamFSI Documentation</a></li>
-    <li class="footer">Generated on Thu Jul 7 2016 15:53:04 for ElmerFoamFSI by
+    <li class="footer">Generated on Mon Jul 25 2016 15:50:54 for ElmerFoamFSI by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

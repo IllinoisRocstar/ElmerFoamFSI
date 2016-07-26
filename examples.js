@@ -1,6 +1,6 @@
 var examples =
 [
-    [ "Elmer/OpenFOAM Input - What sets what", "examples.html#what_sets_what", [
+    [ "Elmer & OpenFOAM Input - Setting Things Up", "examples.html#what_sets_what", [
       [ "Elmer Input", "examples.html#elmer_input", null ],
       [ "OpenFOAM Input", "examples.html#openfoaminput", null ],
       [ "ElmerFoamFSI Input", "examples.html#elmerfoaminput", null ],

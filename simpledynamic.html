@@ -107,85 +107,85 @@ $(document).ready(function(){initNavTree('simpledynamic.html','');});
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="dynamicdescription"></a>
 Problem Description</h1>
-<p>The Simple Dynamic problem tests the accuracy of the <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> suite. Here we have a <b> viscous fluid ( <img class="formulaInl" alt="$ F $" src="form_0.png"/>) </b> subjected to a velocity profile in order to generate a simple in-plane traction to the walls of the channel. <br/>
-One of these walls is a <b> cantilever bean ( <img class="formulaInl" alt="$ S $" src="form_1.png"/>) </b> and friction-based traction is applied to the top face of the cantilever to create <b> axial deformation ( <img class="formulaInl" alt="$ \delta_z $" src="form_7.png"/>) </b>. <br/>
+<p>The simple dynamic problem tests the accuracy of the <em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em> suite. Here we have a <b> viscous fluid ( <img class="formulaInl" alt="$ F $" src="form_0.png"/>) </b> subjected to a velocity profile to generate a simple, in-plane traction to the walls of a channel. <br/>
+One of these walls is a <b> cantilever beam ( <img class="formulaInl" alt="$ S $" src="form_1.png"/>) </b>; friction-based traction is applied to the top face of the cantilever to create <b> axial deformation ( <img class="formulaInl" alt="$ \delta_z $" src="form_7.png"/>) </b>. <br/>
 The boundary conditions are motivated by axial deflection on the beam, therefore, the effect of the vertical deflection created by potential mornal pressure is negligible. <br/>
 Figure 1 below shows the geometry of the problem.</p>
 <div class="image">
 <img src="simpledynamicgeo.png" alt="simpledynamicgeo.png"/>
 <div class="caption">
 Figure 1. Domain and boundary conditions for simple dynamic verification problem</div></div>
-<p> The dimensions of the domain are <img class="formulaInl" alt="$ L = 1.0 m $" src="form_8.png"/>, <img class="formulaInl" alt="$ h_s = 0.01 m $" src="form_9.png"/>, and <img class="formulaInl" alt="$ h_f = 0.9 m $" src="form_10.png"/>. The velocity profile is symmetric with <img class="formulaInl" alt="$ U_{max} = 1.5 m/s $" src="form_11.png"/> with axis of symmetry at <img class="formulaInl" alt="$ y = 0.46 m $" src="form_12.png"/>. <br/>
-The out-of-plane dimension is selected to be 0.1 m for both domains, arbitrarily. The table below summarizes the properties of the solid and fluid used in the simulation. <br/>
- The velocity profile is ramped from zeros to its final form with transition period of <img class="formulaInl" alt="$ T_{trans} = 0.1s $" src="form_4.png"/> and then kept constant for the rest of simulation. The total simulation time is selected to be <img class="formulaInl" alt="$ T = 5 $" src="form_13.png"/>.</p>
+<p> The dimensions of the domain are <img class="formulaInl" alt="$ L = 1.0 m $" src="form_8.png"/>, <img class="formulaInl" alt="$ h_s = 0.01 m $" src="form_9.png"/>, and <img class="formulaInl" alt="$ h_f = 0.9 m $" src="form_10.png"/>. The velocity profile is symmetric with <img class="formulaInl" alt="$ U_{max} = 1.5 m/s $" src="form_11.png"/> and axis of symmetry at <img class="formulaInl" alt="$ y = 0.46 m $" src="form_12.png"/>. <br/>
+The out-of-plane dimension is selected to be 0.1 m for both domains, arbitrarily. The table below summarizes the properties of the solid and fluid used in the simulation.</p>
 <div class="image">
 <img src="dynamictable.png" alt="dynamictable.png"/>
 <div class="caption">
 Table 1. Properties of fluid and solid domains.</div></div>
- <h1><a class="anchor" id="inputs"></a>
+<p> The velocity profile is ramped from zeros to its final form with transition period of <img class="formulaInl" alt="$ T_{trans} = 0.1s $" src="form_4.png"/> and then kept constant for the rest of simulation. The total simulation time is selected to be <img class="formulaInl" alt="$ T = 5s $" src="form_13.png"/>.</p>
+<h1><a class="anchor" id="inputs"></a>
 ElmerFoamFSI Inputs</h1>
-<p>In <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a>, OpenFOAM (finite-volume solver) is used as the fluid solver and Elmer (finite-element solver) is used as the structural solver. <br/>
-Here both weak and strong coupling appraches can be used to solve FSI problems. The simple dynamic problem currently utilizes a weak-coupling algorithm. <br/>
+<p>In <em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em>, <em>OpenFOAM</em> (a finite-volume solver) is used as the fluid solver and <em>Elmer</em> (a finite-element solver) is used as the structural solver. <br/>
+Here both weak and strong coupling approaches can be used to solve FSI problems. The simple dynamic problem currently utilizes a weak-coupling algorithm. <br/>
 Please take a look at <a class="el" href="examples.html">Setting up Example Problems</a> for further information regarding the structure of each input file.</p>
 <h2><a class="anchor" id="elmerinput"></a>
 Elmer Input</h2>
-<p>Elmer can be used to find deformation of a solid object ( <img class="formulaInl" alt="$ U $" src="form_5.png"/>) subjected to different types of loads. <br/>
-To capture large deformations of the solid <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> uses the non-linear solver. Here the description of the problem starts with the input files. <br/>
+<p><em>Elmer</em> can be used to find deformation of a solid object, ( <img class="formulaInl" alt="$ U $" src="form_5.png"/>), subjected to different types of loads. <br/>
+To capture large deformations in the solid, <em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em> uses the non-linear solver. Here the description of the problem starts with the input files: <br/>
  <br/>
- The <b> .GRD </b> file provides the description of the geometry of the problem <br/>
-The <b> .SIF </b> file provides rest of the definitions, including material properties and boundary conditions <br/>
+ The <b> .GRD </b> file provides the description of the geometry of the problem. <br/>
+The <b> .SIF </b> file provides rest of the definitions, including material properties and boundary conditions. <br/>
 </p>
 <ul>
-<li>It's important to note that in the SIF file: 1, 2, 3 correspond to X, Y, Z direction in a cartesian grid <br/>
+<li>It's important to note that in the SIF file: 1, 2, and 3 correspond to X, Y, and Z directions in a cartesian grid <br/>
 </li>
 <li>The <b> .SIF </b> file is read by the <b>ELMERSOLVER_STARTINFO</b> upon execution <br/>
  </li>
 </ul>
 <h2><a class="anchor" id="foaminput"></a>
 OpenFOAM Input</h2>
-<p>Here, OpenFOAM acts as the fluid solver to solve for the fluid pressure ( <img class="formulaInl" alt="$ p $" src="form_6.png"/>) and velocity ( <img class="formulaInl" alt="$ U $" src="form_5.png"/>) found in <b> ./fluid/0/ </b>. <br/>
-To capture the deformations of the solid/fluid interface, OpenFOAM has to perform mesh update and re-meshing procedures to maintain the quality of the grid. <br/>
- OpenFOAM requires both the definition of the solid and the fluid sections of the grid (in <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a>, the solid definition is replaced by Elmer. <br/>
- To setup a fluid problem, a strict folder/file hierarchy must be followed. <br/>
+<p>Here, <em>OpenFOAM</em> acts as the fluid solver to solve for the fluid pressure ( <img class="formulaInl" alt="$ p $" src="form_6.png"/>) and velocity ( <img class="formulaInl" alt="$ U $" src="form_5.png"/>) found in <b> ./fluid/0/ </b>. <br/>
+To capture deformations of the solid/fluid interface, <em>OpenFOAM</em> performs mesh update and re-meshing procedures to maintain the quality of the grid. <br/>
+ <em>OpenFOAM</em> requires both definition of the solid and the fluid sections of the grid; in <em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em>, the solid definition is replaced by <em>Elmer</em>. <br/>
+ To setup a fluid problem, a strict folder/file hierarchy must be followed, as described below. <br/>
  <br/>
  There should be at-least three major sub-folders in the main fluid problem (<b></b>./fluid/ ): <br/>
 These sub-folders are:</p>
 <ul>
-<li><b> ./fluid/0/ </b> containing the initial and boundary conditions for the problem. We specify the initial and boundary conditions for the pressures, velocities and grid deformation in three separate files with proper names.</li>
-<li><b> ./fluid/system/ </b> containing a series of input files to specify which solvers and strategies should be used.</li>
-<li><b> ./fluid/constant/ </b> containing the description of the grid and material properities. Here the folder contains info about the problem geometry.<ul>
-<li>Within this folder is <b> blockMeshDict </b> (may not necessarily be named blockMeshDict depending on the example) which reads the geometric data.</li>
+<li><b> ./fluid/0/ </b> contains the initial and boundary conditions for the problem. We specify the initial and boundary conditions for the pressures, velocities and grid deformation in three separate files with proper names</li>
+<li><b> ./fluid/system/ </b> contains a series of input files to specify which solvers and strategies should be used</li>
+<li><b> ./fluid/constant/ </b> contains the description of the grid and material properities. Here the folder contains info about the problem geometry<ul>
+<li>Within this folder is <b> blockMeshDict </b> (not necessarily named <b>blockMeshDict</b> depending on the example used), which reads the geometric data</li>
 </ul>
 </li>
 </ul>
 <h1><a class="anchor" id="runningdynamic"></a>
 Running The Simple Dynamic Problem</h1>
 <p>The requirements listed in this dynamic example are an extension of the instructions given in <a class="el" href="TestOpenFoamModuleDriver_8C_a0ddf1224851353fc92bfbff6f499fa97.html#a0ddf1224851353fc92bfbff6f499fa97">main</a> and should be completed before starting the following steps. <br/>
-In order to execute the simple dynamic verification problem with <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a>, Elmer input and <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> input file should be copied to the ./fluid. folder of the OpenFOAM input hierachy. Following directions are steps to take to run a problem :</p>
+In order to execute the simple dynamic verification problem with <em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em> and <em>Elmer</em> input, an <em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em> input file should be copied to the ./fluid. folder of the <em>OpenFOAM</em> input hierachy. The following directions are the steps to run a problem :</p>
 <ul>
-<li>Obtain input_data files of SimpleDynamic problem.</li>
-<li>Create a folder and copy Allclean, Allrun (scripts), /fluid/ and /solid/ folders into this folder, make sure to copy all sub-folders as well. <blockquote class="doxtable">
+<li>Obtain input_data files of SimpleDynamic problem</li>
+<li>Create a folder and copy Allclean, Allrun (scripts), /fluid/ and /solid/ folders into this folder. Make sure to copy all sub-folders, as well <blockquote class="doxtable">
 <p>Make sure your folder has following files: Allclean, Allrun, AllrunPar, makeLinks, makeSerialLinks, removeSerialLinks (scripts so far), fluid(folder), solid(folder)</p>
 <p></p>
 </blockquote>
 </li>
-<li>Copy elmer SIF, GRD and ELMERSOLVER_STARTINFO files to /fluid/.</li>
-<li>Run <b> ./Allclean </b> and <b> ./Allrun </b> to clean-up and prepare input files for the OpenFOAM.</li>
-<li>Go to ./fluid/ and type <b> ElmerGrid 1 2 name </b> where "name" should be replaced with the name of the GRD file for Elmer.</li>
-<li>Run <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> the FSI simulation by "elmerformfsi name" where name should be re-placed with the name of <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> input file. <blockquote class="doxtable">
+<li>Copy <em>Elmer</em> SIF, GRD and ELMERSOLVER_STARTINFO files to /fluid/</li>
+<li>Run <b> ./Allclean </b> and <b> ./Allrun </b> to clean-up and prepare input files for the <em>OpenFOAM</em></li>
+<li>Go to ./fluid/ and type <b> ElmerGrid 1 2 name </b> where "name" should be replaced with the name of the GRD file for <em>Elmer</em></li>
+<li>Run <em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em>, the FSI simulation, by inputting <b>"elmerformfsi name"</b>, where "name" should be replaced with the name of <em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em> input file <blockquote class="doxtable">
 <p><b> ./path/to/elmerfoamfsi/elmerfoamfsi test.config </b> (typically found in the top level /build/bin folder)</p>
 <p></p>
 </blockquote>
 </li>
 </ul>
-<p>As a result of simulation, you will obtain VTK,VTU outputs along with many log files. Output files can be further post processed by using tools such as Paraview. </p>
+<p>As a result of simulation, you will obtain VTK,VTU outputs along with many log files. Output files can be further post processed by using tools such as <em>Paraview</em>. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="examples.html">Setting up Example Problems</a></li>
-    <li class="footer">Generated on Thu Jul 7 2016 15:53:04 for ElmerFoamFSI by
+    <li class="footer">Generated on Mon Jul 25 2016 15:50:54 for ElmerFoamFSI by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

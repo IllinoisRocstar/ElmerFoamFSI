@@ -107,20 +107,20 @@ $(document).ready(function(){initNavTree('index.html','');});
 <div class="contents">
 <div class="textblock"><h1><a class="anchor" id="elmerfoamfsi_intro"></a>
 Introduction</h1>
-<p><b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> is a fluid-solid interaction simulation application built up from <b><em>OpenFOAM</em></b> (CFD) and <b><em>Elmer</em></b> (CSM) coupled through the <b><em>IMPACT</em></b> multiphysics software integration infrastructure. <br/>
+<p><b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> is a fluid-solid interaction simulation application built on <b><em>OpenFOAM</em></b> (CFD) and <b><em>Elmer</em></b> (CSM), coupled through Illinois Rocstar's <b><em>IMPACT</em></b> multiphysics software integration infrastructure. <br/>
  <br/>
- First clone the <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> repository from github via git clone. </p>
+ To begin using <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b>, clone the repository from github via git clone: </p>
 <blockquote class="doxtable">
 <p>git clone <a href="https://github.com/IllinoisRocstar/ElmerFoamFSI">https://github.com/IllinoisRocstar/ElmerFoamFSI</a></p>
 <p></p>
 </blockquote>
 <h1><a class="anchor" id="quick_start"></a>
 Build and Install</h1>
-<p>The top level directory of <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> comes with a build script (<b> BuildScript </b>) that should work on a Linux terminal. This scripts essentially executes cmake, make, and make install for the various components of the project. <br/>
- The commands in these build instructions assume use of a Linux terminal. <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> requires C, C++, and Fortran compilers. Additionally, it requires gfortran of version greater than 4.8. <br/>
+<p>The top level directory of <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> comes with a build script (<b> BuildScript </b>) made to run within a Linux terminal. This script executes cmake, make, and make install for the various components of the project. <br/>
+ <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> requires C, C++, and Fortran compilers. Additionally, it requires gfortran of version greater than 4.8. <br/>
  Before beginning ensure that your gfortran compiler meets this requirement.</p>
 <h3>1. Obtain the required submodules</h3>
-<p>Navigate into the top level directory for <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a>.</p>
+<p>Navigate into the top level directory for <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b>:</p>
 <blockquote class="doxtable">
 <p>cd <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></p>
 <p></p>
@@ -130,89 +130,91 @@ Build and Install</h1>
 <p>git submodule update --init --recursive</p>
 <p></p>
 </blockquote>
-<p>The directories IMPACT, IMPACT/IRAD/ elmerfem, and foam should now be unempty.</p>
+<p>The directories IMPACT, IMPACT/IRAD/ elmerfem, and foam should now be populated.</p>
 <h3>2. Execute the build script</h3>
-<p>Call the build script from the top level <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> directory. Provide it with the argument "first," since this is the first time building it.</p>
+<p>Call the build script from the top level <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> directory. Provide it with the argument "first," since this is the first time building it:</p>
 <blockquote class="doxtable">
 <p>./BuildScript first</p>
 <p></p>
 </blockquote>
 <p>The script may ask if the user wishes to compile without Paraview. It is fine to say "yes" to this question. The entire build and install process can take up to around 6 hours depending on the machine. <br/>
- If any errors occur along the way it should stop the process. All output from the build is located in a file named <b> Build.dat </b> (located in the same location as where the build script was called), that can be checked for error messages. At the end of the build, the tests for <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> should run and all pass. If any tests fail, there may be an issue with the build. <br/>
+ If any errors occur during the build and install process, <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> should stop the process and log the error. All output from the build is located in a file named <b> Build.dat </b> located in the same location as <b>BuildScript</b>; the output can be checked for build, install, and error messages. At the end of the build, the tests for <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> should run and all pass. If any tests fail, there may be an issue with the build. <br/>
  If all goes according to plan, executing this script and answering "yes" should be the only steps required to build.</p>
 <h3>3. Rebuilding</h3>
-<p>In the case of rebuilding, BuildScript can simply be executed again without the argument "first" given.</p>
+<p>In the event you want to rebuild <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b>, <b> BuildScript </b> can simply be executed again without providing the "first" argument above:</p>
 <blockquote class="doxtable">
 <p>./BuildScript</p>
 <p></p>
 </blockquote>
-<p>The "first" argument causes the OpenFoam first install script to be called instead of the regular build script, patches some files required for linking the two applications, and makes some useful links in the install directory.</p>
-<p>The full list of arguments for BuildScript are as follows:</p>
+<p>The "first" argument causes the <b><em>OpenFOAM</em></b> first install script to be called instead of the regular build script, patches some files required for linking the two applications, and makes some useful links in the install directory.</p>
+<p>The full list of arguments for <b>BuildScript</b> are as follows:</p>
 <ul>
 <li>first:<ul>
-<li>Causes OpenFoam's Allwmake.firstInstall to be called instead of Allwmake</li>
-<li>Patches appropriate files in Elmer and OpenFoam</li>
-<li>Links Elmer's libraries to the main lib directory in the <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> install directory</li>
+<li>Causes <b><em>OpenFOAM</em></b>'s Allwmake.firstInstall to be called instead of Allwmake</li>
+<li>Patches appropriate files in <b><em>Elmer</em></b> and <b><em>OpenFOAM</em></b></li>
+<li>Links Elmer's libraries to the main lib directory in the <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> install directory</li>
 </ul>
 </li>
 <li>notest:<ul>
-<li>Causes no <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> tests to be run</li>
+<li>Causes no <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> tests to be run</li>
 </ul>
 </li>
 <li>nofoam:<ul>
-<li>Skips the building of OpenFoam (generally the building of OpenFoam is the longest portion so skipping this component when possible is desirable)</li>
+<li>Skips the building of <b><em>OpenFOAM</em></b> (generally the building of <b><em>OpenFOAM</em></b> is the longest portion, so skipping this component when possible is desirable)</li>
 </ul>
 </li>
 </ul>
-<p>BuildScript calls a series of other scripts located in the <b> /ElmerFoamFSI/BuildTools/ </b> directory. The precise manner in which these scripts are called can be seen by looking in the BuildScript file. <br/>
+<p>BuildScript calls a series of other scripts located in the <b> /ElmerFoamFSI/BuildTools/ </b> director y. The precise manner in which these scripts are called can be seen by looking in the <b>BuildScript</b> file. <br/>
  If the user wishes to rebuild only one component of the project, these files can be called individually. They are listed below with their associated arguments:</p>
 <ul>
 <li><b> BuildElmerFoamFSIDriver </b> : builds only the orchestrator component<ul>
-<li>first argument must be the full path to the top level <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> directory</li>
+<li>first argument must be the full path to the top level <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> directory</li>
 <li>optional second argument "notest" skips the running of the tests</li>
 </ul>
 </li>
-<li><b> BuildElmerModule </b>: builds the Elmer software as well as the module for interfacting Elmer with IMPACT<ul>
-<li>first argument must be the full path to the top level <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> directory</li>
-<li>optional second argument "first" indicates that it is the first build and the Elmer libraries need to be linked to the appropriate location</li>
+<li><b> BuildElmerModule </b>: builds the <b><em>Elmer</em></b> software as well as the module for interfacting <b><em>Elmer</em></b> with IMPACT<ul>
+<li>first argument must be the full path to the top level <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> directory</li>
+<li>optional second argument "first" indicates that it is the first build and the <b><em>Elmer</em></b> libraries need to be linked to the appropriate location</li>
 </ul>
 </li>
-<li><b> BuildIMPACT </b>: builds IMPACT as well as IMPACT's submodule IRAD<ul>
-<li>first argument must be the full path to the top level <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> directory</li>
+<li><b> BuildIMPACT </b>: builds <b><em>IMPACT</em></b> as well as IMPACT's submodule, <b><em>IRAD</em></b><ul>
+<li>first argument must be the full path to the top level <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> directory</li>
 </ul>
 </li>
-<li><b> BuildOpenFoam </b>: builds the OpenFoam application only<ul>
-<li>first argument must be the full path to the top level <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> directory</li>
+<li><b> BuildOpenFoam </b>: builds the <b><em>OpenFOAM</em></b> application only<ul>
+<li>first argument must be the full path to the top level <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> directory</li>
 </ul>
 </li>
-<li><b> BuildOpenFoamModule </b>: builds the module to interface OpenFoam with IMPACT<ul>
-<li>first argument must be the full path to the top level <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> directory</li>
+<li><b> BuildOpenFoamModule </b>: builds the module to interface <b><em>OpenFOAM</em></b> with IMPACT<ul>
+<li>first argument must be the full path to the top level <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> directory</li>
 </ul>
 </li>
-<li><b> PatchScript </b>: patches some files within the the Elmer and OpenFoam sources in order for interfacing with IMPACT<ul>
-<li>first argument must be the full path to the top level <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> directory</li>
+<li><b> PatchScript </b>: patches some files within the the <b><em>Elmer</em></b> and <b><em>OpenFOAM</em></b> sources in order for interfacing with IMPACT<ul>
+<li>first argument must be the full path to the top level <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> directory</li>
 </ul>
 </li>
 </ul>
-<p>Two additional files are present in the BuildTools directory: <b> BashSourceScript </b> and <b> CshellSourceScript </b>. These two files provide the appropriate environment setup for building and running <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a>. Users should source the one appropriate for the shell they are using before running the code. Each takes the full path to the top level <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> directory as the first argument. <br/>
- So for example, from the top level, the command could be (if using Bash): </p>
+<p>Two additional files are present in the BuildTools directory: <b> BashSourceScript </b> and <b> CshellSourceScript </b>. These two files provide the appropriate environment setup for building and running <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b>. Users should source the one appropriate for the shell they are using before running the code. Each takes the full path to the top level <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b> directory as the first argument. <br/>
+ For example, from the top level, the command could be (if using Bash):</p>
 <blockquote class="doxtable">
-<p>Source ElmerFoamFSI/BuildTools/BashSourceScript /full/path/to/top/level/ElmerFoamFSI</p>
+<p>Source ElmerFoamFSI/BuildTools/BashSourceScript/full/path/to/top/level/ElmerFoamFSI</p>
 <p></p>
 </blockquote>
 <h3>4. Troubleshooting</h3>
-<p>In the event that something goes wrong with the build, it is recommended that the build steps be executed in smaller batches or potentially the entire process done manually. BuildScript calls a series of other scripts as noted above in the "Rebuilding" section. Each of these scripts can be executed by hand in order to help clarify any issues that are occuring. Additionally, all the steps taken in the various build scripts can be done by hand. In order to manually build <a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> users should either follow the steps in the scripts or read the instructions at <a class="el" href="manual_install.html">Manual Installation</a>.</p>
+<p>In the event that something goes wrong with the build, it is recommended that the build steps be executed in smaller batches or potentially the entire process done manually. <b>BuildScript</b> calls a series of other scripts as noted above in the "Rebuilding" section. Each of these scripts can be executed by hand in order to help clarify any issues that are occuring. Additionally, all the steps taken in the various build scripts can be done by hand. In order to manually build <b><em><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a></em></b>, users should either follow the steps in the scripts or read the full instruction set at <a class="el" href="manual_install.html">Manual Installation</a>.</p>
+<p>We encourage you to share your ideas, improvements, and issues with us. In the event that a manual install fails, please contact our support staff: <br/>
+<b>Customer Support Staff Email:</b> <a href="#" onclick="location.href='mai'+'lto:'+'tec'+'h@'+'ill'+'in'+'ois'+'ro'+'cst'+'ar'+'.co'+'m'; return false;">tech@<span style="display: none;">.nosp@m.</span>illi<span style="display: none;">.nosp@m.</span>noisr<span style="display: none;">.nosp@m.</span>ocst<span style="display: none;">.nosp@m.</span>ar.co<span style="display: none;">.nosp@m.</span>m</a></p>
 <h1><a class="anchor" id="irsec"></a>
 Illinois Rocstar</h1>
 <h2><a class="anchor" id="irproj"></a>
 Project Template</h2>
-<p><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> uses the Illinois Rocstar Project Template <a href="http://irweb/irproject">IRProject</a> and uses the following internal and third-party packages: <a href="http://openfoam.org" title="Open Source CFD">OpenFOAM</a> <a href="http://elmerfem.org" title="Open Source CSM">Elmer</a> <a href="http://www.cmake.org" title="Cross Platform Make">CMake</a> <a href="http://cmake.org/Wiki/CMake/Testing_With_CTest" title="CMake-integrated Testing Tool">CTest</a> <a href="http://www.stack.nl/~dimitri/doxygen/" title="Code documentation system">Doxygen</a> <a href="http://openmultiphysics.org" title="Illinois Multiphysics Application Coupling Toolkit">IMPACT</a> <a href="http://irweb/irad">IRAD</a> <a href="http://www.mcs.anl.gov/research/projects/mpi/" title="Message Passing Interface">MPI</a> </p>
+<p><a class="el" href="namespaceElmerFoamFSI.html" title="Project-specific namespace. ">ElmerFoamFSI</a> uses the Illinois Rocstar Project Template <a href="http://irweb/irproject">IRProject</a> and uses the following internal and third-party packages: <a href="http://openfoam.org" title="Open Source CFD">OpenFOAM</a>, <a href="http://elmerfem.org" title="Open Source CSM">Elmer</a>, <a href="http://www.cmake.org" title="Cross Platform Make">CMake</a>, <a href="http://cmake.org/Wiki/CMake/Testing_With_CTest" title="CMake-integrated Testing Tool">CTest</a>, <a href="http://www.stack.nl/~dimitri/doxygen/" title="Code documentation system">Doxygen</a>, <a href="http://openmultiphysics.org" title="Illinois Multiphysics Application Coupling Toolkit">IMPACT</a>, <a href="http://irweb/irad">IRAD</a>, <a href="http://www.mcs.anl.gov/research/projects/mpi/" title="Message Passing Interface">MPI</a> </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Jul 7 2016 15:53:09 for ElmerFoamFSI by
+    <li class="footer">Generated on Mon Jul 25 2016 15:51:03 for ElmerFoamFSI by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>

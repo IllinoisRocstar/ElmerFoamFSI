@@ -189,7 +189,7 @@ ADD_TEST(MidPointQuadrature:Order ${EXECUTABLE_OUTPUT_PATH}/testresults MidPoint
 <p>In Step (7), users configure <a class="el" href="namespaceElmerModuleDriver.html" title="Project-specific namespace. ">ElmerModuleDriver</a> and invoke "make test" to run the tests and report the results to stdout.</p>
 <h2><a class="anchor" id="irpt_parallel_tests"></a>
 Parallel Test Examples</h2>
-<p>The Illinois Rocstar Project Template has both a standalone parallel application, <em>pepi</em>, and parallel unit tests. The <em>pepi</em> program computes <img class="formulaInl" alt="$\pi$" src="form_24.png"/> in parallel by doing parallel quadrature, and the unit tests test the parallel quadrature facility. Both will be discussed in this section.</p>
+<p>The Illinois Rocstar Project Template has both a standalone parallel application, <em>pepi</em>, and parallel unit tests. The <em>pepi</em> program computes <img class="formulaInl" alt="$\pi$" src="form_28.png"/> in parallel by doing parallel quadrature, and the unit tests test the parallel quadrature facility. Both will be discussed in this section.</p>
 <p>In this test, the PNTO is called ElmerModuleDriver::ParallelTestingObject. This object inherits from IRAD::Util::TestingObject as described in Step (1) above. The unit tests are in the ElmerModuleDriver::ParallelTestingObject's member methods as prescribed in Step (2). The simple tests and the code construct that they test are:</p>
 <ul>
 <li>ElmerModuleDriver::ParallelTestingObject::Test__ParallelTrapezoidQuadrature tests <a class="el" href="namespaceElmerModuleDriver_a7ea1066c129172a0edf5647d8254e957.html#a7ea1066c129172a0edf5647d8254e957" title="Integrates f with composite trapezoid rule. ">ElmerModuleDriver::TrapezoidQuadrature</a> in parallel</li>
@@ -381,7 +381,7 @@ ADD_TEST(MidPointQuadrature:Order ${EXECUTABLE_OUTPUT_PATH}/testresults MidPoint
 <p>In Step (7), users configure <a class="el" href="namespaceOpenFoamModuleDriver.html" title="Project-specific namespace. ">OpenFoamModuleDriver</a> and invoke "make test" to run the tests and report the results to stdout.</p>
 <h2><a class="anchor" id="irpt_parallel_tests"></a>
 Parallel Test Examples</h2>
-<p>The Illinois Rocstar Project Template has both a standalone parallel application, <em>pepi</em>, and parallel unit tests. The <em>pepi</em> program computes <img class="formulaInl" alt="$\pi$" src="form_24.png"/> in parallel by doing parallel quadrature, and the unit tests test the parallel quadrature facility. Both will be discussed in this section.</p>
+<p>The Illinois Rocstar Project Template has both a standalone parallel application, <em>pepi</em>, and parallel unit tests. The <em>pepi</em> program computes <img class="formulaInl" alt="$\pi$" src="form_28.png"/> in parallel by doing parallel quadrature, and the unit tests test the parallel quadrature facility. Both will be discussed in this section.</p>
 <p>In this test, the PNTO is called OpenFoamModuleDriver::ParallelTestingObject. This object inherits from IRAD::Util::TestingObject as described in Step (1) above. The unit tests are in the OpenFoamModuleDriver::ParallelTestingObject's member methods as prescribed in Step (2). The simple tests and the code construct that they test are:</p>
 <ul>
 <li>OpenFoamModuleDriver::ParallelTestingObject::Test__ParallelTrapezoidQuadrature tests OpenFoamModuleDriver::TrapezoidQuadrature in parallel</li>
@@ -495,7 +495,7 @@ Automated Testing</h1>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="index.html">ElmerFoamFSI Documentation</a></li><li class="navelem"><a class="el" href="group__irp.html">Illinois Rocstar Project Template</a></li>
-    <li class="footer">Generated on Thu Jul 7 2016 15:53:04 for ElmerFoamFSI by
+    <li class="footer">Generated on Mon Jul 25 2016 15:50:54 for ElmerFoamFSI by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.5 </li>
   </ul>
