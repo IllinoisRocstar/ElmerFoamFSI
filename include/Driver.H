@@ -211,6 +211,7 @@ namespace ElmerFoamFSI {
       args_dupe[1] = const_cast<char *>("-com-mpi");
       args_dupe[2] = NULL;
       COM_init(&nargs_dupe,&args_dupe);
+      COM_set_profiling(1);
     };
     ///
     /// Initializes native data structures from commandline args.
@@ -278,8 +279,10 @@ namespace ElmerFoamFSI {
     /// Destructor
     ///
     virtual ~SerialDriverProgram() {
-      if(COM_initialized())
+      if(COM_initialized()) {
+        COM_print_profile("run_profile.dat", "");
         COM_finalize();
+      }
       Report(Ouf);
       if(Ouf){
         Ouf.close();
@@ -414,6 +417,7 @@ namespace ElmerFoamFSI {
        args_dupe[1] = const_cast<char *>("-com-mpi");
        args_dupe[2] = NULL;
        COM_init(&nargs_dupe,&args_dupe);
+       COM_set_profiling(1);
        // at this point we should have communicator setup
        //std::cout << "My Rank = " << Rank() << std::endl;
     };
@@ -500,8 +504,10 @@ namespace ElmerFoamFSI {
     /// Destructor.
     ///
     virtual ~ParallelDriverProgram() {
-      if(COM_initialized())
+      if(COM_initialized()) {
+        COM_print_profile("run_profile.dat", "");
         COM_finalize();
+      }
       if(Ouf){
         Ouf.close();
         SetOutStream(std::cout);
